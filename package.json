@@ -1,0 +1,28 @@
+{
+  "name": "non-backend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NFTorNOT/NON-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NFTorNOT/NON-backend/issues"
+  },
+  "homepage": "https://github.com/NFTorNOT/NON-backend#readme",
+  "dependencies": {
+    "aws-sdk": "2.1247.0",
+    "express": "4.18.1",
+    "morgan": "1.10.0",
+    "uuidv4": "6.2.13"
+  },
+  "devDependencies": {
+    "eslint": "7.20.0"
+  }
+}
