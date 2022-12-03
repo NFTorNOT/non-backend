@@ -33,6 +33,26 @@ class BasicHelper {
       setTimeout(resolve, ms);
     });
   }
+
+  /**
+   * Validate non-empty string.
+   *
+   * @param {string} variable
+   *
+   * @returns {boolean}
+   */
+  validateNonEmptyString(variable) {
+    return !!(this.validateString(variable) && variable && variable.trim().length !== 0);
+  }
+
+  /**
+   * Is string valid ?
+   *
+   * @returns {boolean}
+   */
+  validateString(variable) {
+    return typeof variable === 'string';
+  }
 }
 
 module.exports = new BasicHelper();

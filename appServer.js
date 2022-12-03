@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const basicHelper = require('./helpers/basic');
-const FetchImageFromStabilityAI = require('./services/FetchImageFromStabilityAI');
+const basicHelper = require('./helpers/basic'),
+  FetchImageFromStabilityAIService = require('./services/FetchImageFromStabilityAI');
+  MintNFTService = require('./services/MintNFT');
 
 const PORT = 3000;
 
@@ -89,7 +90,7 @@ app.post(
     try {
       const prompt = req.body.prompt,
         artStyle = req.body.art_style;
-      const response = await new FetchImageFromStabilityAI({ prompt: prompt, artStyle: artStyle }).perform();
+      const response = await new FetchImageFromStabilityAIService({ prompt: prompt, artStyle: artStyle }).perform();
       let status = true;
       if (!basicHelper.isEmptyObject(response.error)) {
         status = false;
@@ -99,6 +100,26 @@ app.post(
     } catch(err) {
       console.error();("error ---------", err);
       return res.status(200).json({success: false, err: {msg: "something went wrong"}});
+    }
+  }
+);
+
+app.post(
+  '/api/mint-nft',
+  async function (req, res, next) {
+    try {
+      const receiverAddress = req.body.receiver_address,
+        imageCid = req.body.image_cid;
+      const response = await new MintNFTService({ receiverAddress: receiverAddress, imageCid: imageCid }).perform();
+      let status = true;
+      if (!response.error) {
+        status = false;
+      }
+      return res.status(200).json({success: status, data: response });
+  
+    } catch(error) {
+      console.error();("error ---------", error);
+      return res.status(200).json({success: false, err: {msg: "something went wrong", err_data: error}});
     }
   }
 );
