@@ -1,7 +1,7 @@
 const rootPrefix = '..',
  util = require(rootPrefix + '/helpers/util.js'),
  lensHelper = require(rootPrefix + '/helpers/lens.js'),
- { v4: uuidv4 } = require('uuid');
+ { uuid } = require('uuidv4');
 
 class CreateNFTOfTheDay {
 
@@ -49,7 +49,7 @@ class CreateNFTOfTheDay {
          const postMetadata = {
              version: "2.0.0",
              mainContentFocus: "IMAGE",
-             metadata_id: uuidv4(),
+             metadata_id: uuid(),
              description: "Description",
              locale: "en-US",
              content: contentText,

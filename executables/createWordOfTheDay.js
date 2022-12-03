@@ -1,14 +1,25 @@
 const rootPrefix = '..',
  util = require(rootPrefix + '/helpers/util.js'),
  lensHelper = require(rootPrefix + '/helpers/lens.js'),
- { v4: uuidv4 } = require('uuid'),
- nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js');
+{ uuid } = require('uuidv4'),
+ nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js'),
+ words = require(rootPrefix + '/helpers/words.json'),
+ inMemoryCache = require(rootPrefix + '/helpers/inMemoryCache.js');
 
 class CreateWordOfTheDay {
   constructor() {
     const oThis = this;
     oThis.notionUrl = 'https://plgworks.notion.site/NFT-or-not-61e944ba261f49a2805c73468c92a43a';
-    oThis.postText = `Word of the Day #1: Garden
+    let wordOfTheDay = null;
+    for (const wordObj of words){
+      if(wordObj.status == 'Available'){
+        wordOfTheDay = wordObj.word;
+        wordObj.status = 'Used';
+        inMemoryCache.setCurrentWordOfTheDay(wordOfTheDay);
+        break;
+      }
+    }
+    oThis.postText = `Word of the Day #1: ${wordOfTheDay}
     Start now by submitting your own generations on NFTorNot.com  🪄
     Cast votes on the hottest images 🔥
     See all the submissions in the comments 👇
@@ -26,7 +37,7 @@ class CreateWordOfTheDay {
     const postMetadata = {
         version: "2.0.0",
         mainContentFocus: "TEXT_ONLY",
-        metadata_id: uuidv4(),
+        metadata_id: uuid(),
         description: "Word of the day post",
         locale: "en-US",
         content:  oThis.postText,
