@@ -156,7 +156,7 @@ app.post(
         imageCid = req.body.image_cid;
       const response = await new MintNFTService({ receiverAddress: receiverAddress, imageCid: imageCid }).perform();
       let status = true;
-      if (!response.error) {
+      if (response.error) {
         status = false;
       }
       return res.status(200).json({success: status, data: response });

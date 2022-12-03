@@ -68,7 +68,7 @@ class MintNFT {
 
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
-      oThis.response.error = error;
+      oThis.response.error = JSON.stringify(error);
     }
 
     return oThis.response;
@@ -83,7 +83,7 @@ class MintNFT {
     const oThis = this;
 
     if(!oThis.receiverAddress || !basicHelper.validateNonEmptyString(oThis.receiverAddress)) {
-      throw new Error('Receiver Address Required. -- 1');
+      throw new Error('Receiver Address Required.');
     }
 
     if(!ethers.utils.isAddress(oThis.receiverAddress)) {
