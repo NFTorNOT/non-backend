@@ -80,8 +80,13 @@ const logRequestParams = function(req, res, next) {
 
 app.use(logRequestParams);
 
+
+app.get('/', function(req, res, next) {
+  res.status(200).json({status: "Up and Running"});
+});
+
 app.get('/api/health-checker', function(req, res, next) {
-  res.send('Server is up and running!');
+  res.status(200).json({HealthCheckerStatus: 'Server is up and running!'});
 });
 
 app.post(
