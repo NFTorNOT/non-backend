@@ -1,11 +1,12 @@
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
   name: {{ include "hon-frontend.fullname" . }}-job
   labels:
     app: {{ include "hon-frontend.fullname" . }}-job
     
 spec:
+  schedule: "*/2 * * * *"
   template:
     spec:
       containers:
@@ -14,6 +15,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["node", "executables/sampleCron.js"]
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
