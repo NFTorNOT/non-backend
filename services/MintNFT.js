@@ -1,7 +1,9 @@
 const {ethers} = require('ethers');
-  axios = require('axios');
+  axios = require('axios'),
+  fs = require('fs');
 
-const basicHelper = require('../helpers/basic');
+const basicHelper = require('../helpers/basic'),
+  ipfsHelper = require('../helpers/ipfs');
 
 const NFTContractAddress = '0xE6E3A805bf2b0DC1D7713d7B30B9eE476ab77a19';
 
@@ -32,7 +34,11 @@ class MintNFT {
     const oThis = this;
 
     oThis.receiverAddress = params.receiverAddress;
-    oThis.imageCid = params.imageCid;
+    oThis.imageUrl = params.imageUrl;
+    oThis.description =  params.description;
+
+    oThis.imageCid= null;
+    oThis.imageMetaDataCid = null;
 
     oThis.response = {
       success: true,
@@ -53,35 +59,11 @@ class MintNFT {
 
       oThis._validateParams();
 
-      console.log('--- Getting Infura Provider for Mumbai Testnet ---');
-      const provider = await new ethers.providers.InfuraProvider('maticmum');
+      await oThis._uploadImageToIpfs();
 
-      console.log('--- Getting Signer (Owner) of NFT Contract for Mumbai Testnet ---');
-      const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
+      await oThis._uploadImageMetadataToIpfs();
 
-      console.log('--- Getting NFT Contract Instance for Mumbai Testnet ---');
-      const NFTContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
-
-      console.log('--- Obtaining gas options ---');
-      const gasOptions = await oThis.getGasOptions();
-
-      console.log('--- Minting the NFT ---');
-      const mintTx = await NFTContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
-
-      console.log('--- Waiting for the NFT minting to be confirmed ---');
-      const receipt = await mintTx.wait();
-
-      console.log('--- NFT Minted Successfully ---');
-
-      const topics = receipt.logs[0].topics;
-      const tokenId = parseInt(topics[3]);
-
-      console.log('Transaction Receipt ------- ', JSON.stringify(receipt));
-
-      oThis.response.data = {
-        transactionHash: receipt.transactionHash,
-        tokenId: tokenId
-      } 
+      await oThis._mintToken();
 
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
@@ -108,9 +90,77 @@ class MintNFT {
       throw new Error('Invalid Receiver Address. Please provide an valid address');
     }
 
-    if(!oThis.imageCid || !basicHelper.validateNonEmptyString(oThis.imageCid)) {
-      throw new Error('Invalid Image CID provided.')
+    if(!oThis.imageUrl || !basicHelper.validateNonEmptyString(oThis.imageUrl)) {
+      throw new Error('Invalid Image url provided.')
     }
+
+    if(!oThis.description || !basicHelper.validateNonEmptyString(oThis.description)) {
+      throw new Error('Invalid description provided.')
+    }
+  }
+
+  /**
+   * 
+   */
+  async _uploadImageToIpfs() {
+    const oThis = this;
+
+    console.log('--- Downloading file from S3 ---');
+    const localImageDownloadPath = await basicHelper.downloadFile(oThis.imageUrl, 'png');
+    console.log('--- Download file completed from S3 ---');
+
+    const fileName = localImageDownloadPath.split('/').at(-1);
+    const localImageFileData = fs.readFileSync(localImageDownloadPath);
+
+    console.log('--- Upload image to IPFS ---');
+    oThis.imageCid = await ipfsHelper.uploadImage(fileName, localImageFileData);
+    console.log('---- Upload image to IPFS completed:', oThis.imageCid);
+
+    oThis.response.data.imageCid = oThis.imageCid;
+  }
+
+  async _uploadImageMetadataToIpfs() {
+    const oThis = this;
+
+    const metadataObject = {
+      name: 'NFTorNOT',
+      description: oThis.description,
+      image: `ipfs://${oThis.imageCid}`
+    };
+
+    oThis.imageMetaDataCid = await ipfsHelper.uploadMetaData(metadataObject);
+  }
+
+  async _mintToken() {
+    const oThis = this;
+
+    console.log('--- Getting Infura Provider for Mumbai Testnet ---');
+    const provider = await new ethers.providers.InfuraProvider('maticmum');
+
+    console.log('--- Getting Signer (Owner) of NFT Contract for Mumbai Testnet ---');
+    const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
+
+    console.log('--- Getting NFT Contract Instance for Mumbai Testnet ---');
+    const NFTContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
+
+    console.log('--- Obtaining gas options ---');
+    const gasOptions = await oThis.getGasOptions();
+
+    console.log('--- Minting the NFT ---');
+    const mintTx = await NFTContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
+
+    console.log('--- Waiting for the NFT minting to be confirmed ---');
+    const receipt = await mintTx.wait();
+
+    console.log('--- NFT Minted Successfully ---');
+
+    const topics = receipt.logs[0].topics;
+    const tokenId = parseInt(topics[3]);
+
+    console.log('Transaction Receipt ------- ', JSON.stringify(receipt));
+
+    oThis.response.data.transactionHash = receipt.transactionHash;
+    oThis.response.data.tokenId = tokenId;
   }
 
   /**

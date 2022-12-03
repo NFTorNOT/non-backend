@@ -1,4 +1,6 @@
-
+const http = require('https');
+const fs = require('fs');
+const { uuid } = require('uuidv4');
 class BasicHelper {
 
   /**
@@ -52,6 +54,31 @@ class BasicHelper {
    */
   validateString(variable) {
     return typeof variable === 'string';
+  }
+
+  /**
+   * Download file.
+   * 
+   * @param {*} fileUrl 
+   * @param {*} extension
+   * @returns 
+   */
+  downloadFile(fileUrl, extension) {
+    const filePath = `/tmp/${uuid()}.${extension}`;
+
+    const file = fs.createWriteStream(filePath);
+
+    return new Promise(function(onResolve) {
+      const request = http.get(fileUrl, function(response) {
+        response.pipe(file);
+
+        // after download completed close filestream
+        file.on("finish", () => {
+          file.close();
+          onResolve(filePath)
+        });
+      });
+    });
   }
 }
 

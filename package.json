@@ -22,6 +22,7 @@
     "cors": "^2.8.5",
     "ethers": "5.7.1",
     "express": "4.18.1",
+    "ipfs-http-client": "59.0.0",
     "morgan": "1.10.0",
     "uuidv4": "6.2.13"
   },
