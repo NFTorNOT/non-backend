@@ -41,8 +41,9 @@ class MintNFT {
     oThis.imageMetaDataCid = null;
 
     oThis.response = {
-      success: true,
-      data: {},
+      transactionHash: null,
+      tokenId: null,
+      imageCid: null,
       error: null
     };
   }
@@ -67,7 +68,6 @@ class MintNFT {
 
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
-      oThis.response.success = false;
       oThis.response.error = error;
     }
 
@@ -116,7 +116,7 @@ class MintNFT {
     oThis.imageCid = await ipfsHelper.uploadImage(fileName, localImageFileData);
     console.log('---- Upload image to IPFS completed:', oThis.imageCid);
 
-    oThis.response.data.imageCid = oThis.imageCid;
+    oThis.response.imageCid = oThis.imageCid;
   }
 
   async _uploadImageMetadataToIpfs() {
@@ -159,8 +159,8 @@ class MintNFT {
 
     console.log('Transaction Receipt ------- ', JSON.stringify(receipt));
 
-    oThis.response.data.transactionHash = receipt.transactionHash;
-    oThis.response.data.tokenId = tokenId;
+    oThis.response.transactionHash = receipt.transactionHash;
+    oThis.response.tokenId = tokenId;
   }
 
   /**
