@@ -169,7 +169,8 @@ app.post(
 
 app.get('/api/get-word-of-the-day', function (req, res, next) {
 
-  const wordOfTheDay = inMemoryCache.getCurrentWordOfTheDay();
+
+  const wordOfTheDay = 'Garden'
 
   if(!wordOfTheDay){
     return res

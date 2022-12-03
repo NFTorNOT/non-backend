@@ -1,7 +1,7 @@
 const { ethers } = require('ethers');
   axios = require('axios');
 
-const NFTOfTheDayContractAddress = '0x8235C2CE19fE0A898E57306bB8E6b3c68afe8fd7';
+const NFTOfTheDayContractAddress = '0x4E311732CD82C26237cEf8Bb1065CCF90b74b596';
 
 const NFTOfTheDayContractAbi = [
   {
@@ -23,23 +23,28 @@ const NFTOfTheDayContractAbi = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "epochTimestamp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "setNFTOfTheDay",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "epochTimestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "nftOftheDayPublicationId",
+				"type": "string"
+			}
+		],
+		"name": "setNFTOfTheDay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 ];
 
 class NftOrNotContract {
@@ -83,7 +88,7 @@ class NftOrNotContract {
    * @param {number} epochTimestamp 
    * @param {number} tokenId 
    */
-  async setNFTOfTheDayTokenId(epochTimestamp, tokenId) {
+  async setNFTOfTheDayTokenId(epochTimestamp, tokenId, nftOfTheDayPublicationId) {
     const oThis = this;
 
     console.log('--- Getting Infura Provider ---');
@@ -99,7 +104,7 @@ class NftOrNotContract {
     const gasOptions = await oThis.getGasOptions();
 
     console.log('--- Making set nft of the day tx ---');
-    const setTx = await NFTOfTheDayContract.setNFTOfTheDay(epochTimestamp, tokenId, gasOptions);
+    const setTx = await NFTOfTheDayContract.setNFTOfTheDay(epochTimestamp, tokenId, nftOfTheDayPublicationId, gasOptions);
 
     console.log('--- Waiting for the tx to be confirmed ---');
     const receipt = await setTx.wait();

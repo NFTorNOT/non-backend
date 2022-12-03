@@ -4,26 +4,16 @@ const rootPrefix = '..',
 { uuid } = require('uuidv4'),
  nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js'),
  words = require(rootPrefix + '/helpers/words.json'),
- inMemoryCache = require(rootPrefix + '/helpers/inMemoryCache.js');
+ moment = require('moment-timezone');
 
 class CreateWordOfTheDay {
   constructor() {
     const oThis = this;
     oThis.notionUrl = 'https://plgworks.notion.site/NFT-or-not-61e944ba261f49a2805c73468c92a43a';
-    let wordOfTheDay = null;
-    for (const wordObj of words){
-      if(wordObj.status == 'Available'){
-        wordOfTheDay = wordObj.word;
-        wordObj.status = 'Used';
-        inMemoryCache.setCurrentWordOfTheDay(wordOfTheDay);
-        break;
-      }
-    }
-    oThis.postText = `Word of the Day #1: ${wordOfTheDay}
-    Start now by submitting your own generations on NFTorNot.com  🪄
-    Cast votes on the hottest images 🔥
-    See all the submissions in the comments 👇
-    New to NFT or Not? Know more about us [here](${oThis.notionUrl})`;
+    oThis.wordOfTheDay = null;
+
+    oThis.postText = null;
+
   }
 
   /*
@@ -34,11 +24,24 @@ class CreateWordOfTheDay {
  async perform() {
     const oThis = this;
     
+    for (const wordObj of words){
+      if(wordObj.status == 'Available'){
+        oThis.wordOfTheDay = wordObj.word;
+        wordObj.status = 'Used';
+        break;
+      }
+    }
+    oThis.postText = `Word of the Day #1: ${oThis.wordOfTheDay}
+    Start now by submitting your own generations on NFTorNot.com  🪄
+    Cast votes on the hottest images 🔥
+    See all the submissions in the comments 👇
+    New to NFT or Not? Know more about us [here](${oThis.notionUrl})`;
+
     const postMetadata = {
         version: "2.0.0",
         mainContentFocus: "TEXT_ONLY",
         metadata_id: uuid(),
-        description: "Word of the day post",
+        description: oThis.wordOfTheDay,
         locale: "en-US",
         content:  oThis.postText,
         external_url: null,
@@ -64,7 +67,13 @@ class CreateWordOfTheDay {
     const publicationId = publicationRes.data.publication.id;
     console.log('publicationId---->', publicationRes.data.publication.id);
 
-    await nftOrNotContract.setWordOfTheDayPublicationId(Date.now(), publicationId)
+    const currentTimestampInSeconds = Math.floor(Date.now()/1000);
+    const startOfHourTimestampInms = moment(currentTimestampInSeconds * 1000).startOf('hour').valueOf();
+    const startOfHourTimestampInsec = Math.floor(startOfHourTimestampInms/1000);
+
+    console.log('startOfHourTimestamp--->', startOfHourTimestampInsec);
+
+    await nftOrNotContract.setWordOfTheDayPublicationId(startOfHourTimestampInsec, publicationId)
     return;
     }
 }
