@@ -1,5 +1,5 @@
 const {ethers} = require('ethers');
-const axios = require('axios');
+  axios = require('axios');
 
 const basicHelper = require('../helpers/basic');
 
@@ -60,23 +60,29 @@ class MintNFT {
       const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
 
       console.log('--- Getting NFT Contract Instance for Mumbai Testnet ---');
-      const mintContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
+      const NFTContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
 
       console.log('--- Obtaining gas options ---');
       const gasOptions = await oThis.getGasOptions();
 
       console.log('--- Minting the NFT ---');
-      const mintTx = await mintContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
+      const mintTx = await NFTContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
 
       console.log('--- Waiting for the NFT minting to be confirmed ---');
       const receipt = await mintTx.wait();
 
       console.log('--- NFT Minted Successfully ---');
 
-      console.log('Transaction Receipt ------- ', receipt);
+      const topics = receipt.logs[0].topics;
+      const tokenId = parseInt(topics[3]);
+
+      console.log('Transaction Receipt ------- ', JSON.stringify(receipt));
+
       oThis.response.data = {
-        transactionHash: receipt.transactionHash
-      }
+        transactionHash: receipt.transactionHash,
+        tokenId: tokenId
+      } 
+
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
       oThis.response.success = false;
