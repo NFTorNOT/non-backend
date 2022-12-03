@@ -28,18 +28,21 @@ async function main(){
       };
 
     const metadataCid = await util.uploadDataToIpfsInfura(postMetadata);
-    console.log('metadataCid--->', metadataCid);
     
     const res = await lensHelper.createPostViaDispatcher(metadataCid);
-    // console.log('publication res----->', res)
-    // console.log('res.data.createPostViaDispatcher.txId---->', res.data.createPostViaDispatcher.txId);
+    console.log('res----->', res)
+    let metadataSatus = await lensHelper.getPublicationMetadataStatus(res.data.createPostViaDispatcher.txHash)
 
+    console.log('metadataSatus----->', metadataSatus);
 
-    // const txHashRes = await lensHelper.getTxHash(res.data.createPostViaDispatcher.txId);
-    // console.log('publicationId---->', txHashRes.data.txIdToTxHash);
+    while(metadataSatus.data.publicationMetadataStatus.status != "SUCCESS"){
+        metadataSatus = await lensHelper.getPublicationMetadataStatus(res.data.createPostViaDispatcher.txHash)
+    }
 
-    // const publicationRes = await lensHelper.getPublicationId(txHashRes.data.txIdToTxHash);
-    // console.log('publicationId---->', publicationRes.data.publication.id);
+    const publicationRes = await lensHelper.getPublicationId(res.data.createPostViaDispatcher.txHash);
+
+    const publicationId = publicationRes.data.publication.id;
+    console.log('publicationId---->', publicationRes.data.publication.id);
 
     return;
 }

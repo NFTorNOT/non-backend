@@ -25,17 +25,44 @@ async function getPublicationId(postTxHash) {
   });
 };
 
-async function getTxHash(postTxId) {
+async function getPublicationMetadataStatus(postTxHash) {
   const client = await clientHelper.getApolloClient();
 
   return await client.query({
-    query: gql(gqlSchema.GET_TXHASH_BY_TXID),
+    query: gql(gqlSchema.GET_PUBLICATION_METADATA_STATUS),
     variables: {
-      postTxId
+      postTxHash
     },
   });
 };
 
+async function getCommentsData() {
+  const client = await clientHelper.getApolloClient();
 
+  return await client.query({
+    query: gql(gqlSchema.GET_COMMENTS_DATA),
+    variables: {
+      request:  {
+        commentsOf: "0x5691-0x4c",
+        limit: 10
+      },
+        reactionRequest: null,
+        profileId: null
+    },
+  });
+};
 
-module.exports = {createPostViaDispatcher, getPublicationId, getTxHash}
+async function getUserNameFromId(profileId) {
+  const client = await clientHelper.getApolloClient();
+
+  const res = await client.query({
+    query: gql(gqlSchema.GET_USERNAME_FROM_ID),
+    variables: {
+      profileId
+    },
+  });
+
+  return res.data.profile.handle;
+};
+
+module.exports = {createPostViaDispatcher, getPublicationId, getPublicationMetadataStatus, getCommentsData, getUserNameFromId}

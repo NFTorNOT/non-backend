@@ -1,7 +1,9 @@
 const rootPrefix = '..',
  fetch = require("node-fetch"),
  fs = require('fs'),
- { ethers } = require("ethers");
+ { ethers } = require("ethers"),
+ { splitSignature } = require("ethers/lib/utils"),
+  ABI = require(rootPrefix + '/helpers/contractABI.js');
 
 
 let client = null;
@@ -84,6 +86,7 @@ class util {
     console.log('upload result ipfs image - ', result);
     return `ipfs://${result.cid}`;
   }
+
 }
 
 module.exports = new util();
