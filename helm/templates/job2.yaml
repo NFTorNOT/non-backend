@@ -1,23 +1,23 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "hon-frontend.fullname" . }}-job
+  name: {{ include "hon-frontend.fullname" . }}-job2
 spec:
   #sharp: 0 0 * * *
-  schedule: "0 * * * *"
+  schedule: "57 * * * *"
   jobTemplate:
     spec:
       template:
         metadata:
           labels:
-            app: {{ include "hon-frontend.fullname" . }}-job
+            app: {{ include "hon-frontend.fullname" . }}-job2
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: {{ include "hon-frontend.fullname" . }}-job
+          - name: {{ include "hon-frontend.fullname" . }}-job2
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             command: ["node"]
-            args: ["executables/createWordOfTheDay.js"]
+            args: ["executables/createNFTOfTheDay.js"]
             env:
               {{- range $key, $value := $.Values.env }}
               - name: {{ $key }}
