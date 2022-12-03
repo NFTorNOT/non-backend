@@ -1,7 +1,7 @@
 const { ethers } = require('ethers');
   axios = require('axios');
 
-const NFTOfTheDayContractAddress = '';
+const NFTOfTheDayContractAddress = '0xE6E3A805bf2b0DC1D7713d7B30B9eE476ab77a19';
 
 const NFTOfTheDayContractAbi = [
   {
@@ -107,6 +107,24 @@ class NftOrNotContract {
 
     console.log('Transaction Receipt ------- ', receipt);
   }
+
+  /**
+   * Fetch and get gas options for a transaction.
+   *
+   * @returns {Promise<{maxPriorityFeePerGas: BigNumber, maxFeePerGas: BigNumber}>}
+   */
+     async getGasOptions() {
+      const oThis = this;
+  
+      const {data} = await axios({
+        method: 'get',
+        url: 'https://gasstation-mainnet.matic.network/v2'
+      })
+      return {
+          "maxFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxFee).toString(), 'gwei'),
+          "maxPriorityFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxPriorityFee).toString(), 'gwei')
+      }
+    }
 }
 
 module.exports = new NftOrNotContract;

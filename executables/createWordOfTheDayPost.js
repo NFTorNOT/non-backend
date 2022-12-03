@@ -1,7 +1,8 @@
 const rootPrefix = '..',
  util = require(rootPrefix + '/helpers/util.js'),
  lensHelper = require(rootPrefix + '/helpers/lens.js'),
- { v4: uuidv4 } = require('uuid');
+ { v4: uuidv4 } = require('uuid'),
+ nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js');
 
 async function main(){
 
@@ -44,6 +45,7 @@ async function main(){
     const publicationId = publicationRes.data.publication.id;
     console.log('publicationId---->', publicationRes.data.publication.id);
 
+    await nftOrNotContract.setWordOfTheDayPublicationId(Date.now(), publicationId)
     return;
 }
 

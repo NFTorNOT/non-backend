@@ -22,7 +22,7 @@ class util {
   }
 
   async getSigner() {
-    const signer = new ethers.Wallet(process.env.WALLET_PK, provider);
+    const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
     return signer
   }
   
