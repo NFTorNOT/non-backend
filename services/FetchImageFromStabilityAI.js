@@ -164,7 +164,7 @@ class FetchImageFromStabilityAI {
         .promise()
         .then(function(resp) {
           const location = {url: resp.Location || ''};
-          oThis.response.image = oThis._replaceS3UrlWithCDN(location);
+          oThis.response.image = { url: oThis._replaceS3UrlWithCDN(location.url) };
           onResolve(console.log("success", resp));
         })
         .catch(function(err) {

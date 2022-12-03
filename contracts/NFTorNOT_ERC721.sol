@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.4;
 
-import "@openzeppelin/contracts@4.7.0/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts@4.7.0/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts@4.7.0/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts@4.7.0/access/Ownable.sol";
 import "@openzeppelin/contracts@4.7.0/utils/Counters.sol";
@@ -13,7 +11,7 @@ contract NFTorNOT is ERC721URIStorage, Ownable {
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor() ERC721("NFTorNOT_Test1", "NON_1") {
+    constructor() ERC721("NFTorNot", "NoN") {
         _tokenIdCounter.increment();
     }
 
