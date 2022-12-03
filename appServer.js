@@ -2,9 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const basicHelper = require("./helpers/basic"),
-  FetchImageFromStabilityAIService = require("./services/FetchImageFromStabilityAI");
-MintNFTService = require("./services/MintNFT");
+const basicHelper = require('./helpers/basic'),
+  FetchImageFromStabilityAIService = require('./services/FetchImageFromStabilityAI'),
+  MintNFTService = require('./services/MintNFT'),
+  inMemoryCache = require( './helpers/inMemoryCache.js');
 
 const PORT = 3000;
 
@@ -146,6 +147,47 @@ app.post("/api/mint-nft", async function (req, res, next) {
   }
 });
 
+app.post(
+  '/api/mint-nft',
+  async function (req, res, next) {
+    try {
+      const receiverAddress = req.body.receiver_address,
+        imageCid = req.body.image_cid;
+      const response = await new MintNFTService({ receiverAddress: receiverAddress, imageCid: imageCid }).perform();
+      let status = true;
+      if (!response.error) {
+        status = false;
+      }
+      return res.status(200).json({success: status, data: response });
+  
+    } catch(error) {
+      console.error();("error ---------", error);
+      return res.status(200).json({success: false, err: {msg: "something went wrong", err_data: error}});
+    }
+  }
+);
+
+app.get('/api/get-word-of-the-day', function (req, res, next) {
+
+  const wordOfTheDay = inMemoryCache.getCurrentWordOfTheDay();
+
+  if(!wordOfTheDay){
+    return res
+    .status(400)
+    .json({
+      success: false,
+      err: { msg: "Word of the day not set yet"}
+    });
+  }
+
+  return res
+  .status(200)
+  .json({
+    success: true,
+    data: {wordOfTheDay: wordOfTheDay}
+  });
+
+});
 app.listen(PORT);
 
 console.info("Listening on " + PORT);

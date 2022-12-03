@@ -42,9 +42,6 @@ class SampleCron {
       setTimeout(resolve, ms);
     });
   }
-
-
-    
 }
 
 const performerObj = new SampleCron();
