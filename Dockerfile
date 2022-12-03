@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN apt update && apt install -y \
-    python3 \
+    python3 \   
     make \
     g++ \
     python3-pip

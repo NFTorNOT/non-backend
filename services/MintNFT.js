@@ -1,7 +1,9 @@
 const {ethers} = require('ethers');
-const axios = require('axios');
+  axios = require('axios'),
+  fs = require('fs');
 
-const basicHelper = require('../helpers/basic');
+const basicHelper = require('../helpers/basic'),
+  ipfsHelper = require('../helpers/ipfs');
 
 const NFTContractAddress = '0xE6E3A805bf2b0DC1D7713d7B30B9eE476ab77a19';
 
@@ -32,11 +34,16 @@ class MintNFT {
     const oThis = this;
 
     oThis.receiverAddress = params.receiverAddress;
-    oThis.imageCid = params.imageCid;
+    oThis.imageUrl = params.imageUrl;
+    oThis.description =  params.description;
+
+    oThis.imageCid= null;
+    oThis.imageMetaDataCid = null;
 
     oThis.response = {
-      success: true,
-      data: {},
+      transactionHash: null,
+      tokenId: null,
+      imageCid: null,
       error: null
     };
   }
@@ -53,34 +60,15 @@ class MintNFT {
 
       oThis._validateParams();
 
-      console.log('--- Getting Infura Provider for Mumbai Testnet ---');
-      const provider = await new ethers.providers.InfuraProvider('maticmum');
+      await oThis._uploadImageToIpfs();
 
-      console.log('--- Getting Signer (Owner) of NFT Contract for Mumbai Testnet ---');
-      const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
+      await oThis._uploadImageMetadataToIpfs();
 
-      console.log('--- Getting NFT Contract Instance for Mumbai Testnet ---');
-      const mintContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
+      await oThis._mintToken();
 
-      console.log('--- Obtaining gas options ---');
-      const gasOptions = await oThis.getGasOptions();
-
-      console.log('--- Minting the NFT ---');
-      const mintTx = await mintContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
-
-      console.log('--- Waiting for the NFT minting to be confirmed ---');
-      const receipt = await mintTx.wait();
-
-      console.log('--- NFT Minted Successfully ---');
-
-      console.log('Transaction Receipt ------- ', receipt);
-      oThis.response.data = {
-        transactionHash: receipt.transactionHash
-      }
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
-      oThis.response.success = false;
-      oThis.response.error = error;
+      oThis.response.error = JSON.stringify(error);
     }
 
     return oThis.response;
@@ -95,16 +83,84 @@ class MintNFT {
     const oThis = this;
 
     if(!oThis.receiverAddress || !basicHelper.validateNonEmptyString(oThis.receiverAddress)) {
-      throw new Error('Receiver Address Required. -- 1');
+      throw new Error('Receiver Address Required.');
     }
 
     if(!ethers.utils.isAddress(oThis.receiverAddress)) {
       throw new Error('Invalid Receiver Address. Please provide an valid address');
     }
 
-    if(!oThis.imageCid || !basicHelper.validateNonEmptyString(oThis.imageCid)) {
-      throw new Error('Invalid Image CID provided.')
+    if(!oThis.imageUrl || !basicHelper.validateNonEmptyString(oThis.imageUrl)) {
+      throw new Error('Invalid Image url provided.')
     }
+
+    if(!oThis.description || !basicHelper.validateNonEmptyString(oThis.description)) {
+      throw new Error('Invalid description provided.')
+    }
+  }
+
+  /**
+   * 
+   */
+  async _uploadImageToIpfs() {
+    const oThis = this;
+
+    console.log('--- Downloading file from S3 ---');
+    const localImageDownloadPath = await basicHelper.downloadFile(oThis.imageUrl, 'png');
+    console.log('--- Download file completed from S3 ---');
+
+    const fileName = localImageDownloadPath.split('/').at(-1);
+    const localImageFileData = fs.readFileSync(localImageDownloadPath);
+
+    console.log('--- Upload image to IPFS ---');
+    oThis.imageCid = await ipfsHelper.uploadImage(fileName, localImageFileData);
+    console.log('---- Upload image to IPFS completed:', oThis.imageCid);
+
+    oThis.response.imageCid = oThis.imageCid;
+  }
+
+  async _uploadImageMetadataToIpfs() {
+    const oThis = this;
+
+    const metadataObject = {
+      name: 'NFTorNOT',
+      description: oThis.description,
+      image: `ipfs://${oThis.imageCid}`
+    };
+
+    oThis.imageMetaDataCid = await ipfsHelper.uploadMetaData(metadataObject);
+  }
+
+  async _mintToken() {
+    const oThis = this;
+
+    console.log('--- Getting Infura Provider for Mumbai Testnet ---');
+    const provider = await new ethers.providers.InfuraProvider('maticmum');
+
+    console.log('--- Getting Signer (Owner) of NFT Contract for Mumbai Testnet ---');
+    const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
+
+    console.log('--- Getting NFT Contract Instance for Mumbai Testnet ---');
+    const NFTContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
+
+    console.log('--- Obtaining gas options ---');
+    const gasOptions = await oThis.getGasOptions(provider);
+
+    console.log('--- Minting the NFT ---');
+    const mintTx = await NFTContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
+
+    console.log('--- Waiting for the NFT minting to be confirmed ---');
+    const receipt = await mintTx.wait();
+
+    console.log('--- NFT Minted Successfully ---');
+
+    const topics = receipt.logs[0].topics;
+    const tokenId = parseInt(topics[3]);
+
+    console.log('Transaction Receipt ------- ', JSON.stringify(receipt));
+
+    oThis.response.transactionHash = receipt.transactionHash;
+    oThis.response.tokenId = tokenId;
   }
 
   /**
@@ -112,16 +168,14 @@ class MintNFT {
    *
    * @returns {Promise<{maxPriorityFeePerGas: BigNumber, maxFeePerGas: BigNumber}>}
    */
-  async getGasOptions() {
+  async getGasOptions(provider) {
     const oThis = this;
 
-    const {data} = await axios({
-      method: 'get',
-      url: 'https://gasstation-mainnet.matic.network/v2'
-    })
+    const feeData = await provider.getFeeData()
+    const maxPriority = feeData.maxPriorityFeePerGas
     return {
-        "maxFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxFee).toString(), 'gwei'),
-        "maxPriorityFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxPriorityFee).toString(), 'gwei')
+        "maxPriorityFeePerGas": maxPriority,
+        "maxFeePerGas": feeData.maxFeePerGas.add(maxPriority)
     }
   }
 }

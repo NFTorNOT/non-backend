@@ -3,6 +3,8 @@ const fs = require('fs'),
   execSync = require('child_process').execSync,
   AWS = require('aws-sdk');
 
+const basicHelper = require('../helpers/basic');
+
 class FetchImageFromStabilityAI {
 
   constructor(params) {
@@ -51,7 +53,7 @@ class FetchImageFromStabilityAI {
 
     console.log('---- Start :: Fetch Image from stability api starts here ---- ', Math.floor(Date.now()/1000));
 
-    if(!oThis.prompt ) {
+    if(!oThis.prompt || !basicHelper.validateNonEmptyString(oThis.prompt)) {
       throw new Error('Prompt is empty');
     }
 
@@ -133,7 +135,7 @@ class FetchImageFromStabilityAI {
   async uploadImageToS3(filePath) {
     const oThis = this;
 
-    await oThis.putObject(`${process.env.S3_BUCKET}`, `stability/nft-or-not/${oThis.uuidv4}.png`, filePath);
+    await oThis.putObject(`${process.env.S3_BUCKET}`, `stability/${oThis.uuidv4}.png`, filePath);
   }
 
   /**
@@ -162,7 +164,7 @@ class FetchImageFromStabilityAI {
         .promise()
         .then(function(resp) {
           const location = {url: resp.Location || ''};
-          oThis.response.image = location;
+          oThis.response.image = oThis._replaceS3UrlWithCDN(location);
           onResolve(console.log("success", resp));
         })
         .catch(function(err) {
@@ -178,15 +180,15 @@ class FetchImageFromStabilityAI {
    * @param directory
    * @returns {Promise<void>}
    */
-    async removeDirectory(directory) {
-      fs.rm(directory, { recursive: true }, err => {
-        if (err) {
-          throw err
-        }
+  async removeDirectory(directory) {
+    fs.rm(directory, { recursive: true }, err => {
+      if (err) {
+        throw err
+      }
 
-        console.log(`${directory} is deleted!`)
-      });
-    }
+      console.log(`${directory} is deleted!`)
+    });
+  }
 
   /**
    * Get AWS SDK instance.
@@ -195,14 +197,28 @@ class FetchImageFromStabilityAI {
    */
   async getInstance() {
 
-      const AWSInstance = new AWS.S3({
-        region: 'us-east-1',
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      });
+    const AWSInstance = new AWS.S3({
+      region: 'us-east-1',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    });
 
-      return AWSInstance;
-    }
+    return AWSInstance;
+  }
+
+  /**
+   * Replaces S3 url with it's cdn
+   * 
+   * @param {string} s3url 
+   * @returns 
+   */
+  _replaceS3UrlWithCDN(s3url) {
+
+    const urlParts = s3url.split('/'),
+      filePathParts = urlParts.splice(3,5);
+
+    return `https://static.nftornot.com/${filePathParts.join('/')}`;
+  }
 }
 
 module.exports = FetchImageFromStabilityAI;
