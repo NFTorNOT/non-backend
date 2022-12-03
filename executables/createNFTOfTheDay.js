@@ -1,7 +1,10 @@
 const rootPrefix = '..',
  util = require(rootPrefix + '/helpers/util.js'),
  lensHelper = require(rootPrefix + '/helpers/lens.js'),
- { uuid } = require('uuidv4');
+ { uuid } = require('uuidv4'),
+ getPublicationId = require(rootPrefix + '/helpers/getPublicationId.js'),
+ nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js'),
+ moment = require('moment-timezone');
 
 class CreateNFTOfTheDay {
 
@@ -13,7 +16,8 @@ class CreateNFTOfTheDay {
       votes: 0,
       imageCid: '',
       imageType: '',
-      imageTitle: ''
+      imageTitle: '',
+      attributes: ''
      };
   }
 
@@ -25,8 +29,14 @@ class CreateNFTOfTheDay {
      async perform() {
       const oThis = this;
 
-      try {
-        const commentsRes = await lensHelper.getCommentsData();
+      // try {
+        const currentTimestampInSeconds = Math.floor(Date.now()/1000);
+        const startOfHourTimestampInms = moment(currentTimestampInSeconds * 1000).startOf('hour').valueOf();
+        const startOfHourTimestampInsec = Math.floor(startOfHourTimestampInms/1000);
+
+        const WODPublicationId = await getPublicationId();
+        console.log('WODPublicationId--->', WODPublicationId);
+        const commentsRes = await lensHelper.getCommentsData(WODPublicationId);
         const commentsArr = commentsRes.data.publications.items;     
         for (let index = 0; index<commentsArr.length; index++){
           const comment = commentsArr[index];
@@ -36,9 +46,22 @@ class CreateNFTOfTheDay {
            oThis.commentwithMostVotes.imageCid = comment.metadata.image;
            oThis.commentwithMostVotes.imageType = comment.metadata.media[0].original.mimeType;
            oThis.commentwithMostVotes.imageTitle = comment.metadata.description;
+           oThis.commentwithMostVotes.attributes = comment.metadata.attributes;
           }
         }
-     
+
+        let NFTTokenId = null;
+
+        for (let index = 0; index<oThis.commentwithMostVotes.attributes.length; index++){
+          const attr = oThis.commentwithMostVotes.attributes[index];
+
+          if(attr.traitType == 'TokenId'){
+            NFTTokenId = attr.value;
+          }
+        }
+
+        console.log('NFTTokenId--->', NFTTokenId);
+
         console.log('oThis.commentwithMostVotes----->', oThis.commentwithMostVotes);
      
         const userName = await lensHelper.getUserNameFromId(oThis.commentwithMostVotes.profileId);
@@ -50,7 +73,7 @@ class CreateNFTOfTheDay {
              version: "2.0.0",
              mainContentFocus: "IMAGE",
              metadata_id: uuid(),
-             description: "Description",
+             description: "NFT Of The Day Post",
              locale: "en-US",
              content: contentText,
              external_url: null,
@@ -70,10 +93,23 @@ class CreateNFTOfTheDay {
      
          const metadataCid = await util.uploadDataToIpfsInfura(postMetadata);
          const res = await lensHelper.createPostViaDispatcher(metadataCid);
+         console.log('res----->', res)
+         let metadataSatus = await lensHelper.getPublicationMetadataStatus(res.data.createPostViaDispatcher.txHash)
+     
+         while(metadataSatus.data.publicationMetadataStatus.status != "SUCCESS"){
+             metadataSatus = await lensHelper.getPublicationMetadataStatus(res.data.createPostViaDispatcher.txHash)
+         }
+     
+         const publicationRes = await lensHelper.getPublicationId(res.data.createPostViaDispatcher.txHash);
+     
+         const NODPublicationId = publicationRes.data.publication.id;
+
+         await nftOrNotContract.setNFTOfTheDayTokenId(startOfHourTimestampInsec, NFTTokenId, NODPublicationId);
+
          return;
-      }catch(error) {
-        console.error(`Creating NFT of the day post failed --- due to -- ${error}`);
-      }
+      // }catch(error) {
+      //   console.error(`Creating NFT of the day post failed --- due to -- ${error}`);
+      // }
   
     }
 }

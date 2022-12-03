@@ -33,48 +33,6 @@ const CREATE_POST_VIA_DISPATCHER = `mutation CreatePostViaDispatcher($postDataCI
   }
 }`
 
-const CREATE_POST = `mutation CreatePostTypedData($postDataCID: Url!) {
-  createPostTypedData(request: {
-    profileId: "${process.env.PROFILE_ID}",
-    contentURI:  $postDataCID,
-    collectModule: {
-      freeCollectModule:  {
-        followerOnly: false
-      }
-    },
-  referenceModule: {
-      followerOnlyReferenceModule: false
-  }
-  }) {
-    id
-    expiresAt
-    typedData {
-      types {
-        PostWithSig {
-          name
-          type
-        }
-      }
-      domain {
-        name
-        chainId
-        version
-        verifyingContract
-      }
-      value {
-        nonce
-        deadline
-        profileId
-        contentURI
-        collectModule
-        collectModuleInitData
-        referenceModule
-        referenceModuleInitData
-      }
-    }
-  },
-}`;
-
 const GET_PUBLICATION_ID_BY_TX = `query GetPublication($postTxHash: TxHash){
   publication(request:{txHash: $postTxHash}){
     ... on Post{
@@ -481,4 +439,4 @@ const GET_USERNAME_FROM_ID = `query Profile($profileId: ProfileId) {
   }
 }`;
 
-module.exports = {GET_CHALLENGE, AUTHENTICATION, CREATE_POST, CREATE_POST_VIA_DISPATCHER, GET_PUBLICATION_ID_BY_TX, GET_PUBLICATION_METADATA_STATUS, GET_COMMENTS_DATA, GET_USERNAME_FROM_ID}
+module.exports = {GET_CHALLENGE, AUTHENTICATION, CREATE_POST_VIA_DISPATCHER, GET_PUBLICATION_ID_BY_TX, GET_PUBLICATION_METADATA_STATUS, GET_COMMENTS_DATA, GET_USERNAME_FROM_ID}

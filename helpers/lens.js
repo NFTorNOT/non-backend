@@ -36,14 +36,14 @@ async function getPublicationMetadataStatus(postTxHash) {
   });
 };
 
-async function getCommentsData() {
+async function getCommentsData(publicationId) {
   const client = await clientHelper.getApolloClient();
 
   return await client.query({
     query: gql(gqlSchema.GET_COMMENTS_DATA),
     variables: {
       request:  {
-        commentsOf: "0x5691-0x4c",
+        commentsOf: publicationId,
         limit: 10
       },
         reactionRequest: null,

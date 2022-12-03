@@ -9,7 +9,7 @@ const rootPrefix = '..',
 let client = null;
 let urlSourceFunction = null;
 let globSourceFunction = null;
-const provider = new ethers.providers.JsonRpcProvider(process.env.ENDPOINT);
+const provider = new ethers.providers.JsonRpcProvider(process.env.ALCHEMY_ENDPOINT);
 
 
 class util {
@@ -22,7 +22,7 @@ class util {
   }
 
   async getSigner() {
-    const signer = new ethers.Wallet(process.env.WALLET_PK, provider);
+    const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
     return signer
   }
   
@@ -43,7 +43,7 @@ class util {
             port: 5001,
             protocol: "https",
             headers: {
-                "Authorization": `Basic ${Buffer.from(`${process.env.PROJECT_ID}:${process.env.SECRET}`).toString("base64")}`
+                "Authorization": `Basic ${Buffer.from(`${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_API_SECRET_KEY}`).toString("base64")}`
         }
     });
   }
@@ -52,7 +52,7 @@ class util {
     const response = await fetch("https://api.web3.storage/upload", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.WEB3_IPFS_TOKEN}`,
+        Authorization: `Bearer ${process.env.WEB3_STORAGE_IPFS_TOKEN}`,
         contentType: "application/json",
       },
       body: JSON.stringify(postData),
