@@ -41,7 +41,7 @@ async function main(){
     // const publicationRes = await lensHelper.getPublicationId(txHashRes.data.txIdToTxHash);
     // console.log('publicationId---->', publicationRes.data.publication.id);
 
-    // return;
+    return;
 }
 
 main().then(console.log);
