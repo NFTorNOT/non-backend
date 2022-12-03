@@ -16,7 +16,7 @@ spec:
           - name: {{ include "hon-frontend.fullname" . }}-job
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             command: ["node"]
-            args: ["executables/sampleCron.js"]
+            args: ["executables/createWordOfTheDay.js"]
             env:
               {{- range $key, $value := $.Values.env }}
               - name: {{ $key }}
