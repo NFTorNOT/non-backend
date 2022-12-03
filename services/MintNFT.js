@@ -144,7 +144,7 @@ class MintNFT {
     const NFTContract = new ethers.Contract(NFTContractAddress, safeMintNFTContractAbi, signer);
 
     console.log('--- Obtaining gas options ---');
-    const gasOptions = await oThis.getGasOptions();
+    const gasOptions = await oThis.getGasOptions(provider);
 
     console.log('--- Minting the NFT ---');
     const mintTx = await NFTContract.safeMint(oThis.receiverAddress, oThis.imageCid, gasOptions);
@@ -168,16 +168,14 @@ class MintNFT {
    *
    * @returns {Promise<{maxPriorityFeePerGas: BigNumber, maxFeePerGas: BigNumber}>}
    */
-  async getGasOptions() {
+  async getGasOptions(provider) {
     const oThis = this;
 
-    const {data} = await axios({
-      method: 'get',
-      url: 'https://gasstation-mainnet.matic.network/v2'
-    })
+    const feeData = await provider.getFeeData()
+    const maxPriority = feeData.maxPriorityFeePerGas
     return {
-        "maxFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxFee).toString(), 'gwei'),
-        "maxPriorityFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxPriorityFee).toString(), 'gwei')
+        "maxPriorityFeePerGas": maxPriority,
+        "maxFeePerGas": feeData.maxFeePerGas.add(maxPriority)
     }
   }
 }

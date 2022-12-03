@@ -92,9 +92,9 @@ app.get("/", function (req, res, next) {
   res.status(200).json({ status: "Up and Running" });
 });
 
-app.get("/api/health-checker", function (req, res, next) {
-  res.status(200).json({ HealthCheckerStatus: "Server is up and running!" });
-});
+// app.get("/api/health-checker", function (req, res, next) {
+//   res.status(200).json({ HealthCheckerStatus: "Server is up and running!" });
+// });
 
 app.post("/api/fetch-stable-diffusion-image", async function (req, res, next) {
   try {
@@ -130,7 +130,7 @@ app.post("/api/mint-nft", async function (req, res, next) {
     }).perform();
 
     let status = true;
-    if (!response.error) {
+    if (response.error != null) {
       status = false;
     }
     
@@ -147,26 +147,6 @@ app.post("/api/mint-nft", async function (req, res, next) {
       });
   }
 });
-
-app.post(
-  '/api/mint-nft',
-  async function (req, res, next) {
-    try {
-      const receiverAddress = req.body.receiver_address,
-        imageCid = req.body.image_cid;
-      const response = await new MintNFTService({ receiverAddress: receiverAddress, imageCid: imageCid }).perform();
-      let status = true;
-      if (response.error) {
-        status = false;
-      }
-      return res.status(200).json({success: status, data: response });
-  
-    } catch(error) {
-      console.error();("error ---------", error);
-      return res.status(200).json({success: false, err: {msg: "something went wrong", err_data: error}});
-    }
-  }
-);
 
 app.listen(PORT);
 
