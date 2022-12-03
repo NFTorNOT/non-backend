@@ -2,9 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-const basicHelper = require('./helpers/basic'),
-  FetchImageFromStabilityAIService = require('./services/FetchImageFromStabilityAI');
-  MintNFTService = require('./services/MintNFT');
+const basicHelper = require("./helpers/basic"),
+  FetchImageFromStabilityAIService = require("./services/FetchImageFromStabilityAI");
+MintNFTService = require("./services/MintNFT");
 
 const PORT = 3000;
 
@@ -79,10 +79,11 @@ app.use(bodyParser.json({ limit: "2mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "2mb" }));
 
 const logRequestParams = function (req, res, next) {
-  console.info("Body ------ ", req.body);
-  console.info("Params ------ ", req.params);
-  console.info("Query ------ ", req.query);
-
+  if (req.url != "/") {
+    console.info("Body ------ ", req.body);
+    console.info("Params ------ ", req.params);
+    console.info("Query ------ ", req.query);
+  }
   next();
 };
 
@@ -110,7 +111,7 @@ app.post("/api/fetch-stable-diffusion-image", async function (req, res, next) {
     }
     return res.status(200).json({ success: status, data: response });
   } catch (err) {
-    console.error( "error ---------", err);
+    console.error("error ---------", err);
     return res
       .status(200)
       .json({ success: false, err: { msg: "something went wrong" } });
@@ -121,30 +122,27 @@ app.post("/api/mint-nft", async function (req, res, next) {
   try {
     const receiverAddress = req.body.receiver_address,
       imageUrl = req.body.image_url;
-      description = req.body.description;
+    description = req.body.description;
 
     const response = await new MintNFTService({
       receiverAddress: receiverAddress,
       imageUrl: imageUrl,
-      description: description
+      description: description,
     }).perform();
 
     let status = true;
     if (response.error != null) {
       status = false;
     }
-    
+
     return res.status(200).json({ success: status, data: response });
   } catch (error) {
-
     console.error("error ---------", error);
 
-    return res
-      .status(200)
-      .json({
-        success: false,
-        err: { msg: "something went wrong", err_data: error },
-      });
+    return res.status(200).json({
+      success: false,
+      err: { msg: "something went wrong", err_data: error },
+    });
   }
 });
 
