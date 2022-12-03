@@ -22,7 +22,7 @@ class util {
   }
 
   async getSigner() {
-    const signer = new ethers.Wallet(process.env.SIGNER_PK, provider);
+    const signer = new ethers.Wallet(process.env.WALLET_PK, provider);
     return signer
   }
   
@@ -43,7 +43,7 @@ class util {
             port: 5001,
             protocol: "https",
             headers: {
-                "Authorization": `Basic ${Buffer.from(`${process.env.PROJET_ID}:${process.env.SECRET}`).toString("base64")}`
+                "Authorization": `Basic ${Buffer.from(`${process.env.PROJECT_ID}:${process.env.SECRET}`).toString("base64")}`
         }
     });
   }

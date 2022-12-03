@@ -1,7 +1,7 @@
 const { ethers } = require('ethers');
   axios = require('axios');
 
-const NFTOfTheDayContractAddress = '0xE6E3A805bf2b0DC1D7713d7B30B9eE476ab77a19';
+const NFTOfTheDayContractAddress = '0x8235C2CE19fE0A898E57306bB8E6b3c68afe8fd7';
 
 const NFTOfTheDayContractAbi = [
   {
@@ -64,6 +64,7 @@ class NftOrNotContract {
 
     console.log('--- Obtaining gas options ---');
     const gasOptions = await oThis.getGasOptions();
+    console.log('--- Obtaining gas options ---', gasOptions);
 
     console.log('--- Making set publication tx ---');
     const setTx = await NFTOfTheDayContract.setPublication(epochTimestamp, publicationId, gasOptions);
