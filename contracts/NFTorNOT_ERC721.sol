@@ -29,7 +29,7 @@ contract NFTorNOT is ERC721URIStorage, Ownable {
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://";
+        return "ipfs://";1
     }
 }
 

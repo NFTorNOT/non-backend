@@ -5,7 +5,7 @@ const {ethers} = require('ethers');
 const basicHelper = require('../helpers/basic'),
   ipfsHelper = require('../helpers/ipfs');
 
-const NFTContractAddress = '0xE6E3A805bf2b0DC1D7713d7B30B9eE476ab77a19';
+const NFTContractAddress = '0xbdee30e47E3250e21a7ab4EffC10F3C8F4a88b38';
 
 const safeMintNFTContractAbi = [
   {
