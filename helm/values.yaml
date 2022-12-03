@@ -17,7 +17,7 @@ fullnameOverride: "nftornot-backend"
 podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
- 
+
 service:
   type: NodePort
   port: 3000
@@ -32,12 +32,12 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/healthcheck-path: /health-checker
   hosts:
-  - host: nftornot.com
-    paths:
-      - path: /api
-        pathType: Prefix
- 
-resources:  
+    - host: nftornot.com
+      paths:
+        - path: /api
+          pathType: Prefix
+
+resources:
   limits:
     cpu: 1
     memory: 2Gi
@@ -52,11 +52,11 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 env:
-  S3_BUCKET:  "nftornot-assests"
+  S3_BUCKET: "nftornot-assests"
 
-envSecrets: 
+envSecrets:
   STABILITY_KEY: "non"
-  SIGNER_PK:  "non" 
+  SIGNER_PK: "non"
   AWS_ACCESS_KEY_ID: sd-user
   AWS_SECRET_ACCESS_KEY: sd-user
   WEB3_STORAGE_IPFS_TOKEN: non2
