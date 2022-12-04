@@ -44,6 +44,7 @@ class MintNFT {
       transactionHash: null,
       tokenId: null,
       imageCid: null,
+      lensMetaDataCid: null,
       error: null
     };
   }
@@ -109,11 +110,11 @@ class MintNFT {
     const localImageDownloadPath = await basicHelper.downloadFile(oThis.imageUrl, 'png');
     console.log('--- Download file completed from S3 ---');
 
-    const fileName = localImageDownloadPath.split('/').at(-1);
+    oThis.fileName = localImageDownloadPath.split('/').at(-1);
     const localImageFileData = fs.readFileSync(localImageDownloadPath);
 
     console.log('--- Upload image to IPFS ---');
-    oThis.imageCid = await ipfsHelper.uploadImage(fileName, localImageFileData);
+    oThis.imageCid = await ipfsHelper.uploadImage(oThis.fileName, localImageFileData);
     console.log('---- Upload image to IPFS completed:', oThis.imageCid);
 
     oThis.response.imageCid = oThis.imageCid;
@@ -129,6 +130,44 @@ class MintNFT {
     };
 
     oThis.imageMetaDataCid = await ipfsHelper.uploadMetaData(metadataObject);
+
+    const imageLink = `ipfs://${oThis.imageCid}`;
+    const postData = {
+      version: "2.0.0",
+      mainContentFocus: "IMAGE",
+      metadata_id: uuid(),
+      description: oThis.description,
+      locale: "en-US",
+      content: "Image",
+      image: imageLink,
+      imageMimeType: 'image/png',
+      name: oThis.fileName,
+      attributes: [],
+      media: [
+        {
+          item: imageLink,
+          type: 'image/png',
+        },
+      ],
+      attributes:[
+        {
+          displayType: "string",
+          traitType: "NFTtxHash",
+          value: oThis.response.transactionHash,
+        },
+        {
+          displayType: "number",
+          traitType: "TokenId",
+          value: oThis.response.tokenId.toString(),
+        },
+      ],
+      tags: [],
+      appId: "NON-Backend",
+    };
+
+    const lensMetaDataCid = await ipfsHelper.uploadMetaData(postData);
+
+    oThis.response.transactionHash = lensMetaDataCid;
   }
 
   async _mintToken() {
