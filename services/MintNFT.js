@@ -1,6 +1,7 @@
 const {ethers} = require('ethers');
   axios = require('axios'),
   fs = require('fs');
+const { uuid } = require('uuidv4');
 
 const basicHelper = require('../helpers/basic'),
   ipfsHelper = require('../helpers/ipfs');
