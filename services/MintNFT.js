@@ -1,7 +1,7 @@
 const {ethers} = require('ethers');
   axios = require('axios'),
   fs = require('fs');
-const { uuid } = require('uuidv4');
+const { v4 } = require('uuid');
 
 const basicHelper = require('../helpers/basic'),
   ipfsHelper = require('../helpers/ipfs');
@@ -136,7 +136,7 @@ class MintNFT {
     const postData = {
       version: "2.0.0",
       mainContentFocus: "IMAGE",
-      metadata_id: uuid(),
+      metadata_id: v4(),
       description: oThis.description,
       locale: "en-US",
       content: "Image",
@@ -159,7 +159,7 @@ class MintNFT {
         {
           displayType: "number",
           traitType: "TokenId",
-          value: oThis.response.tokenId.toString(),
+          value: JSON.stringify(oThis.response.tokenId),
         },
       ],
       tags: [],
