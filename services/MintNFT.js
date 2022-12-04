@@ -70,7 +70,7 @@ class MintNFT {
 
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
-      oThis.response.error = JSON.stringify(error);
+      oThis.response.error = error;
     }
 
     return oThis.response;
@@ -166,9 +166,13 @@ class MintNFT {
       appId: "NON-Backend",
     };
 
+    console.log('oThis.imageMetaDataCid ----------', oThis.imageMetaDataCid);
+
     const lensMetaDataCid = await ipfsHelper.uploadMetaData(postData);
 
-    oThis.response.transactionHash = lensMetaDataCid;
+    console.log('lensMetaDataCid ----- ', lensMetaDataCid);
+
+    oThis.response.lensMetaDataCid = lensMetaDataCid;
   }
 
   async _mintToken() {
