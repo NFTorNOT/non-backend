@@ -5,7 +5,9 @@ const rootPrefix = '..',
  nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js'),
  words = require(rootPrefix + '/helpers/words.json'),
  moment = require('moment-timezone');
-
+ const fs = require('fs');
+ const fileName = './helpers/words.json';
+    
 class CreateWordOfTheDay {
   constructor() {
     const oThis = this;
@@ -13,7 +15,6 @@ class CreateWordOfTheDay {
     oThis.wordOfTheDay = null;
 
     oThis.postText = null;
-
   }
 
   /*
@@ -24,14 +25,21 @@ class CreateWordOfTheDay {
  async perform() {
     const oThis = this;
     
-    for (const wordObj of words){
-      if(wordObj.status == 'Available'){
-        oThis.wordOfTheDay = wordObj.word;
-        wordObj.status = 'Used';
+    for (let index= 0; index<words.length; index++){
+
+      if(words[index].status == 'Available'){
+        oThis.wordOfTheDay = words[index].word;
+        words[index].status = 'Used';
+        fs.writeFile(fileName, JSON.stringify(words), function writeJSON(err) {
+          if (err) return console.log(err);
+          console.log(JSON.stringify(words));
+          console.log('writing to ' + fileName);
+        });
         break;
       }
     }
-    oThis.postText = `Word of the Day #1: ${oThis.wordOfTheDay}
+
+    oThis.postText = `Word of the Day: ${oThis.wordOfTheDay}
     Start now by submitting your own generations on NFTorNot.com  🪄
     Cast votes on the hottest images 🔥
     See all the submissions in the comments 👇
