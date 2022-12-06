@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: {{ include "hon-frontend.fullname" . }}-job
 spec:
-  schedule: "0 * * * *"
+  schedule: "30 * * * *"
   jobTemplate:
     spec:
       template:
