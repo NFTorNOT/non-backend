@@ -30,7 +30,7 @@ class CreateWordOfTheDay {
       if(words[index].status == 'Available'){
         oThis.wordOfTheDay = words[index].word;
         words[index].status = 'Used';
-        fs.writeFile(fileName, JSON.stringify(words), function writeJSON(err) {
+        await fs.writeFile(fileName, JSON.stringify(words), function writeJSON(err) {
           if (err) return console.log(err);
           console.log(JSON.stringify(words));
           console.log('writing to ' + fileName);
