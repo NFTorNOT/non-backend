@@ -6,7 +6,7 @@ const basicHelper = require('./helpers/basic'),
   FetchImageFromStabilityAIService = require('./services/FetchImageFromStabilityAI'),
   MintNFTService = require('./services/MintNFT'),
   inMemoryCache = require( './helpers/inMemoryCache.js'), 
-  words = require(rootPrefix + '/helpers/words.json');
+  words = require( './helpers/words.json');
 
 const PORT = 3000;
 
