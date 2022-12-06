@@ -139,7 +139,7 @@ class MintNFT {
       metadata_id: v4(),
       description: oThis.description,
       locale: "en-US",
-      content: "Image",
+      content: oThis.description,
       image: imageLink,
       imageMimeType: 'image/png',
       name: oThis.fileName,
