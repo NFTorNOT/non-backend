@@ -3,11 +3,11 @@ const rootPrefix = '..',
  lensHelper = require(rootPrefix + '/helpers/lens.js'),
 { uuid } = require('uuidv4'),
  nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js'),
- words = require(rootPrefix + '/helpers/words.json'),
- moment = require('moment-timezone');
+ WordsForLensPost = require(rootPrefix + '/helpers/wordsForLensPost.js');
+
+ const moment = require('moment-timezone');
  const fs = require('fs');
- const fileName = './helpers/words.json';
-    
+
 class CreateWordOfTheDay {
   constructor() {
     const oThis = this;
@@ -24,20 +24,34 @@ class CreateWordOfTheDay {
  */
  async perform() {
     const oThis = this;
+
+    await WordsForLensPost.getObject();
+
+    // Todo: declare it in one place
+    const rawdata = fs.readFileSync('/tmp/words.json');
+    let words = JSON.parse(rawdata);
+
+    console.log('words------>', JSON.stringify(words));
     
     for (let index= 0; index<words.length; index++){
 
       if(words[index].status == 'Available'){
         oThis.wordOfTheDay = words[index].word;
         words[index].status = 'Used';
-        await fs.writeFile(fileName, JSON.stringify(words), function writeJSON(err) {
+        await fs.writeFile('/tmp/words.json', JSON.stringify(words), function writeJSON(err) {
           if (err) return console.log(err);
           console.log(JSON.stringify(words));
-          console.log('writing to ' + fileName);
+          console.log('writing to /tmp/words.json');
         });
         break;
       }
     }
+
+    if(oThis.wordOfTheDay == null){
+      oThis.wordOfTheDay = 'Light';
+    }
+
+    await WordsForLensPost.uploadJsonToS3();
 
     oThis.postText = `Word of the Day: ${oThis.wordOfTheDay}
     Start now by submitting your own generations on NFTorNot.com  🪄
