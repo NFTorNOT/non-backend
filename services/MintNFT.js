@@ -64,9 +64,9 @@ class MintNFT {
 
       await oThis._uploadImageToIpfs();
 
-      await oThis._uploadImageMetadataToIpfs();
-
       await oThis._mintToken();
+
+      await oThis._uploadImageMetadataToIpfs();
 
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
