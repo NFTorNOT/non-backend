@@ -33,15 +33,26 @@ class CreateWordOfTheDay {
     console.log('words------>', JSON.stringify(words));
     
     for (let index= 0; index<words.length; index++){
-
       if(words[index].status == 'Available'){
         oThis.wordOfTheDay = words[index].word;
         words[index].status = 'Used';
-        await fs.writeFile('/tmp/words.json', JSON.stringify(words), function writeJSON(err) {
-          if (err) return console.log(err);
-          console.log(JSON.stringify(words));
-          console.log('writing to /tmp/words.json');
-        });
+        let parsed = null;
+        try {
+          JSON.parse(JSON.stringify(words));
+          parsed = true;
+        }catch(err){
+          console.log
+        }
+
+        if(parsed){
+          await fs.writeFile('/tmp/words_test.json', JSON.stringify(words), function writeJSON(err) {
+            if (err) return console.log(err);
+            console.log(JSON.stringify(words));
+            console.log('writing to /tmp/words_test.json');
+          });
+
+          await WordsForLensPost.uploadJsonToS3();
+        }
         break;
       }
     }
@@ -49,8 +60,6 @@ class CreateWordOfTheDay {
     if(oThis.wordOfTheDay == null){
       oThis.wordOfTheDay = 'Light';
     }
-
-    await WordsForLensPost.uploadJsonToS3();
 
     oThis.postText = `Word of the Day: ${oThis.wordOfTheDay}
     Start now by submitting your own generations on NFTorNot.com  🪄

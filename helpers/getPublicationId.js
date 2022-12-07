@@ -25,9 +25,7 @@ const moment = require('moment-timezone');
 
   async function getPublicationId() {
 
-    // const contractAddress = '0x8235C2CE19fE0A898E57306bB8E6b3c68afe8fd7';
-    const contractAddress = '0x0F731a10eF112232986E72FBEb93de050ff23b00';
-
+    const contractAddress = '0x4E311732CD82C26237cEf8Bb1065CCF90b74b596';
 
     const provider = await new ethers.providers.InfuraProvider('maticmum');
     const contractInstance = new ethers.Contract(contractAddress, NFTOfTheDayContractAbi, provider);
