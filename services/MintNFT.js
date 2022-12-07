@@ -39,12 +39,12 @@ class MintNFT {
     oThis.description =  params.description;
 
     oThis.imageCid= null;
-    oThis.imageMetaDataCid = null;
 
     oThis.response = {
       transactionHash: null,
       tokenId: null,
       imageCid: null,
+      imageMetaDataCid: null,
       lensMetaDataCid: null,
       error: null
     };
@@ -70,6 +70,7 @@ class MintNFT {
 
     } catch(error) {
       console.error(`NFT Minting FAILED --- due to -- ${error}`);
+      console.error(`NFT Minting FAILED --- stacktrace -- ${error.stack}`);
       oThis.response.error = error;
     }
 
@@ -130,7 +131,11 @@ class MintNFT {
       image: `ipfs://${oThis.imageCid}`
     };
 
-    oThis.imageMetaDataCid = await ipfsHelper.uploadMetaData(metadataObject);
+    const imageMetaDataCid = await ipfsHelper.uploadMetaData(metadataObject);
+
+    console.log('imageMetaDataCid ----------', imageMetaDataCid);
+
+    oThis.response.imageMetaDataCid = imageMetaDataCid;
 
     const imageLink = `ipfs://${oThis.imageCid}`;
     const postData = {
@@ -165,8 +170,6 @@ class MintNFT {
       tags: [],
       appId: "NON-Backend",
     };
-
-    console.log('oThis.imageMetaDataCid ----------', oThis.imageMetaDataCid);
 
     const lensMetaDataCid = await ipfsHelper.uploadMetaData(postData);
 
