@@ -69,11 +69,11 @@ class NftOrNotContract {
     const NFTOfTheDayContract = new ethers.Contract(NFTOfTheDayContractAddress, NFTOfTheDayContractAbi, signer);
 
     console.log('--- Obtaining gas options ---');
-    const gasOptions = await oThis.getGasOptions();
+    const gasOptions = await oThis.getGasOptions(provider);
     console.log('--- Obtaining gas options ---', gasOptions);
 
     console.log('--- Making set publication tx ---');
-    const setTx = await NFTOfTheDayContract.setPublication(epochTimestamp, publicationId, { gasLimit: 500000 });
+    const setTx = await NFTOfTheDayContract.setPublication(epochTimestamp, publicationId, gasOptions);
 
     console.log('--- Waiting for the tx to be confirmed ---');
     const receipt = await setTx.wait();
@@ -102,10 +102,10 @@ class NftOrNotContract {
     const NFTOfTheDayContract = new ethers.Contract(NFTOfTheDayContractAddress, NFTOfTheDayContractAbi, signer);
 
     console.log('--- Obtaining gas options ---');
-    const gasOptions = await oThis.getGasOptions();
+    const gasOptions = await oThis.getGasOptions(provider);
 
     console.log('--- Making set nft of the day tx ---');
-    const setTx = await NFTOfTheDayContract.setNFTOfTheDay(epochTimestamp, tokenId, nftOfTheDayPublicationId, { gasLimit: 500000 });
+    const setTx = await NFTOfTheDayContract.setNFTOfTheDay(epochTimestamp, tokenId, nftOfTheDayPublicationId, gasOptions);
 
     console.log('--- Waiting for the tx to be confirmed ---');
     const receipt = await setTx.wait();
@@ -120,16 +120,14 @@ class NftOrNotContract {
    *
    * @returns {Promise<{maxPriorityFeePerGas: BigNumber, maxFeePerGas: BigNumber}>}
    */
-     async getGasOptions() {
+     async getGasOptions(provider) {
       const oThis = this;
-  
-      const {data} = await axios({
-        method: 'get',
-        url: 'https://gasstation-mainnet.matic.network/v2'
-      })
+
+      const feeData = await provider.getFeeData()
+      const maxPriority = feeData.maxPriorityFeePerGas
       return {
-          "maxFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxFee).toString(), 'gwei'),
-          "maxPriorityFeePerGas": ethers.utils.parseUnits(Math.ceil(data.fast.maxPriorityFee).toString(), 'gwei')
+          "maxPriorityFeePerGas": maxPriority,
+          "maxFeePerGas": feeData.maxFeePerGas.add(maxPriority)
       }
     }
 }

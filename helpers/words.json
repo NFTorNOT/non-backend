@@ -1,1 +1,54 @@
-[{"word":"Garden","status":"Available"},{"word":"Space","status":"Available"},{"word":"Crypto","status":"Available"},{"word":"Light","status":"Available"},{"word":"Winter","status":"Available"}]
+[
+  {
+    "word": "Garden",
+    "status": "Available"
+  },
+  {
+    "word": "Space",
+    "status": "Available"
+  },
+  {
+    "word": "Crypto",
+    "status": "Available"
+  },
+  {
+    "word": "Light",
+    "status": "Available"
+  },
+  {
+    "word": "Winter",
+    "status": "Available"
+  },
+  {
+    "word": "Lotus",
+    "status": "Available"
+  },
+  {
+    "word": "Cyberpunk",
+    "status": "Available"
+  },
+  {
+    "word": "Infinity",
+    "status": "Available"
+  },
+  {
+    "word": "Chain",
+    "status": "Available"
+  },
+  {
+    "word": "Banana",
+    "status": "Available"
+  },
+  {
+    "word": "Ape",
+    "status": "Available"
+  },
+  {
+    "word": "Bengaluru",
+    "status": "Available"
+  },
+  {
+    "word": "Soccer",
+    "status": "Available"
+  }
+]

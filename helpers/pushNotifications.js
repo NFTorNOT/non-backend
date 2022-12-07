@@ -16,11 +16,11 @@ class SendNotification {
       identityType: 2, // direct payload
       notification: {
         title: `NON Updates`,
-        body: `NFT of the day is published. Do check it out 👍`
+        body: `Congratulations 👍 your image has been selected for nft of the day`
       },
       payload: {
         title: `NON Updates`,
-        body: `NFT of the day is published. Do check it out 👍`,
+        body: `Congratulations 👍 your image has been selected for nft of the day`,
         cta: '',
         img: ''
       },

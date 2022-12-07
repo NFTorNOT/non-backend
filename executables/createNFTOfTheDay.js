@@ -29,7 +29,7 @@ class CreateNFTOfTheDay {
      async perform() {
       const oThis = this;
 
-      // try {
+      try {
         const currentTimestampInSeconds = Math.floor(Date.now()/1000);
         const startOfHourTimestampInms = moment(currentTimestampInSeconds * 1000).startOf('hour').valueOf();
         const startOfHourTimestampInsec = Math.floor(startOfHourTimestampInms/1000);
@@ -66,8 +66,7 @@ class CreateNFTOfTheDay {
      
         const userName = await lensHelper.getUserNameFromId(oThis.commentwithMostVotes.profileId);
      
-        const contentText = `NFT for day #1 is ready, and the hottest image, voted by our lens frens is ${oThis.commentwithMostVotes.imageTitle} by ${userName} 🔥
-        Collect it today and show your support (all the tokens will be going directly to ${userName})`
+        const contentText = `NFT for day #1 is ready, and the hottest image, voted by our lens frens is ${oThis.commentwithMostVotes.imageTitle} by ${userName} 🔥 Collect it today and show your support (all the tokens will be going directly to ${userName})`
      
          const postMetadata = {
              version: "2.0.0",
@@ -107,9 +106,9 @@ class CreateNFTOfTheDay {
          await nftOrNotContract.setNFTOfTheDayTokenId(startOfHourTimestampInsec, NFTTokenId, NODPublicationId);
 
          return;
-      // }catch(error) {
-      //   console.error(`Creating NFT of the day post failed --- due to -- ${error}`);
-      // }
+      }catch(error) {
+        console.error(`Creating NFT of the day post failed --- due to -- ${error}`);
+      }
   
     }
 }

@@ -1,13 +1,13 @@
+
+const { uuid } = require('uuidv4');
+const moment = require('moment-timezone');
+const fs = require('fs');
+
 const rootPrefix = '..',
  util = require(rootPrefix + '/helpers/util.js'),
  lensHelper = require(rootPrefix + '/helpers/lens.js'),
-{ uuid } = require('uuidv4'),
  nftOrNotContract = require(rootPrefix + '/helpers/nftOrNotContract.js'),
  WordsForLensPost = require(rootPrefix + '/helpers/wordsForLensPost.js');
-
- const moment = require('moment-timezone');
- const fs = require('fs');
-
 class CreateWordOfTheDay {
   constructor() {
     const oThis = this;
@@ -30,7 +30,6 @@ class CreateWordOfTheDay {
     // Todo: declare it in one place
     const rawdata = fs.readFileSync('/tmp/words.json');
     let words = JSON.parse(rawdata);
-
     console.log('words------>', JSON.stringify(words));
     
     for (let index= 0; index<words.length; index++){
@@ -80,6 +79,7 @@ class CreateWordOfTheDay {
     console.log('res----->', res)
     let metadataSatus = await lensHelper.getPublicationMetadataStatus(res.data.createPostViaDispatcher.txHash)
 
+    // Todo: Set no of tries afer some specific time.
     while(metadataSatus.data.publicationMetadataStatus.status != "SUCCESS"){
         metadataSatus = await lensHelper.getPublicationMetadataStatus(res.data.createPostViaDispatcher.txHash)
     }
