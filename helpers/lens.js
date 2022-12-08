@@ -3,44 +3,46 @@ gqlSchema = require(rootPrefix + '/helpers/gqlSchema.js'),
 clientHelper = require(rootPrefix + '/helpers/apolloClient.js'),
 gql = require("graphql-tag");
 
-async function createPostViaDispatcher(postDataCID){
+class LensHelper {
+
+async createPostViaDispatcher(postDataCID){
   const client = await clientHelper.getApolloClient();
 
   return await client.mutate({
-   mutation: gql(gqlSchema.CREATE_POST_VIA_DISPATCHER), 
+   mutation: gql(gqlSchema.postViaDispatcher), 
    variables: {
     postDataCID
   },
  });
 }
 
-async function getPublicationId(postTxHash) {
+async getPublicationId(postTxHash) {
   const client = await clientHelper.getApolloClient();
 
   return await client.query({
-    query: gql(gqlSchema.GET_PUBLICATION_ID_BY_TX),
+    query: gql(gqlSchema.publicationIdByTx),
     variables: {
       postTxHash
     },
   });
 };
 
-async function getPublicationMetadataStatus(postTxHash) {
+async getPublicationMetadataStatus(postTxHash) {
   const client = await clientHelper.getApolloClient();
 
   return await client.query({
-    query: gql(gqlSchema.GET_PUBLICATION_METADATA_STATUS),
+    query: gql(gqlSchema.publicationMetadataStatus),
     variables: {
       postTxHash
     },
   });
 };
 
-async function getCommentsData(publicationId) {
+async getCommentsData(publicationId) {
   const client = await clientHelper.getApolloClient();
 
   return await client.query({
-    query: gql(gqlSchema.GET_COMMENTS_DATA),
+    query: gql(gqlSchema.commentsData),
     variables: {
       request:  {
         commentsOf: publicationId,
@@ -52,11 +54,11 @@ async function getCommentsData(publicationId) {
   });
 };
 
-async function getUserNameFromId(profileId) {
+async getUserNameFromId(profileId) {
   const client = await clientHelper.getApolloClient();
 
   const res = await client.query({
-    query: gql(gqlSchema.GET_USERNAME_FROM_ID),
+    query: gql(gqlSchema.usernameFromId),
     variables: {
       profileId
     },
@@ -65,4 +67,6 @@ async function getUserNameFromId(profileId) {
   return res.data.profile.handle;
 };
 
-module.exports = {createPostViaDispatcher, getPublicationId, getPublicationMetadataStatus, getCommentsData, getUserNameFromId}
+}
+
+module.exports = new LensHelper()

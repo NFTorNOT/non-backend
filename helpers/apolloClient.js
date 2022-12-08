@@ -44,7 +44,6 @@ const authLink = new apolloLink.ApolloLink( (operation, forward) => {
     },
   });
 
-  console.log('hi done--->')
   return forward(operation);
 });
 
