@@ -58,7 +58,7 @@ async getChallengeText(address) {
   const oThis = this;
 
   return await oThis.client.query({
-    query: gql(gqlSchema.GET_CHALLENGE),
+    query: gql(gqlSchema.challenge),
     variables: {
       request: {
         address,
@@ -71,7 +71,7 @@ async getAuthentication(address, signature){
   const oThis = this;
 
   return await oThis.client.mutate({
-    mutation: gql(gqlSchema.AUTHENTICATION),
+    mutation: gql(gqlSchema.authentication),
     variables: {
       request: {
         address,
@@ -83,7 +83,7 @@ async getAuthentication(address, signature){
 
 async getAccessToken(){
   const oThis = this;
-  
+
   const ADDRESS = process.env.WALLET_ADDRESS;
   const resp = await oThis.getChallengeText(ADDRESS);
   const challengeText = resp.data.challenge.text;
