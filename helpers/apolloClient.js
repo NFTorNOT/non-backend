@@ -9,9 +9,16 @@ const rootPrefix = '..',
   gqlSchema = require(rootPrefix + '/helpers/gqlSchema.js'),
   util = require(rootPrefix + '/helpers/util.js');
 
-let client = null;
+class ApolloClientHelper {
 
-async function getApolloClient(){
+constructor() {
+  const oThis = this;
+  oThis.client = null;
+}
+
+async getApolloClient(){
+const oThis = this;
+
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: IntrospectionQueryResultData
 });
@@ -20,12 +27,12 @@ const httpLink = createHttpLink({
   uri: 'https://api-mumbai.lens.dev'
 });
 
-client = new ApolloClient({
+oThis.client = new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache()
 });
 
-const accessToken = await getAccessToken();
+const accessToken = await oThis.getAccessToken();
 
 const authLink = new apolloLink.ApolloLink( (operation, forward) => {
   const token = accessToken;
@@ -37,6 +44,7 @@ const authLink = new apolloLink.ApolloLink( (operation, forward) => {
     },
   });
 
+  console.log('hi done--->')
   return forward(operation);
 });
 
@@ -46,8 +54,10 @@ return new ApolloClient({
 });
 }
 
-async function getChallengeText(address) {
-  return await client.query({
+async getChallengeText(address) {
+  const oThis = this;
+
+  return await oThis.client.query({
     query: gql(gqlSchema.GET_CHALLENGE),
     variables: {
       request: {
@@ -57,8 +67,10 @@ async function getChallengeText(address) {
   });
 };
 
-async function getAuthentication(address, signature){
-  return await client.mutate({
+async getAuthentication(address, signature){
+  const oThis = this;
+
+  return await oThis.client.mutate({
     mutation: gql(gqlSchema.AUTHENTICATION),
     variables: {
       request: {
@@ -69,19 +81,21 @@ async function getAuthentication(address, signature){
   });
 };
 
-async function getAccessToken(){
+async getAccessToken(){
+  const oThis = this;
+  
   const ADDRESS = process.env.WALLET_ADDRESS;
-  const resp = await getChallengeText(ADDRESS);
+  const resp = await oThis.getChallengeText(ADDRESS);
   const challengeText = resp.data.challenge.text;
 
   const signature =  await util.signMessage(challengeText);
 
-  const authRes = await getAuthentication(ADDRESS, signature);
+  const authRes = await oThis.getAuthentication(ADDRESS, signature);
   const { accessToken, refreshToken } = authRes.data.authenticate;
 
   return accessToken;
 }
+}
 
-
-module.exports = {getApolloClient};
+module.exports = new ApolloClientHelper();
 
