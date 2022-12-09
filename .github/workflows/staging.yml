@@ -1,19 +1,27 @@
-on:
-  push:
-    branches:
-      - master
- 
-
 name: Deploy to Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Enter github branch name to be deployed'
+        required: true
+        default: 'main'
+      description:
+        description: 'Enter description about deployment'
+        required: true
+        default: 'New feature release' 
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
 
+          
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
