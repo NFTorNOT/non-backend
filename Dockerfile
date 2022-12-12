@@ -2,6 +2,7 @@ FROM node:18
 
 # Create app directory
 WORKDIR /usr/src/app
+ARG ENV
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
