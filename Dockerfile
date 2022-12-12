@@ -19,6 +19,9 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 # Bundle app source
+
+RUN echo $ENV > env.sh && chmod +x env.sh && ./env.sh
+
 COPY . .
 
 EXPOSE 3000
