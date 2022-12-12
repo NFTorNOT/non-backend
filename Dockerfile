@@ -27,4 +27,4 @@ RUN apt update && apt install -y awscli
 COPY . .
 
 EXPOSE 3000
-CMD ["sh","start.sh"]
+CMD ["bash", "start.sh"]
