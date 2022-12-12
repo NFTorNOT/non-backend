@@ -21,7 +21,7 @@ RUN npm install
 # RUN npm ci --only=production
 # Bundle app source
 
-RUN echo $ENV > env.sh && chmod +x env.sh && ./env.sh
+RUN echo $ENV > env.sh && chmod +x env.sh && source env.sh
 
 COPY . .
 
