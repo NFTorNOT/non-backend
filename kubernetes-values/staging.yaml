@@ -52,5 +52,5 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 envSecrets:
-  AWS_ACCESS_KEY_ID: sd-user
-  AWS_SECRET_ACCESS_KEY: sd-user
+  AWS_ACCESS_KEY_ID: plg-user
+  AWS_SECRET_ACCESS_KEY: plg-user
