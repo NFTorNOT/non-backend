@@ -46,7 +46,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           ENV: ${{ secrets.STAGING_ENV_VARS }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  --build-arg ENV=$ENV .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG  --build-arg ENV="$ENV" .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
