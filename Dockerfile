@@ -20,10 +20,11 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 # Bundle app source
+RUN apt update && apt install -y awscli
 
-RUN echo $ENV > env.sh && chmod +x env.sh && source env.sh
+
 
 COPY . .
 
 EXPOSE 3000
-CMD [ "node", "appServer.js" ]
+CMD ["sh","start.sh"]

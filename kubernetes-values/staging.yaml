@@ -50,3 +50,7 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
+
+envSecrets:
+  AWS_ACCESS_KEY_ID: sd-user
+  AWS_SECRET_ACCESS_KEY: sd-user
