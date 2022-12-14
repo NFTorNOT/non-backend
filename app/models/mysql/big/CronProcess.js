@@ -5,7 +5,7 @@ const rootPrefix = '../../../..',
   cronProcessesConstants = require(rootPrefix + '/lib/globalConstant/big/cronProcesses');
 
 // Declare variables.
-const dbName = databaseConstants.bigDbName;
+const dbName = databaseConstants.mainDbName;
 
 const has = Object.prototype.hasOwnProperty; // Cache the lookup once, in module scope.
 

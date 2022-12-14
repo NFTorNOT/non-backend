@@ -8,7 +8,7 @@ const rootPrefix = '../../../..',
   configStrategyConstants = require(rootPrefix + '/lib/globalConstant/config/configStrategy'),
   coreConstants = require(rootPrefix + '/config/coreConstants');
 
-const dbName = databaseConstants.configDbName,
+const dbName = databaseConstants.mainDbName,
   configStrategyKinds = configStrategyConstants.kinds;
 
 /**
