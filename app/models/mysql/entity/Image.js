@@ -34,6 +34,7 @@ class Image extends ModelBase {
    * @param {number} dbRow.id
    * @param {string} dbRow.shortened_url
    * @param {number} dbRow.status
+   * @param {number} dbRow.ipfs_object_id
    * @param {string} dbRow.created_at
    * @param {string} dbRow.updated_at
    *
@@ -46,8 +47,9 @@ class Image extends ModelBase {
     const formattedData = {
       id: dbRow.id,
       shortenedUrl: dbRow.shortened_url,
-      url: null, // Add url shortening logic
+      url: null, // Todo :: Add url shortening logic
       status: imageConstants.statuses[dbRow.status],
+      ipfsObjectId: dbRow.ipfs_object_id,
       createdAt: dbRow.created_at,
       updatedAt: dbRow.updated_at
     };

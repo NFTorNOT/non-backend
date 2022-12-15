@@ -10,6 +10,7 @@ const upQuery =
   '`id` bigint unsigned NOT NULL AUTO_INCREMENT, \n' +
   '`shortened_url` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL, \n' +
   '`status` tinyint unsigned NOT NULL DEFAULT 1, \n' +
+  '`ipfs_object_id` bigint unsigned NOT NULL, \n' +
   '`created_at` int NOT NULL, \n' +
   '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`) \n' +
