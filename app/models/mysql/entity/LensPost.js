@@ -35,6 +35,7 @@ class LensPost extends ModelBase {
    * @param {string} dbRow.title
    * @param {number} dbRow.description_text_id
    * @param {number} dbRow.image_id
+   * @param {number} dbRow.ipfs_object_id
    * @param {number} dbRow.total_votes
    * @param {string} dbRow.nft_data
    * @param {string} dbRow.created_at
@@ -53,6 +54,7 @@ class LensPost extends ModelBase {
       title: dbRow.title,
       descriptionTextId: dbRow.description_text_id,
       imageId: dbRow.image_id,
+      ipfsObjectId: dbRow.ipfs_object_id,
       totalVotes: dbRow.total_votes,
       nftData: JSON.parse(dbRow.nft_data),
       createdAt: dbRow.created_at,
@@ -81,7 +83,7 @@ class LensPost extends ModelBase {
     const formattedData = {
       nftTxHash: nftData.nft_tx_hash,
       nftTokenId: nftData.nft_token_id,
-      nftMetadataCid: nftData.nft_metadata_cid
+      nftMetadataIpfsObjectId: nftData.nft_metadata_ipfs_object_id
     };
 
     return oThis.sanitizeFormattedData(formattedData);
@@ -95,6 +97,7 @@ class LensPost extends ModelBase {
    * @param {string} params.title,
    * @param {number} params.descriptionTextId,
    * @param {number} params.imageId,
+   * @param {number} params.ipfsObjectId,
    * @param {number} params.totalVotes,
    * @param {object} params.nftData),
    */
@@ -107,6 +110,7 @@ class LensPost extends ModelBase {
       title: params.title,
       description_text_id: params.descriptionTextId,
       image_id: params.imageId,
+      ipfs_object_id: params.ipfsObjectId,
       total_votes: params.totalVotes,
       nft_data: JSON.stringify(params.nftData)
     });

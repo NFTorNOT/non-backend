@@ -1,6 +1,5 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
-  shortToLongUrl = require(rootPrefix + '/lib/shortToLongUrl'),
   imageConstants = require(rootPrefix + '/lib/globalConstant/entity/image'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database');
 
@@ -35,8 +34,8 @@ class Image extends ModelBase {
    * @param {string} dbRow.shortened_url
    * @param {number} dbRow.status
    * @param {number} dbRow.ipfs_object_id
-   * @param {string} dbRow.created_at
-   * @param {string} dbRow.updated_at
+   * @param {number} dbRow.created_at
+   * @param {number} dbRow.updated_at
    *
    * @returns {object}
    * @private
