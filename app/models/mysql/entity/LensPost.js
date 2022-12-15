@@ -30,7 +30,7 @@ class LensPost extends ModelBase {
    *
    * @param {object} dbRow
    * @param {number} dbRow.id
-   * @param {string} dbRow.owner_address
+   * @param {string} dbRow.owner_user_id
    * @param {string} dbRow.lens_publication_id
    * @param {string} dbRow.title
    * @param {number} dbRow.description_text_id
@@ -48,16 +48,18 @@ class LensPost extends ModelBase {
 
     const formattedData = {
       id: dbRow.id,
-      owner_address: dbName.owner_address,
-      lens_publication_id: dbRow.lens_publication_id,
+      ownerUserId: dbName.owner_user_id,
+      lensPublicationId: dbRow.lens_publication_id,
       title: dbRow.title,
-      description_text_id: dbRow.description_text_id,
-      image_id: dbRow.image_id,
-      total_votes: dbRow.total_votes,
-      nft_data: JSON.parse(dbRow.nft_data),
+      descriptionTextId: dbRow.description_text_id,
+      imageId: dbRow.image_id,
+      totalVotes: dbRow.total_votes,
+      nftData: JSON.parse(dbRow.nft_data),
       createdAt: dbRow.created_at,
       updatedAt: dbRow.updated_at
     };
+
+    formattedData.nftData = this._formatNFTData(formattedData.nftData);
 
     return oThis.sanitizeFormattedData(formattedData);
   }
@@ -88,7 +90,7 @@ class LensPost extends ModelBase {
   /**
    * Insert into lens_posts
    * @param {object} params
-   * @param {string} params.ownerAddress,
+   * @param {string} params.ownerUserId,
    * @param {string} params.lensPublicationId,
    * @param {string} params.title,
    * @param {number} params.descriptionTextId,
@@ -100,12 +102,12 @@ class LensPost extends ModelBase {
     const oThis = this;
 
     return oThis.insert({
-      owner_address: params.ownerAddress,
+      owner_user_id: params.ownerUserId,
       lens_publication_id: params.lensPublicationId,
       title: params.title,
       description_text_id: params.descriptionTextId,
       image_id: params.imageId,
-      totalVotes: params.totalVotes,
+      total_votes: params.totalVotes,
       nft_data: JSON.stringify(params.nftData)
     });
   }
