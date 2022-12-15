@@ -71,16 +71,16 @@ class Text extends ModelBase {
   /**
    * Fetch texts by ids.
    *
-   * @param {array} id
+   * @param {array} ids
    *
    * @returns {object}
    */
-  async fetchByIds(id) {
+  async fetchByIds(ids) {
     const oThis = this;
 
     const dbRows = await oThis
       .select('*')
-      .where(['id IN (?)', id])
+      .where(['id IN (?)', ids])
       .fire();
 
     const response = {};
