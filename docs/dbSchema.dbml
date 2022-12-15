@@ -9,6 +9,7 @@ Table images {
     1 = ACTIVE,
     2 = DELETED
     ']
+  ipfs_object_id bigint [ref: > ipfs_objects.id]
   created_at timestamp
   updated_at timestamp
 
@@ -36,6 +37,7 @@ Table lens_posts {
   description_text_id bigint [ref: - texts.id]
   image_id bigint [ref: - images.id]
   total_votes integer
+  ipfs_object_id bigint [ref: > ipfs_objects.id]
   nft_data varchar
   created_at timestamp
   updated_at timestamp
@@ -55,6 +57,7 @@ Table votes {
     1 = VOTED,
     2 = IGNORED
     ']
+  collect_nft_transaction_hash varchar
   created_at timestamp
   updated_at timestamp
 
@@ -81,6 +84,22 @@ Table users {
   indexes {
       (id) [pk]
       (lens_profile_id) [unique]
+  }
+}
+
+Table ipfs_objects {
+  id bigint
+  kind tinyint [
+    note: '
+    1 = CHAIN,
+    2 = WHISPER,
+    3 = IMAGE
+    ']
+  cid varchar
+  cts timestamp
+  uts timestamp
+  indexes {
+      (id) [pk]
   }
 }
 
