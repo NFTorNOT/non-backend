@@ -36,7 +36,7 @@ class RoutesHelper {
     onServiceFailure
   ) {
     const oThis = this,
-      errorConfig = basicHelper.fetchErrorConfig(req.internalDecodedParams.apiVersion);
+      errorConfig = basicHelper.fetchErrorConfig();
 
     return oThis
       .asyncPerform(req, res, next, serviceGetter, afterValidationCallback, onServiceSuccess, onServiceFailure)
@@ -84,11 +84,10 @@ class RoutesHelper {
     req.decodedParams = req.decodedParams || {};
     req.internalDecodedParams = req.internalDecodedParams || {};
 
-    const errorConfig = basicHelper.fetchErrorConfig(req.internalDecodedParams.apiVersion);
+    const errorConfig = basicHelper.fetchErrorConfig();
 
     const apiParamsValidatorRsp = await new ApiParamsValidator({
       apiName: req.internalDecodedParams.apiName,
-      apiVersion: req.internalDecodedParams.apiVersion,
       externalParams: req.decodedParams,
       internalParams: req.internalDecodedParams
     }).perform();
