@@ -4,6 +4,7 @@ const fs = require('fs'),
 const rootPrefix = '../../',
   ServiceBase = require(rootPrefix + '/app/services/Base'),
   IpfsObjectModel = require(rootPrefix + '/app/models/mysql/entity/IpfsObject'),
+  CommonValidators = require(rootPrefix + '/lib/validators/Common'),
   basicHelper = require(rootPrefix + '/helpers/basic'),
   ipfsHelper = require(rootPrefix + '/helpers/ipfs'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
@@ -68,16 +69,27 @@ class StoreNFTDataInIPFS extends ServiceBase {
   _validateAndSanitize() {
     const oThis = this;
 
-    if (!oThis.imageUrl || !basicHelper.validateNonEmptyString(oThis.imageUrl)) {
-      throw new Error('Invalid Image url provided.');
+    const paramErrors = [];
+    if (!CommonValidators.validateStringLength(oThis.title, 50)) {
+      paramErrors.push('invalid_image_title_length');
     }
 
-    if (!oThis.title || !basicHelper.validateNonEmptyString(oThis.title)) {
-      throw new Error('Invalid title provided.');
+    if (!CommonValidators.validateStringLength(oThis.description, 200)) {
+      paramErrors.push('invalid_image_description_length');
     }
 
-    if (!oThis.description || !basicHelper.validateNonEmptyString(oThis.description)) {
-      throw new Error('Invalid description provided.');
+    if (paramErrors.length > 0) {
+      return Promise.reject(
+        responseHelper.paramValidationError({
+          internal_error_identifier: 'a_s_sndii_vas_1',
+          api_error_identifier: 'invalid_api_params',
+          params_error_identifiers: paramErrors,
+          debug_options: {
+            title: oThis.title,
+            description: oThis.description
+          }
+        })
+      );
     }
   }
 
@@ -140,10 +152,6 @@ class StoreNFTDataInIPFS extends ServiceBase {
   async _uploadLensMetadataToIpfs() {
     const oThis = this;
 
-    if (!oThis.imageCid) {
-      throw new Error();
-    }
-
     const imageLink = `ipfs://${oThis.imageCid}`;
 
     const postData = {
@@ -173,7 +181,7 @@ class StoreNFTDataInIPFS extends ServiceBase {
     if (!oThis.lensMetdaDataCid) {
       return Promise.reject(
         responseHelper.error({
-          internal_error_identifier: 'a_s_sndii_uiti_1',
+          internal_error_identifier: 'a_s_sndii_ulmti_1',
           api_error_identifier: 'something_went_wrong',
           debug_options: { postData: postData }
         })
