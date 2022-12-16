@@ -12,8 +12,8 @@ const upQuery =
   '`lens_profile_owner_address` varchar(42) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
   '`status` tinyint NOT NULL, \n' +
   '`cookie_token` varchar(2048) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
-  '`created_at` timestamp NOT NULL, \n' +
-  '`updated_at` timestamp NOT NULL, \n' +
+  '`created_at` int NOT NULL, \n' +
+  '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`), \n' +
   'UNIQUE KEY `UK` (`lens_profile_id`)\n' +
   ') ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';

@@ -9,9 +9,9 @@ const upQuery =
   'CREATE TABLE `ipfs_objects` ( \n' +
   '`id` bigint unsigned NOT NULL AUTO_INCREMENT, \n' +
   '`kind` tinyint NOT NULL, \n' +
-  '`cid` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
-  '`created_at` timestamp NOT NULL, \n' +
-  '`updated_at` timestamp NOT NULL, \n' +
+  '`cid` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
+  '`created_at` int NOT NULL, \n' +
+  '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`) \n' +
   ') ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci';
 

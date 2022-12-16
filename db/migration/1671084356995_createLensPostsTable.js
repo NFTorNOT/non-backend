@@ -15,8 +15,8 @@ const upQuery =
   '`image_id` bigint NOT NULL, \n' +
   "`total_votes` int NOT NULL DEFAULT '0', \n" +
   '`nft_data` varchar(2048) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
-  '`created_at` timestamp NOT NULL, \n' +
-  '`updated_at` timestamp NOT NULL, \n' +
+  '`created_at` int NOT NULL, \n' +
+  '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`), \n' +
   'UNIQUE KEY `UK` (`lens_publication_id`) \n' +
   ') ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
