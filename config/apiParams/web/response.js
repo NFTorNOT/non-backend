@@ -3,6 +3,15 @@ const rootPrefix = '../../..',
   entityTypeConstants = require(rootPrefix + '/lib/globalConstant/entityType'),
   responseEntityKey = require(rootPrefix + '/lib/globalConstant/responseEntityKey');
 
-const webResponse = {};
+const webResponse = {
+  [apiNameConstants.storeOnIpfsApiName]: {
+    resultType: responseEntityKey.ipfsObjectIds,
+    resultTypeLookup: responseEntityKey.ipfsObjects,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.ipfsObjectIds]: responseEntityKey.ipfsObjectIds,
+      [entityTypeConstants.ipfsObjectsMap]: responseEntityKey.ipfsObjects
+    }
+  }
+};
 
 module.exports = webResponse;

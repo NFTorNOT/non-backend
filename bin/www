@@ -34,7 +34,7 @@ function normalizePort(val) {
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.A_PORT);
+var port = normalizePort(process.env.NA_PORT);
 app.set('port', port);
 
 /**

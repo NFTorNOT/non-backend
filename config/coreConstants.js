@@ -40,7 +40,7 @@ class CoreConstants {
   }
 
   get API_DOMAIN() {
-    return process.env.NAPI_DOMAIN;
+    return process.env.NON_API_DOMAIN;
   }
 
   get A_COOKIE_DOMAIN() {

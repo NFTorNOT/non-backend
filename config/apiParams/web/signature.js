@@ -23,5 +23,26 @@ const rootPrefix = '../../..',
       }
  */
 
-const webSignature = {};
+const webSignature = {
+  [apiNameConstants.storeOnIpfsApiName]: {
+    mandatory: [
+      {
+        parameter: 'image_url',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'title',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'description',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      }
+    ],
+    optional: []
+  }
+};
 module.exports = webSignature;

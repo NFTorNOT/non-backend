@@ -1,7 +1,7 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database'),
-  ipfsObjectConstants = require(rootPrefix + '/lib/globalConstants/entity/ipfsObject');
+  ipfsObjectConstants = require(rootPrefix + '/lib/globalConstant/entity/ipfsObject');
 
 const dbName = databaseConstants.mainDbName;
 
@@ -51,6 +51,25 @@ class IpfsObject extends ModelBase {
     };
 
     return oThis.sanitizeFormattedData(formattedData);
+  }
+
+  /**
+   * Insert into ipfs objects.
+   *
+   * @param {object} params
+   * @param {string} params.text
+   *
+   * @returns {object}
+   */
+  async insertIpfsObject(params) {
+    const oThis = this;
+
+    return oThis
+      .insert({
+        cid: params.cid,
+        kind: ipfsObjectConstants.invertedKinds[params.kind]
+      })
+      .fire();
   }
 
   /**
