@@ -8,9 +8,8 @@ const rootPrefix = '..',
   base64Helper = require(rootPrefix + '/lib/base64Helper'),
   coreConstants = require(rootPrefix + '/config/coreConstants'),
   logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
-  apiVersions = require(rootPrefix + '/lib/globalConstant/apiVersions'),
   apiErrorConfig = require(rootPrefix + '/config/apiParams/apiErrorConfig'),
-  webParamErrorConfig = require(rootPrefix + '/config/apiParams/web/errorConfig');
+  errorConfig = require(rootPrefix + '/config/apiParams/errorConfig');
 
 /**
  * Class for basic helper methods.
@@ -122,21 +121,12 @@ class BasicHelper {
   /**
    * Fetch Error Config.
    *
-   * @param {string} apiVersion
    * @param {object} dynamicErrorConfig
    *
    * @return {object}
    */
-  fetchErrorConfig(apiVersion, dynamicErrorConfig) {
-    let paramErrorConfig;
-
-    if (apiVersion === apiVersions.web) {
-      paramErrorConfig = dynamicErrorConfig
-        ? Object.assign(dynamicErrorConfig, webParamErrorConfig)
-        : webParamErrorConfig;
-    } else {
-      throw new Error(`Unsupported API Version ${apiVersion}`);
-    }
+  fetchErrorConfig(dynamicErrorConfig) {
+    const paramErrorConfig = dynamicErrorConfig ? Object.assign(dynamicErrorConfig, errorConfig) : errorConfig;
 
     return {
       param_error_config: paramErrorConfig,

@@ -8,21 +8,19 @@ const TraverseRouteTree = require(rootPrefix + '/documentation/openapi/TraverseR
 class GenerateSwaggerSpec {
   /**
    * Constructor
-   *
-   * @param apiVersion
    */
-  constructor(apiVersion) {
+  constructor() {
     const oThis = this;
 
-    oThis.entityFormatterClassMap = FormatterComposerFactory.getComposer(apiVersion).entityClassMapping;
+    oThis.entityFormatterClassMap = FormatterComposerFactory.getComposer().entityClassMapping;
 
-    oThis.routeIndexFilePath = `/routes/api/${apiVersion}/index`;
-    oThis.routesMap = new TraverseRouteTree(`/api/${apiVersion}`, rootPrefix + oThis.routeIndexFilePath).perform();
-    oThis.responseSignatures = require(rootPrefix + `/config/apiParams/${apiVersion}/response`);
-    oThis.requestSignatures = require(rootPrefix + `/config/apiParams/${apiVersion}/signature`);
-    oThis.routeSpecs = require(rootPrefix + `/config/apiParams/${apiVersion}/routeSpec.js`);
+    oThis.routeIndexFilePath = '/routes/api/index';
+    oThis.routesMap = new TraverseRouteTree('/api', rootPrefix + oThis.routeIndexFilePath).perform();
+    oThis.responseSignatures = require(rootPrefix + '/config/apiParams/response');
+    oThis.requestSignatures = require(rootPrefix + '/config/apiParams/signature');
+    oThis.routeSpecs = require(rootPrefix + '/config/apiParams/routeSpec');
 
-    oThis.openapiFilePath = `./config/apiParams/${apiVersion}/openapi.json`;
+    oThis.openapiFilePath = './config/apiParams/openapi.json';
 
     oThis.swaggerSpec = {};
   }
@@ -239,4 +237,4 @@ class GenerateSwaggerSpec {
   }
 }
 
-new GenerateSwaggerSpec('web').perform();
+new GenerateSwaggerSpec().perform();

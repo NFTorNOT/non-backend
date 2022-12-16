@@ -3,12 +3,11 @@ const rootPrefix = '../..',
   basicHelper = require(rootPrefix + '/helpers/basic'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
-  apiVersions = require(rootPrefix + '/lib/globalConstant/apiVersions'),
   createErrorLogsEntry = require(rootPrefix + '/lib/errorLogs/createEntry'),
   errorLogsConstants = require(rootPrefix + '/lib/globalConstant/errorLogs');
 
 // Declare error config.
-const errorConfig = basicHelper.fetchErrorConfig(apiVersions.web);
+const errorConfig = basicHelper.fetchErrorConfig();
 
 /**
  * Base class for all services.

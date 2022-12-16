@@ -15,14 +15,13 @@ const requestSharedNameSpace = createNamespace('NoNApiNameSpace');
 const responseHelper = require(rootPrefix + '/lib/formatter/response'),
   logger = require(rootPrefix + '/lib/logger/customConsoleLogger'),
   customMiddleware = require(rootPrefix + '/helpers/customMiddleware'),
-  apiVersions = require(rootPrefix + '/lib/globalConstant/apiVersions'),
   basicHelper = require(rootPrefix + '/helpers/basic'),
   coreConstants = require(rootPrefix + '/config/coreConstants'),
   sanitizer = require(rootPrefix + '/helpers/sanitizer');
 
 const apiRoutes = require(rootPrefix + '/routes/api/index');
 
-const errorConfig = basicHelper.fetchErrorConfig(apiVersions.web);
+const errorConfig = basicHelper.fetchErrorConfig();
 const apiHostName = new URL(coreConstants.API_DOMAIN).hostname;
 
 morgan.token('id', function getId(req) {
@@ -158,7 +157,7 @@ process.title = 'API node worker';
 const app = express();
 
 // API Docs for web APIs
-const swaggerSpecWeb = swaggerJSDoc(require(rootPrefix + '/config/apiParams/web/openapi.json'));
+const swaggerSpecWeb = swaggerJSDoc(require(rootPrefix + '/config/apiParams/openapi.json'));
 const swaggerHtmlWeb = swaggerUi.generateHTML(swaggerSpecWeb);
 
 app.use('/api-docs/web', swaggerUi.serveFiles(swaggerSpecWeb));

@@ -1,4 +1,4 @@
-const rootPrefix = '../../..',
+const rootPrefix = '../..',
   commonParamErrorConfig = require(rootPrefix + '/config/apiParams/commonParamErrorConfig');
 
 const webSpecificErrorConfig = {};

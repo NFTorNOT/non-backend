@@ -1,4 +1,4 @@
-const rootPrefix = '../../..',
+const rootPrefix = '../..',
   apiNameConstants = require(rootPrefix + '/lib/globalConstant/apiName');
 
 const webRouteSpec = {

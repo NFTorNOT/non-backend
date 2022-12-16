@@ -2,10 +2,7 @@ const express = require('express'),
   cookieParser = require('cookie-parser');
 
 const rootPrefix = '../..',
-  webRoutes = require(rootPrefix + '/routes/api/web/index'),
-  apiVersions = require(rootPrefix + '/lib/globalConstant/apiVersions');
-
-const basicHelper = require(rootPrefix + '/helpers/basic'),
+  basicHelper = require(rootPrefix + '/helpers/basic'),
   coreConstants = require(rootPrefix + '/config/coreConstants'),
   FormatterComposerFactory = require(rootPrefix + '/lib/formatter/composer/Factory'),
   FetchImageFromStabilityAIService = require(rootPrefix + '/services/FetchImageFromStabilityAI'),
@@ -13,7 +10,7 @@ const basicHelper = require(rootPrefix + '/helpers/basic'),
   sanitizer = require(rootPrefix + '/helpers/sanitizer'),
   apiNameConstants = require(rootPrefix + '/lib/globalConstant/apiName'),
   routeHelper = require(rootPrefix + '/routes/helper'),
-  webResponse = require(rootPrefix + '/config/apiParams/web/response'),
+  responseConfig = require(rootPrefix + '/config/apiParams/response'),
   words = require(rootPrefix + '/helpers/words.json');
 
 const router = express.Router();
@@ -29,7 +26,7 @@ router.post('/store-on-ipfs', sanitizer.sanitizeDynamicUrlParams, function(req, 
   req.internalDecodedParams.apiName = apiName;
 
   const dataFormatterFunc = async function(serviceResponse) {
-    const formatterParams = Object.assign({}, webResponse[apiName], { serviceData: serviceResponse.data });
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
     formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
     const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
 
