@@ -32,6 +32,8 @@ class User extends ModelBase {
    * @param {object} dbRow
    * @param {number} dbRow.id
    * @param {string} dbRow.lens_profile_id
+   * @param {string} dbRow.lens_profile_username
+   * @param {string} dbRow.lens_profile_display_name
    * @param {string} dbRow.lens_profile_owner_address
    * @param {string} dbRow.status
    * @param {string} dbRow.cookie_token
@@ -47,6 +49,8 @@ class User extends ModelBase {
     const formattedData = {
       id: dbRow.id,
       lensProfileId: dbRow.lens_profile_id,
+      lensProfileUsername: dbRow.lens_profile_username,
+      lensProfileDisplayName: dbRow.lens_profile_display_name,
       lensProfileOwnerAddress: dbRow.lens_profile_owner_address,
       status: userConstants.statuses[dbRow.status],
       cookieToken: dbRow.cookie_token,
@@ -61,6 +65,8 @@ class User extends ModelBase {
    * Insert into votes
    * @param {object} params
    * @param {string} params.lensProfileId,
+   * @param {string} params.lensProfileUsername,
+   * @param {string} params.lensProfileDisplayName,
    * @param {string} params.lensProfileOwnerAddress,
    * @param {string} params.cookieToken,
    * @param {string} params.status,
@@ -70,6 +76,8 @@ class User extends ModelBase {
 
     return oThis.insert({
       lens_profile_id: params.lensProfileId,
+      lens_profile_username: params.lensProfileUsername,
+      lens_profile_display_name: params.lensProfileDisplayName,
       lens_profile_owner_address: params.lensProfileOwnerAddress,
       cookie_token: params.cookieToken,
       status: userConstants.invertedStatuses[params.status]

@@ -1,6 +1,5 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
-  imageConstants = require(rootPrefix + '/lib/globalConstant/entity/image'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database');
 
 const dbName = databaseConstants.mainDbName;
@@ -32,7 +31,6 @@ class Image extends ModelBase {
    * @param {object} dbRow
    * @param {number} dbRow.id
    * @param {string} dbRow.shortened_url
-   * @param {number} dbRow.status
    * @param {number} dbRow.ipfs_object_id
    * @param {number} dbRow.created_at
    * @param {number} dbRow.updated_at
@@ -47,7 +45,6 @@ class Image extends ModelBase {
       id: dbRow.id,
       shortenedUrl: dbRow.shortened_url,
       url: null, // Todo :: Add url shortening logic
-      status: imageConstants.statuses[dbRow.status],
       ipfsObjectId: dbRow.ipfs_object_id,
       createdAt: dbRow.created_at,
       updatedAt: dbRow.updated_at
@@ -86,9 +83,7 @@ class Image extends ModelBase {
    *
    * @param {object} params
    * @param {string} params.urlTemplate
-   * @param {string} params.resolutions
-   * @param {number} params.kind
-   * @param {string} params.resizeStatus
+   * @param {string} params.ipfsObjectId
    *
    * @returns {object}
    */
@@ -97,8 +92,8 @@ class Image extends ModelBase {
 
     return oThis
       .insert({
-        shortenedUrl: params.urlTemplate,
-        status: imageConstants.invertedStatuses[imageConstants.activeStatus]
+        shortened_url: params.urlTemplate,
+        ipfs_object_id: params.ipfsObjectId
       })
       .fire();
   }
