@@ -36,7 +36,6 @@ class StoreNFTDataInIPFS extends ServiceBase {
     oThis.description = params.description;
 
     oThis.imageCid = null;
-    oThis.nftMetadataCid = null;
     oThis.lensMetdaDataCid = null;
 
     oThis.ipfsObjectIds = [];
@@ -56,7 +55,7 @@ class StoreNFTDataInIPFS extends ServiceBase {
 
     await oThis._uploadImageToIpfs();
 
-    await Promise.all([oThis._uploadNFTMetadataToIpfs(), oThis._uploadLensMetadataToIpfs()]);
+    await oThis._uploadLensMetadataToIpfs();
 
     return oThis._prepareResponse();
   }
@@ -104,6 +103,16 @@ class StoreNFTDataInIPFS extends ServiceBase {
     oThis.imageCid = await ipfsHelper.uploadImage(oThis.fileName, localImageFileData);
     console.log('---- Upload image to IPFS completed:', oThis.imageCid);
 
+    if (!oThis.imageCid) {
+      return Promise.reject(
+        responseHelper.error({
+          internal_error_identifier: 'a_s_sndii_uiti_1',
+          api_error_identifier: 'something_went_wrong',
+          debug_options: { imageUrl: oThis.imageUrl }
+        })
+      );
+    }
+
     const insertData = await new IpfsObjectModel().insertIpfsObject({
       cid: oThis.imageCid,
       kind: ipfsObjectConstants.imageKind
@@ -116,44 +125,6 @@ class StoreNFTDataInIPFS extends ServiceBase {
       id: imageIpfsObjectId,
       cid: oThis.imageCid,
       kind: ipfsObjectConstants.imageKind,
-      updatedAt: basicHelper.getCurrentTimestampInSeconds()
-    };
-  }
-
-  /**
-   * Upload nft metadata to ipfs and store in ipfs objects.
-   *
-   * @sets oThis.nftMetadataCid, oThis.ipfsObjectIds, oThis.ipfsObjects
-   *
-   * @returns {Promise<void>}
-   * @private
-   */
-  async _uploadNFTMetadataToIpfs() {
-    const oThis = this;
-
-    const metadataObject = {
-      name: 'NFTorNOT',
-      title: oThis.title,
-      description: oThis.description,
-      image: `ipfs://${oThis.imageCid}`
-    };
-
-    oThis.nftMetadataCid = await ipfsHelper.uploadMetaData(metadataObject);
-
-    console.log('oThis.nftMetadataCid ----------', oThis.nftMetadataCid);
-
-    const insertData = await new IpfsObjectModel().insertIpfsObject({
-      cid: oThis.nftMetadataCid,
-      kind: ipfsObjectConstants.nftMetadataKind
-    });
-
-    const nftMetadataIpfsObjectId = insertData.insertId;
-
-    oThis.ipfsObjectIds.push(nftMetadataIpfsObjectId);
-    oThis.ipfsObjects[nftMetadataIpfsObjectId] = {
-      id: nftMetadataIpfsObjectId,
-      cid: oThis.nftMetadataCid,
-      kind: ipfsObjectConstants.nftMetadataKind,
       updatedAt: basicHelper.getCurrentTimestampInSeconds()
     };
   }
@@ -198,6 +169,16 @@ class StoreNFTDataInIPFS extends ServiceBase {
     };
 
     oThis.lensMetdaDataCid = await ipfsHelper.uploadMetaData(postData);
+
+    if (!oThis.lensMetdaDataCid) {
+      return Promise.reject(
+        responseHelper.error({
+          internal_error_identifier: 'a_s_sndii_uiti_1',
+          api_error_identifier: 'something_went_wrong',
+          debug_options: { postData: postData }
+        })
+      );
+    }
 
     console.log('lensMetaDataCid ----- ', oThis.lensMetdaDataCid);
 
