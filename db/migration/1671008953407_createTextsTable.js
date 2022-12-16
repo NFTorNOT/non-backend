@@ -9,8 +9,8 @@ const upQuery =
   'CREATE TABLE `texts` (\n' +
   '`id` bigint unsigned NOT NULL AUTO_INCREMENT, \n' +
   '`text` varchar(2048) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL, \n' +
-  '`created_at` timestamp NOT NULL, \n' +
-  '`updated_at` timestamp NOT NULL, \n' +
+  '`created_at` int NOT NULL, \n' +
+  '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`) \n' +
   ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
 

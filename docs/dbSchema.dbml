@@ -4,11 +4,6 @@
 Table images {
   id bigint
   shortened_url varchar
-  status tinyint [
-    note: '
-    1 = ACTIVE,
-    2 = DELETED
-    ']
   ipfs_object_id bigint [ref: > ipfs_objects.id]
   created_at timestamp
   updated_at timestamp
@@ -31,6 +26,7 @@ Table texts {
 
 Table lens_posts {
   id bigint
+  theme_id bigint [ref: > themes.id]
   owner_user_id bigint [ref: > users.id]
   lens_publication_id varchar
   title varchar
@@ -38,13 +34,17 @@ Table lens_posts {
   image_id bigint [ref: - images.id]
   total_votes integer
   ipfs_object_id bigint [ref: > ipfs_objects.id]
-  nft_data varchar
   created_at timestamp
   updated_at timestamp
-
+  status tinyint [
+    note: '
+    1 = ACTIVE,
+    2 = INACTIVE
+    ']
   indexes {
       (id) [pk]
       (lens_publication_id) [unique]
+      (theme_id, status)
   }
 }
 
@@ -71,7 +71,10 @@ Table votes {
 Table users {
   id bigint
   lens_profile_id varchar
+  lens_profile_username varchar
+  lens_profile_display_name varchar
   lens_profile_owner_address varchar
+  lens_profile_image_id bigint [ref: - images.id]
   status tinyint [
     note: '
     1 = ACTIVE,
@@ -83,7 +86,7 @@ Table users {
 
   indexes {
       (id) [pk]
-      (lens_profile_id) [unique]
+      (lens_profile_id, lens_profile_owner_address) [unique]
   }
 }
 
@@ -91,15 +94,28 @@ Table ipfs_objects {
   id bigint
   kind tinyint [
     note: '
-    1 = CHAIN,
-    2 = WHISPER,
-    3 = IMAGE
+    1 = IMAGE,
+    2 = LENS_PUBLICATION_METADATA
     ']
   cid varchar
-  cts timestamp
-  uts timestamp
+  created_at timestamp
+  updated_at timestamp
   indexes {
       (id) [pk]
   }
 }
 
+Table themes {
+  id bigint
+  name varchar
+  status tinyint [
+    note: '
+    1 = ACTIVE,
+    2 = INACTIVE,
+    ']
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+      (id) [pk]
+  }
+}
