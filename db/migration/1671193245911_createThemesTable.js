@@ -15,7 +15,7 @@ const upQuery =
   'PRIMARY KEY (`id`) \n' +
   ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;';
 
-const downQuery = 'DROP table if exists texts;';
+const downQuery = 'DROP table if exists themes;';
 
 const migrationName = {
   dbName: dbName,

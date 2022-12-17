@@ -35,6 +35,7 @@ class User extends ModelBase {
    * @param {string} dbRow.lens_profile_username
    * @param {string} dbRow.lens_profile_display_name
    * @param {string} dbRow.lens_profile_owner_address
+   * @param {string} dbRow.lens_profile_image_id
    * @param {string} dbRow.status
    * @param {string} dbRow.cookie_token
    * @param {string} dbRow.created_at
@@ -52,6 +53,7 @@ class User extends ModelBase {
       lensProfileUsername: dbRow.lens_profile_username,
       lensProfileDisplayName: dbRow.lens_profile_display_name,
       lensProfileOwnerAddress: dbRow.lens_profile_owner_address,
+      lensProfileImageId: dbRow.lens_profile_image_id,
       status: userConstants.statuses[dbRow.status],
       cookieToken: dbRow.cookie_token,
       createdAt: dbRow.created_at,
@@ -64,24 +66,28 @@ class User extends ModelBase {
   /**
    * Insert into votes
    * @param {object} params
-   * @param {string} params.lensProfileId
-   * @param {string} params.lensProfileUsername
-   * @param {string} params.lensProfileDisplayName
-   * @param {string} params.lensProfileOwnerAddress
-   * @param {string} params.cookieToken
-   * @param {string} params.status
+   * @param {string} params.lensProfileId,
+   * @param {string} params.lensProfileUsername,
+   * @param {string} params.lensProfileDisplayName,
+   * @param {string} params.lensProfileOwnerAddress,
+   * @param {string} params.lensProfileImageId,
+   * @param {string} params.cookieToken,
+   * @param {string} params.status,
    */
-  insertUser(params) {
+  async insertUser(params) {
     const oThis = this;
 
-    return oThis.insert({
-      lens_profile_id: params.lensProfileId,
-      lens_profile_username: params.lensProfileUsername,
-      lens_profile_display_name: params.lensProfileDisplayName,
-      lens_profile_owner_address: params.lensProfileOwnerAddress,
-      cookie_token: params.cookieToken,
-      status: userConstants.invertedStatuses[params.status]
-    });
+    return oThis
+      .insert({
+        lens_profile_id: params.lensProfileId,
+        lens_profile_username: params.lensProfileUsername,
+        lens_profile_display_name: params.lensProfileDisplayName,
+        lens_profile_owner_address: params.lensProfileOwnerAddress,
+        lens_profile_image_id: params.lensProfileImageId,
+        cookie_token: params.cookieToken,
+        status: userConstants.invertedStatuses[params.status]
+      })
+      .fire();
   }
 
   /**
