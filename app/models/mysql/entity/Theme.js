@@ -1,7 +1,7 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database'),
-  themeConstants = require(rootPrefix + '/lib/globalConstants/entity/theme');
+  themeConstants = require(rootPrefix + '/lib/globalConstant/entity/theme');
 
 const dbName = databaseConstants.mainDbName;
 
@@ -59,13 +59,15 @@ class Theme extends ModelBase {
    * @param {string} params.name,
    * @param {string} params.status,
    */
-  insertTheme(params) {
+  async insertTheme(params) {
     const oThis = this;
 
-    return oThis.insert({
-      name: params.name,
-      status: themeConstants.invertedStatuses[params.status]
-    });
+    return oThis
+      .insert({
+        name: params.name,
+        status: themeConstants.invertedStatuses[params.status]
+      })
+      .fire();
   }
 }
 

@@ -1,7 +1,7 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database'),
-  voteConstants = require(rootPrefix + '/lib/globalConstants/entity/vote');
+  voteConstants = require(rootPrefix + '/lib/globalConstant/entity/vote');
 
 const dbName = databaseConstants.mainDbName;
 
@@ -65,15 +65,17 @@ class Vote extends ModelBase {
    * @param {string} params.collectNftTransactionHash,
    * @param {string} params.status,
    */
-  insertVote(params) {
+  async insertVote(params) {
     const oThis = this;
 
-    return oThis.insert({
-      lens_post_id: params.lensPostId,
-      voter_user_id: params.voterUserId,
-      collect_nft_transaction_hash: params.collectNftTransactionHash,
-      status: voteConstants.invertedStatuses[params.status]
-    });
+    return oThis
+      .insert({
+        lens_post_id: params.lensPostId,
+        voter_user_id: params.voterUserId,
+        collect_nft_transaction_hash: params.collectNftTransactionHash,
+        status: voteConstants.invertedStatuses[params.status]
+      })
+      .fire();
   }
 }
 
