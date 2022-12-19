@@ -143,7 +143,7 @@ class LensPost extends ModelBase {
       .order_by('id desc');
 
     if (params.paginationDatabaseId) {
-      queryObj.where(['id > ?', params.paginationDatabaseId]);
+      queryObj.where(['id < ?', params.paginationDatabaseId]);
     }
 
     const dbRows = await queryObj.fire();
