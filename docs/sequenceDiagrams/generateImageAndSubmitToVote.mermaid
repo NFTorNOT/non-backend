@@ -10,7 +10,6 @@ participant S3
 participant Lens
 participant SD as Stable Diffusion
 participant Ipfs as IPFS
-participant NFT as NFT_Contract
 
 Note over User: User clicks on Generate Image
 
@@ -32,10 +31,10 @@ User->>Server: API call containing url of image and it's metadata to be uploaded
 Server->>Ipfs: API call to upload image
 Ipfs->>Server: Return Image CID
 
-Server->>Ipfs: API call to upload NFT Metadata and lens Metadata
-Ipfs->>Server: Return NFT metadata CID, lens metadata CID
+Server->>Ipfs: API call to upload lens Metadata
+Ipfs->>Server: Return lens metadata CID
 
-Server->>User: Return NFT Metadata CID, Lens Metadata CID
+Server->>User: Return Lens Metadata CID
 
 
 %% break
@@ -48,13 +47,10 @@ User->>Lens: GraphQL call to create a publication
 Lens->>User: Response containing polygon transaction hash
 
 
-User->>Server: API call to mint NFT and store user's publication details
+User->>Server: API call to store user's publication details
 
 Server->>Lens: GraphQL call to fetch publication details using txn hash.
 Lens->>Server: Response containing publication details
-Server->>NFT: Calls method to mint NFT
-NFT->>Server: Response containing polygon transaction hash
-Note over Server: Server waits for txn receipt for minted NFT.
 Server->>DB: Create an entry in Lens Posts Table.
 DB->>Server: Success
 Server->>User: Success
