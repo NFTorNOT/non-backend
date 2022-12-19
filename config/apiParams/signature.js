@@ -44,7 +44,7 @@ const webSignature = {
     ],
     optional: []
   },
-  [apiNameConstants.reaction]: {
+  [apiNameConstants.addReactionToNFT]: {
     mandatory: [
       {
         parameter: 'lens_publication_id',

@@ -25,7 +25,8 @@ const webResponse = {
       [entityTypeConstants.usersMap]: responseEntityKey.users,
       [entityTypeConstants.getNFTsToVoteListMeta]: responseEntityKey.meta
     }
-  }
+  },
+  [apiNameConstants.addReactionToNFT]: {}
 };
 
 module.exports = webResponse;

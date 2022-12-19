@@ -11,6 +11,11 @@ const webSpecificErrorConfig = {
     parameter: 'description',
     code: 'invalid',
     message: 'Description exceeds character limit of 200 characters.'
+  },
+  invalid_reaction_type: {
+    parameter: 'reaction',
+    code: 'invalid',
+    message: 'Invalid reaction type given.'
   }
 };
 

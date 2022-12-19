@@ -1,7 +1,9 @@
-const LensPostModal = require('../../../app/models/mysql/entity/LensPost'),
+const CommonValidator = require('../../../lib/validators/Common'),
+  LensPostModel = require('../../../app/models/mysql/entity/LensPost'),
   ServiceBase = require('../../../app/services/Base'),
   VoteModel = require('../../../app/models/mysql/entity/Vote'),
-  responseHelper = require('../../../lib/formatter/response');
+  responseHelper = require('../../../lib/formatter/response'),
+  voteConstants = require('../../../lib/globalConstant/entity/vote');
 
 /**
  * Class to add reaction to a post.
@@ -37,11 +39,33 @@ class Reaction extends ServiceBase {
   async _asyncPerform() {
     const oThis = this;
 
+    await oThis._validateParams();
+
     await oThis._fetchLensPost();
 
     await oThis._addVote();
 
     return oThis._prepareResponse();
+  }
+
+  /**
+   * Validate params.
+   *
+   * @private
+   */
+  async _validateParams() {
+    const oThis = this;
+    const allowedReactionValuesMap = voteConstants.invertedStatuses;
+    if (CommonValidator.isVarNullOrUndefined(allowedReactionValuesMap[oThis.reaction])) {
+      return Promise.reject(
+        responseHelper.paramValidationError({
+          internal_error_identifier: 'a_s_v_r_vp_1',
+          api_error_identifier: 'invalid_api_params',
+          params_error_identifiers: ['invalid_reaction_type'],
+          debug_options: { reaction: oThis.reaction }
+        })
+      );
+    }
   }
 
   /**
@@ -51,16 +75,19 @@ class Reaction extends ServiceBase {
    */
   async _fetchLensPost() {
     const oThis = this;
-    if (!oThis.lensPublicationId) {
-      return responseHelper.error({
-        internal_error_identifier: 'a_s_v_r_flp_1',
-        api_error_identifier: 'something_went_wrong',
-        debug_options: {}
-      });
-    }
-    const lensPost = await new LensPostModal().fetchLensPostByLensPublicationId(oThis.lensPublicationId);
+    const lensPost = await new LensPostModel().fetchLensPostByLensPublicationId(oThis.lensPublicationId);
 
-    oThis.lensPostId = lensPost.id;
+    const lensPostId = lensPost.id;
+    if (!lensPostId) {
+      return Promise.reject(
+        responseHelper.error({
+          internal_error_identifier: 'a_s_v_r_flp_1',
+          api_error_identifier: 'something_went_wrong',
+          debug_options: { lensPublicationId: oThis.lensPublicationId }
+        })
+      );
+    }
+    oThis.lensPostId = lensPostId;
   }
 
   /**
@@ -70,20 +97,23 @@ class Reaction extends ServiceBase {
    */
   async _addVote() {
     const oThis = this;
-    if (!oThis.lensPostId) {
-      return responseHelper.error({
-        internal_error_identifier: 'a_s_v_r_av_1',
-        api_error_identifier: 'something_went_wrong',
-        debug_options: { lensPublicationId: oThis.lensPublicationId }
-      });
-    }
+
     const insertData = {
       lensPostId: oThis.lensPostId,
       status: oThis.reaction,
       voterUserId: oThis.currentUserId
     };
-
-    return new VoteModel().insertVote(insertData);
+    try {
+      await new VoteModel().insertVote(insertData);
+    } catch (error) {
+      return Promise.reject(
+        responseHelper.error({
+          internal_error_identifier: 'a_s_v_r_av_1',
+          api_error_identifier: 'something_went_wrong',
+          debug_options: { insertData }
+        })
+      );
+    }
   }
 
   /**
