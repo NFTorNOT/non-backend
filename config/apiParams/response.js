@@ -11,6 +11,20 @@ const webResponse = {
       [entityTypeConstants.ipfsObjectIds]: responseEntityKey.ipfsObjectIds,
       [entityTypeConstants.ipfsObjectsMap]: responseEntityKey.ipfsObjects
     }
+  },
+
+  [apiNameConstants.getNftsToVoteApiName]: {
+    resultType: responseEntityKey.lensPostsIds,
+    resultTypeLookup: responseEntityKey.lensPosts,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.lensPostsIds]: responseEntityKey.lensPostsIds,
+      [entityTypeConstants.lensPostsMap]: responseEntityKey.lensPosts,
+      [entityTypeConstants.imagesMap]: responseEntityKey.images,
+      [entityTypeConstants.textsMap]: responseEntityKey.texts,
+      [entityTypeConstants.themesMap]: responseEntityKey.themes,
+      [entityTypeConstants.usersMap]: responseEntityKey.users,
+      [entityTypeConstants.getNFTsToVoteListMeta]: responseEntityKey.meta
+    }
   }
 };
 

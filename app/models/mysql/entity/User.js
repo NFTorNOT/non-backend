@@ -1,7 +1,7 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database'),
-  userConstants = require(rootPrefix + '/lib/globalConstants/entity/user');
+  userConstants = require(rootPrefix + '/lib/globalConstant/entity/user');
 
 const dbName = databaseConstants.mainDbName;
 
@@ -43,7 +43,7 @@ class User extends ModelBase {
    * @returns {object}
    * @private
    */
-  _formatDbRows(dbRow) {
+  _formatDbData(dbRow) {
     const oThis = this;
 
     const formattedData = {
@@ -64,12 +64,12 @@ class User extends ModelBase {
   /**
    * Insert into votes
    * @param {object} params
-   * @param {string} params.lensProfileId,
-   * @param {string} params.lensProfileUsername,
-   * @param {string} params.lensProfileDisplayName,
-   * @param {string} params.lensProfileOwnerAddress,
-   * @param {string} params.cookieToken,
-   * @param {string} params.status,
+   * @param {string} params.lensProfileId
+   * @param {string} params.lensProfileUsername
+   * @param {string} params.lensProfileDisplayName
+   * @param {string} params.lensProfileOwnerAddress
+   * @param {string} params.cookieToken
+   * @param {string} params.status
    */
   insertUser(params) {
     const oThis = this;
@@ -82,6 +82,31 @@ class User extends ModelBase {
       cookie_token: params.cookieToken,
       status: userConstants.invertedStatuses[params.status]
     });
+  }
+
+  /**
+   * Fetch users for given ids
+   *
+   * @param {array} ids: user ids
+   *
+   * @returns {object}
+   */
+  async fetchUsersByIds(ids) {
+    const oThis = this;
+
+    const response = {};
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['id IN (?)', ids])
+      .fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      response[formatDbRow.id] = formatDbRow;
+    }
+
+    return response;
   }
 }
 

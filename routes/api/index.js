@@ -10,8 +10,7 @@ const rootPrefix = '../..',
   sanitizer = require(rootPrefix + '/helpers/sanitizer'),
   apiNameConstants = require(rootPrefix + '/lib/globalConstant/apiName'),
   routeHelper = require(rootPrefix + '/routes/helper'),
-  responseConfig = require(rootPrefix + '/config/apiParams/response'),
-  words = require(rootPrefix + '/helpers/words.json');
+  responseConfig = require(rootPrefix + '/config/apiParams/response');
 
 const router = express.Router();
 
@@ -35,6 +34,24 @@ router.post('/store-on-ipfs', sanitizer.sanitizeDynamicUrlParams, function(req, 
 
   Promise.resolve(
     routeHelper.perform(req, res, next, '/app/services/StoreNFTDataInIPFS', 'r_a_i_1', null, dataFormatterFunc)
+  );
+});
+
+/* GET all nfts to vote. */
+router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getNftsToVoteApiName;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/GetNFTsForVote', 'r_a_i_2', null, dataFormatterFunc)
   );
 });
 
@@ -85,13 +102,6 @@ router.post('/mint-nft', async function(req, res, next) {
       err: { msg: 'something went wrong', err_data: error }
     });
   }
-});
-
-router.get('/get-word-of-the-day', function(req, res, next) {
-  return res.status(200).json({
-    success: true,
-    data: words
-  });
 });
 
 module.exports = router;

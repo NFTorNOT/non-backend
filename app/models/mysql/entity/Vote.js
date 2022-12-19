@@ -1,7 +1,7 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database'),
-  voteConstants = require(rootPrefix + '/lib/globalConstants/entity/vote');
+  voteConstants = require(rootPrefix + '/lib/globalConstant/entity/vote');
 
 const dbName = databaseConstants.mainDbName;
 
@@ -41,7 +41,7 @@ class Vote extends ModelBase {
    * @returns {object}
    * @private
    */
-  _formatDbRows(dbRow) {
+  _formatDbData(dbRow) {
     const oThis = this;
 
     const formattedData = {
