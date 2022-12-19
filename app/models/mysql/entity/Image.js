@@ -44,7 +44,7 @@ class Image extends ModelBase {
     const formattedData = {
       id: dbRow.id,
       shortenedUrl: dbRow.shortened_url,
-      url: null, // Todo :: Add url shortening logic
+      url: dbRow.shortened_url, // Todo :: Add url shortening logic
       ipfsObjectId: dbRow.ipfs_object_id,
       createdAt: dbRow.created_at,
       updatedAt: dbRow.updated_at

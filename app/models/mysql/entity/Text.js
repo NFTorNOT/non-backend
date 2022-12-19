@@ -71,11 +71,11 @@ class Text extends ModelBase {
   /**
    * Fetch texts by ids.
    *
-   * @param {array} ids
+   * @param {array} text ids
    *
    * @returns {object}
    */
-  async fetchByIds(ids) {
+  async fetchTextsByIds(ids) {
     const oThis = this;
 
     const dbRows = await oThis

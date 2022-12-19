@@ -1,7 +1,7 @@
 const fs = require('fs'),
   { v4 } = require('uuid');
 
-const rootPrefix = '../../',
+const rootPrefix = '../..',
   ServiceBase = require(rootPrefix + '/app/services/Base'),
   IpfsObjectModel = require(rootPrefix + '/app/models/mysql/entity/IpfsObject'),
   CommonValidators = require(rootPrefix + '/lib/validators/Common'),

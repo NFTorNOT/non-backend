@@ -10,8 +10,7 @@ const rootPrefix = '../..',
   sanitizer = require(rootPrefix + '/helpers/sanitizer'),
   apiNameConstants = require(rootPrefix + '/lib/globalConstant/apiName'),
   routeHelper = require(rootPrefix + '/routes/helper'),
-  responseConfig = require(rootPrefix + '/config/apiParams/response'),
-  words = require(rootPrefix + '/helpers/words.json');
+  responseConfig = require(rootPrefix + '/config/apiParams/response');
 
 const router = express.Router();
 
@@ -43,6 +42,24 @@ router.post('/reaction', sanitizer.sanitizeDynamicUrlParams, function(req, res, 
   // TODO: get the userId from cookie token after auth layer is implemented.
   req.internalDecodedParams.current_user_id = 100009;
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_2', null));
+});
+
+/* GET all nfts to vote. */
+router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getNftsToVoteApiName;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/GetNFTsForVote', 'r_a_i_2', null, dataFormatterFunc)
+  );
 });
 
 router.post('/fetch-stable-diffusion-image', async function(req, res, next) {
@@ -92,13 +109,6 @@ router.post('/mint-nft', async function(req, res, next) {
       err: { msg: 'something went wrong', err_data: error }
     });
   }
-});
-
-router.get('/get-word-of-the-day', function(req, res, next) {
-  return res.status(200).json({
-    success: true,
-    data: words
-  });
 });
 
 module.exports = router;

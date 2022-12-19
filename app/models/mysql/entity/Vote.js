@@ -41,7 +41,7 @@ class Vote extends ModelBase {
    * @returns {object}
    * @private
    */
-  _formatDbRows(dbRow) {
+  _formatDbData(dbRow) {
     const oThis = this;
 
     const formattedData = {

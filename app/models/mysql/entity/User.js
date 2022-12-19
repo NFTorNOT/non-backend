@@ -44,7 +44,7 @@ class User extends ModelBase {
    * @returns {object}
    * @private
    */
-  _formatDbRows(dbRow) {
+  _formatDbData(dbRow) {
     const oThis = this;
 
     const formattedData = {
@@ -88,6 +88,31 @@ class User extends ModelBase {
         status: userConstants.invertedStatuses[params.status]
       })
       .fire();
+  }
+
+  /**
+   * Fetch users for given ids
+   *
+   * @param {array} ids: user ids
+   *
+   * @returns {object}
+   */
+  async fetchUsersByIds(ids) {
+    const oThis = this;
+
+    const response = {};
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['id IN (?)', ids])
+      .fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      response[formatDbRow.id] = formatDbRow;
+    }
+
+    return response;
   }
 }
 

@@ -52,7 +52,7 @@ class LensPost extends ModelBase {
     const formattedData = {
       id: dbRow.id,
       themeId: dbRow.theme_id,
-      ownerUserId: dbName.owner_user_id,
+      ownerUserId: dbRow.owner_user_id,
       lensPublicationId: dbRow.lens_publication_id,
       title: dbRow.title,
       descriptionTextId: dbRow.description_text_id,
@@ -118,6 +118,70 @@ class LensPost extends ModelBase {
     }
 
     return oThis._formatDbData(response);
+  }
+
+  /**
+   * Fetch all active user ids with pagination.
+   *
+   * @param {object} params
+   * @param {number} params.limit
+   * @param {number} [params.paginationDatabaseId]
+   *
+   * @returns {Promise<{}>}
+   */
+  async fetchAllActiveLensPostsWithPagination(params) {
+    const oThis = this;
+
+    const lensPostIds = [];
+
+    let nextPageDatabaseId = null;
+
+    const queryObj = oThis
+      .select('id')
+      .where({ status: lensPostConstants.invertedStatuses[lensPostConstants.activeStatus] })
+      .limit(params.limit)
+      .order_by('id desc');
+
+    if (params.paginationDatabaseId) {
+      queryObj.where(['id > ?', params.paginationDatabaseId]);
+    }
+
+    const dbRows = await queryObj.fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      lensPostIds.push(dbRows[index].id);
+      nextPageDatabaseId = dbRows[index].id;
+    }
+
+    return {
+      lensPostIds: lensPostIds,
+      nextPageDatabaseId: nextPageDatabaseId
+    };
+  }
+
+  /**
+   * Fetch lens posts for given ids
+   *
+   * @param {array} ids: lens post ids
+   *
+   * @returns {object}
+   */
+  async fetchLensPostsByIds(ids) {
+    const oThis = this;
+
+    const response = {};
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['id IN (?)', ids])
+      .fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      response[formatDbRow.id] = formatDbRow;
+    }
+
+    return response;
   }
 }
 

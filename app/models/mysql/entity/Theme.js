@@ -39,7 +39,7 @@ class Theme extends ModelBase {
    * @returns {object}
    * @private
    */
-  _formatDbRows(dbRow) {
+  _formatDbData(dbRow) {
     const oThis = this;
 
     const formattedData = {
@@ -68,6 +68,31 @@ class Theme extends ModelBase {
         status: themeConstants.invertedStatuses[params.status]
       })
       .fire();
+  }
+
+  /**
+   * Fetch themes for given ids
+   *
+   * @param {array} ids: theme ids
+   *
+   * @returns {object}
+   */
+  async fetchThemesByIds(ids) {
+    const oThis = this;
+
+    const response = {};
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['id IN (?)', ids])
+      .fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      response[formatDbRow.id] = formatDbRow;
+    }
+
+    return response;
   }
 }
 
