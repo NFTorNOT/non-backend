@@ -9,7 +9,8 @@ const upQuery =
   'CREATE TABLE `images` ( \n' +
   '`id` bigint unsigned NOT NULL AUTO_INCREMENT, \n' +
   '`shortened_url` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL, \n' +
-  '`ipfs_object_id` bigint unsigned NOT NULL, \n' +
+  '`ipfs_object_id` bigint unsigned NULL, \n' +
+  '`kind` tinyint NOT NULL, \n' +
   '`created_at` int NOT NULL, \n' +
   '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`) \n' +

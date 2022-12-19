@@ -1,5 +1,6 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
+  imageConstants = require(rootPrefix + '/lib/globalConstant/entity/image'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database');
 
 const dbName = databaseConstants.mainDbName;
@@ -32,6 +33,7 @@ class Image extends ModelBase {
    * @param {number} dbRow.id
    * @param {string} dbRow.shortened_url
    * @param {number} dbRow.ipfs_object_id
+   * @param {number} dbRow.kind
    * @param {number} dbRow.created_at
    * @param {number} dbRow.updated_at
    *
@@ -46,6 +48,7 @@ class Image extends ModelBase {
       shortenedUrl: dbRow.shortened_url,
       url: dbRow.shortened_url, // Todo :: Add url shortening logic
       ipfsObjectId: dbRow.ipfs_object_id,
+      kind: imageConstants.kinds[dbRow.kind],
       createdAt: dbRow.created_at,
       updatedAt: dbRow.updated_at
     };
@@ -84,6 +87,7 @@ class Image extends ModelBase {
    * @param {object} params
    * @param {string} params.urlTemplate
    * @param {string} params.ipfsObjectId
+   * @param {string} params.kind
    *
    * @returns {object}
    */
@@ -93,7 +97,8 @@ class Image extends ModelBase {
     return oThis
       .insert({
         shortened_url: params.urlTemplate,
-        ipfs_object_id: params.ipfsObjectId
+        ipfs_object_id: params.ipfsObjectId,
+        kind: imageConstants.invertedKinds[params.kind]
       })
       .fire();
   }
