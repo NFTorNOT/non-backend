@@ -47,9 +47,9 @@ const webSignature = {
   [apiNameConstants.addReactionToNFT]: {
     mandatory: [
       {
-        parameter: 'lens_publication_id',
-        validatorMethods: [{ validateNonBlankString: null }],
-        type: 'string'
+        parameter: 'lens_post_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
       },
       {
         parameter: 'reaction',

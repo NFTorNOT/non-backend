@@ -1,5 +1,4 @@
 const CommonValidator = require('../../../lib/validators/Common'),
-  LensPostModel = require('../../../app/models/mysql/entity/LensPost'),
   ServiceBase = require('../../../app/services/Base'),
   VoteModel = require('../../../app/models/mysql/entity/Vote'),
   responseHelper = require('../../../lib/formatter/response'),
@@ -17,7 +16,7 @@ class Reaction extends ServiceBase {
    * @param {object} params
    * @param {string} params.reaction
    * @param {string} params.current_user_id
-   * @param {string} param.lens_publication_id
+   * @param {string} param.lens_post_id
    *
    * @constructor
    */
@@ -27,7 +26,7 @@ class Reaction extends ServiceBase {
 
     oThis.currentUserId = params.current_user_id;
     oThis.reaction = params.reaction;
-    oThis.lensPublicationId = params.lens_publication_id;
+    oThis.lensPostId = params.lens_post_id;
   }
 
   /**
@@ -40,8 +39,6 @@ class Reaction extends ServiceBase {
     const oThis = this;
 
     await oThis._validateParams();
-
-    await oThis._fetchLensPost();
 
     await oThis._addVote();
 
@@ -66,28 +63,6 @@ class Reaction extends ServiceBase {
         })
       );
     }
-  }
-
-  /**
-   * Fetch lens post.
-   *
-   * @private
-   */
-  async _fetchLensPost() {
-    const oThis = this;
-    const lensPost = await new LensPostModel().fetchLensPostByLensPublicationId(oThis.lensPublicationId);
-
-    const lensPostId = lensPost.id;
-    if (!lensPostId) {
-      return Promise.reject(
-        responseHelper.error({
-          internal_error_identifier: 'a_s_v_r_flp_1',
-          api_error_identifier: 'something_went_wrong',
-          debug_options: { lensPublicationId: oThis.lensPublicationId }
-        })
-      );
-    }
-    oThis.lensPostId = lensPostId;
   }
 
   /**
