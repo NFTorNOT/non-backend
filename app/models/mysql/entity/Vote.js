@@ -46,7 +46,7 @@ class Vote extends ModelBase {
 
     const formattedData = {
       id: dbRow.id,
-      lensPostId: dbName.lens_post_id,
+      lensPostId: dbRow.lens_post_id,
       voterUserId: dbRow.voter_user_id,
       status: voteConstants.statuses[dbRow.status],
       collectNftTransactionHash: dbRow.collect_nft_transaction_hash,
@@ -76,6 +76,34 @@ class Vote extends ModelBase {
         status: voteConstants.invertedStatuses[params.status]
       })
       .fire();
+  }
+
+  /**
+   * Fetch reactions for user for given lens posts ids
+   *
+   * @param {array} userId: userId
+   * @param {array} lensPostIds: lens post ids
+   *
+   * @returns {object}
+   */
+  async fetchReactionsForUserByLensPostIds(userId, lensPostIds) {
+    const oThis = this;
+
+    const response = {};
+
+    const dbRows = await oThis
+      .select('id, lens_post_id')
+      .where(['id IN (?) ', lensPostIds])
+      .where(['voter_user_id = ?', userId])
+      .fire();
+
+    response[userId] = {};
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      response[userId][formatDbRow.lensPostId] = 1;
+    }
+
+    return response;
   }
 }
 

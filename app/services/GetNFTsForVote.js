@@ -70,6 +70,8 @@ class GetNFTsForVote extends ServiceBase {
 
     await oThis._fetchLensPosts();
 
+    await oThis._filterLensPosts();
+
     await oThis._fetchRelatedEntities();
 
     oThis._addResponseMetaData();
@@ -133,11 +135,26 @@ class GetNFTsForVote extends ServiceBase {
   async _filterLensPosts() {
     const oThis = this;
 
-    if (!oThis.currentUserId) {
+    if (!oThis.currentUserId || oThis.lensPostsIds.length == 0) {
       return;
     }
 
-    // Todo: implement
+    const voteResponse = await new VoteModel().fetchReactionsForUserByLensPostIds(
+      oThis.currentUserId,
+      oThis.lensPostsIds
+    );
+    const reactionForUserMap = voteResponse[oThis.currentUserId];
+
+    const filteredLensPostsIds = [];
+    for (const lensPostId of oThis.lensPostsIds) {
+      if (reactionForUserMap[lensPostId]) {
+        continue;
+      }
+
+      filteredLensPostsIds.push(lensPostId);
+    }
+
+    oThis.lensPostsIds = filteredLensPostsIds;
   }
 
   /**
