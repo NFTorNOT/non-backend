@@ -207,8 +207,26 @@ app.use(appendRequestDebugInfo, startRequestLogLine);
 // Set response headers.
 app.use(setResponseHeader);
 
-app.get('/', function(req, res, next) {
-  res.status(200).json({ status: 'Up and Running' });
+/* Elb health checker request. */
+app.get('/health-checker', function(req, res, next) {
+  const performer = function() {
+    // 200 OK response needed for ELB Health checker.
+    if (req.headers['user-agent'] === 'ELB-HealthChecker/2.0') {
+      return responseHelper.renderApiResponse(responseHelper.successWithData({}), res, errorConfig);
+    }
+
+    return responseHelper.renderApiResponse(
+      responseHelper.error({
+        internal_error_identifier: 'a_h_1',
+        api_error_identifier: 'resource_not_found',
+        debug_options: {}
+      }),
+      res,
+      errorConfig
+    );
+  };
+
+  performer();
 });
 
 /**
