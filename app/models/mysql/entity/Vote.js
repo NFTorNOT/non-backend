@@ -93,7 +93,7 @@ class Vote extends ModelBase {
 
     const dbRows = await oThis
       .select('id, lens_post_id')
-      .where(['id IN (?) ', lensPostIds])
+      .where(['lens_post_id IN (?) ', lensPostIds])
       .where(['voter_user_id = ?', userId])
       .fire();
 
