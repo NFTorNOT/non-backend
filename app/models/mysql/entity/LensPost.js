@@ -80,20 +80,44 @@ class LensPost extends ModelBase {
    * @param {number} params.totalVotes,
    * @param {string} params.status,
    */
-  insertLensPost(params) {
+  async insertLensPost(params) {
     const oThis = this;
 
-    return oThis.insert({
-      theme_id: params.themeId,
-      owner_user_id: params.ownerUserId,
-      lens_publication_id: params.lensPublicationId,
-      title: params.title,
-      description_text_id: params.descriptionTextId,
-      image_id: params.imageId,
-      ipfs_object_id: params.ipfsObjectId,
-      total_votes: params.totalVotes,
-      status: lensPostConstants.invertedStatues[params.status]
-    });
+    return oThis
+      .insert({
+        theme_id: params.themeId,
+        owner_user_id: params.ownerUserId,
+        lens_publication_id: params.lensPublicationId,
+        title: params.title,
+        description_text_id: params.descriptionTextId,
+        image_id: params.imageId,
+        ipfs_object_id: params.ipfsObjectId,
+        total_votes: params.totalVotes,
+        status: lensPostConstants.invertedStatuses[params.status]
+      })
+      .fire();
+  }
+
+  /**
+   * Fetch LensPost by lensPublicationId
+   *
+   * @param {number} lensPublicationId
+   */
+  async fetchLensPostByLensPublicationId(lensPublicationId) {
+    const oThis = this;
+
+    let response = {};
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['lens_publication_id=?', lensPublicationId])
+      .fire();
+
+    if (dbRows.length > 0) {
+      response = dbRows[0];
+    }
+
+    return oThis._formatDbData(response);
   }
 
   /**

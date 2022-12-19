@@ -44,7 +44,26 @@ const webSignature = {
     ],
     optional: []
   },
-
+  [apiNameConstants.reaction]: {
+    mandatory: [
+      {
+        parameter: 'lens_publication_id',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'reaction',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'current_user_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number',
+        kind: 'internal'
+      }
+    ]
+  },
   [apiNameConstants.getNftsToVoteApiName]: {
     mandatory: [],
     optional: [

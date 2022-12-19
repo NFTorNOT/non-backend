@@ -11,7 +11,7 @@ const upQuery =
   '`lens_post_id` bigint NOT NULL, \n' +
   '`voter_user_id` bigint NOT NULL, \n' +
   '`status` tinyint NOT NULL, \n' +
-  '`collect_nft_transaction_hash` varchar(66) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
+  '`collect_nft_transaction_hash` varchar(66) CHARACTER SET utf8 COLLATE utf8_unicode_ci, \n' +
   '`created_at` int NOT NULL, \n' +
   '`updated_at` int NOT NULL, \n' +
   'PRIMARY KEY (`id`), \n' +
