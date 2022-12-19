@@ -5,6 +5,11 @@ Table images {
   id bigint
   shortened_url varchar
   ipfs_object_id bigint [ref: > ipfs_objects.id]
+  status tinyint [
+    note: '
+    1 = NFT,
+    2 = PROFILE
+    ']
   created_at timestamp
   updated_at timestamp
 
@@ -51,7 +56,7 @@ Table lens_posts {
 Table votes {
   id bigint
   lens_post_id bigint [ref: > lens_posts.id]
-  user_id bigint [ref: > users.id]
+  voter_user_id bigint [ref: > users.id]
   status tinyint [
     note: '
     1 = VOTED,
@@ -63,8 +68,8 @@ Table votes {
 
   indexes {
       (id) [pk]
-      (lens_post_id, user_id) [unique]
-      (user_id, status)
+      (lens_post_id, voter_user_id) [unique]
+      (voter_user_id, status)
   }
 }
 
