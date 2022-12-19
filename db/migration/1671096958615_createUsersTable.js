@@ -10,7 +10,7 @@ const upQuery =
   '`id` bigint unsigned NOT NULL AUTO_INCREMENT, \n' +
   '`lens_profile_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
   '`lens_profile_username` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
-  '`lens_profile_display_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
+  '`lens_profile_display_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL, \n' +
   '`lens_profile_owner_address` varchar(42) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL, \n' +
   '`lens_profile_image_id` bigint NULL, \n' +
   '`status` tinyint NOT NULL, \n' +
