@@ -2,6 +2,7 @@ FROM node:18
 
 # Create app directory
 WORKDIR /usr/src/app
+ARG ENV
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -19,7 +20,11 @@ RUN npm install
 # If you are building your code for production
 # RUN npm ci --only=production
 # Bundle app source
+RUN apt update && apt install -y awscli
+
+
+
 COPY . .
 
 EXPOSE 3000
-CMD [ "node", "appServer.js" ]
+CMD ["bash", "start.sh"]
