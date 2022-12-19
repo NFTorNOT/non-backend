@@ -38,6 +38,13 @@ router.post('/store-on-ipfs', sanitizer.sanitizeDynamicUrlParams, function(req, 
   );
 });
 
+router.post('/reaction', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  req.internalDecodedParams.apiName = apiNameConstants.reaction;
+  // TODO: get the userId from cookie token after auth layer is implemented.
+  req.internalDecodedParams.current_user_id = 100009;
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_2', null));
+});
+
 router.post('/fetch-stable-diffusion-image', async function(req, res, next) {
   try {
     const prompt = req.body.prompt,
