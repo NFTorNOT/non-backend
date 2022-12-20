@@ -81,6 +81,7 @@ const webSignature = {
     mandatory: [
       {
         parameter: 'prompt',
+
         validatorMethods: [{ validateNonBlankString: null }],
         type: 'string'
       },
@@ -91,6 +92,51 @@ const webSignature = {
       }
     ],
     optional: []
+  },
+  [apiNameConstants.submitToVote]: {
+    mandatory: [
+      {
+        parameter: 'theme_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
+      },
+      {
+        parameter: 'image_url',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'current_user_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number',
+        kind: 'internal'
+      },
+      {
+        parameter: 'title',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_publication_id',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'description',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_metadata_ipfs_object_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
+      },
+      {
+        parameter: 'image_ipfs_object_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
+      }
+    ]
   }
 };
 module.exports = webSignature;
