@@ -73,48 +73,6 @@ class CoreConstants {
     return process.env.NA_MAIN_DB_MYSQL_PASSWORD;
   }
 
-  get MAIN_DB_MYSQL_HOST_SLAVE() {
-    return process.env.NA_MAIN_DB_MYSQL_HOST_SLAVE;
-  }
-
-  get MAIN_DB_MYSQL_USER_SLAVE() {
-    return process.env.NA_MAIN_DB_MYSQL_USER_SLAVE;
-  }
-
-  get MAIN_DB_MYSQL_PASSWORD_SLAVE() {
-    return process.env.NA_MAIN_DB_MYSQL_PASSWORD_SLAVE;
-  }
-
-  // Config db.
-  get CONFIG_DB_MYSQL_HOST() {
-    return process.env.NA_CONFIG_DB_MYSQL_HOST;
-  }
-
-  get CONFIG_DB_MYSQL_USER() {
-    return process.env.NA_CONFIG_DB_MYSQL_USER;
-  }
-
-  get CONFIG_DB_MYSQL_PASSWORD() {
-    return process.env.NA_CONFIG_DB_MYSQL_PASSWORD;
-  }
-
-  // Big db.
-  get BIG_DB_MYSQL_HOST() {
-    return process.env.NA_BIG_DB_MYSQL_HOST;
-  }
-
-  get BIG_DB_MYSQL_USER() {
-    return process.env.NA_BIG_DB_MYSQL_USER;
-  }
-
-  get BIG_DB_MYSQL_PASSWORD() {
-    return process.env.NA_BIG_DB_MYSQL_PASSWORD;
-  }
-
-  get CONFIG_STRATEGY_SALT() {
-    return process.env.NA_CONFIG_STRATEGY_SALT;
-  }
-
   get ENCRYPTION_KEY() {
     return process.env.NA_ENCRYPTION_KEY;
   }

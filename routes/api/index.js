@@ -59,7 +59,7 @@ router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next)
   };
 
   Promise.resolve(
-    routeHelper.perform(req, res, next, '/app/services/GetNFTsForVote', 'r_a_i_3', null, dataFormatterFunc)
+    routeHelper.perform(req, res, next, '/app/services/vote/GetNFTsForVote', 'r_a_i_2', null, dataFormatterFunc)
   );
 });
 

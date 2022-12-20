@@ -1,11 +1,11 @@
-const rootPrefix = '../..',
+const rootPrefix = '../../..',
   ServiceBase = require(rootPrefix + '/app/services/Base'),
-  LensPostModel = require(rootPrefix + '/app/models/mysql/entity/LensPost'),
-  UserModel = require(rootPrefix + '/app/models/mysql/entity/User'),
-  TextModel = require(rootPrefix + '/app/models/mysql/entity/Text'),
-  VoteModel = require(rootPrefix + '/app/models/mysql/entity/Vote'),
-  ImageModel = require(rootPrefix + '/app/models/mysql/entity/Image'),
-  ThemeModel = require(rootPrefix + '/app/models/mysql/entity/Theme'),
+  LensPostModel = require(rootPrefix + '/app/models/mysql/main/LensPost'),
+  UserModel = require(rootPrefix + '/app/models/mysql/main/User'),
+  TextModel = require(rootPrefix + '/app/models/mysql/main/Text'),
+  VoteModel = require(rootPrefix + '/app/models/mysql/main/Vote'),
+  ImageModel = require(rootPrefix + '/app/models/mysql/main/Image'),
+  ThemeModel = require(rootPrefix + '/app/models/mysql/main/Theme'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   basicHelper = require(rootPrefix + '/helpers/basic'),
   entityTypeConstants = require(rootPrefix + '/lib/globalConstant/entityType'),
@@ -41,6 +41,7 @@ class GetNFTsForVote extends ServiceBase {
 
     oThis.paginationDatabaseId = null;
     oThis.nextPageDatabaseId = null;
+    oThis.isNextPage = false;
 
     oThis.lensPostsIds = [];
     oThis.lensPosts = {};
@@ -142,22 +143,29 @@ class GetNFTsForVote extends ServiceBase {
       return;
     }
 
+    if (oThis.lensPostsIds.length >= oThis.limit) {
+      oThis.isNextPage = true;
+    }
+
     const voteResponse = await new VoteModel().fetchReactionsForUserByLensPostIds(
       oThis.currentUserId,
       oThis.lensPostsIds
     );
     const reactionForUserMap = voteResponse[oThis.currentUserId];
 
-    const filteredLensPostsIds = [];
+    const filteredLensPostsIds = [],
+      filteredLensPosts = {};
     for (const lensPostId of oThis.lensPostsIds) {
       if (reactionForUserMap[lensPostId]) {
         continue;
       }
 
       filteredLensPostsIds.push(lensPostId);
+      filteredLensPosts[lensPostId] = oThis.lensPosts[lensPostId];
     }
 
     oThis.lensPostsIds = filteredLensPostsIds;
+    oThis.lensPosts = filteredLensPosts;
   }
 
   /**
@@ -275,7 +283,7 @@ class GetNFTsForVote extends ServiceBase {
 
     const nextPagePayload = {};
 
-    if (oThis.lensPostsIds.length >= oThis.limit) {
+    if (oThis.isNextPage) {
       nextPagePayload[paginationConstants.paginationIdentifierKey] = {
         next_page_database_id: oThis.nextPageDatabaseId
       };

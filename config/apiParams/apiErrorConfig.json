@@ -103,5 +103,10 @@
     "http_code": "422",
     "code": "UNPROCESSABLE_ENTITY",
     "message": "Service seems to be down or unavailable."
+  },
+  "already_reacted_to_post": {
+    "http_code": "200",
+    "code": "BAD_REQUEST",
+    "message": "You have already reacted to the post."
   }
 }
