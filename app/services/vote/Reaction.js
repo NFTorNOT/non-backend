@@ -1,6 +1,6 @@
 const CommonValidator = require('../../../lib/validators/Common'),
   ServiceBase = require('../../../app/services/Base'),
-  VoteModel = require('../../../app/models/mysql/entity/Vote'),
+  VoteModel = require('../../../app/models/mysql/main/Vote'),
   responseHelper = require('../../../lib/formatter/response'),
   voteConstants = require('../../../lib/globalConstant/entity/vote');
 

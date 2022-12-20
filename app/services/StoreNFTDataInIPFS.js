@@ -3,7 +3,7 @@ const fs = require('fs'),
 
 const rootPrefix = '../..',
   ServiceBase = require(rootPrefix + '/app/services/Base'),
-  IpfsObjectModel = require(rootPrefix + '/app/models/mysql/entity/IpfsObject'),
+  IpfsObjectModel = require(rootPrefix + '/app/models/mysql/main/IpfsObject'),
   CommonValidators = require(rootPrefix + '/lib/validators/Common'),
   basicHelper = require(rootPrefix + '/helpers/basic'),
   ipfsHelper = require(rootPrefix + '/helpers/ipfs'),
