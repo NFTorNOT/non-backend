@@ -1,6 +1,16 @@
 const fs = require('fs');
 
+const rootPrefix = '..',
+  responseHelper = require(rootPrefix + '/lib/formatter/response');
+
 class Ipfs {
+  /**
+   * Upload image to ipfs using web3 storage
+   *
+   * @param fileName
+   * @param localFileData
+   * @returns {Promise<*>}
+   */
   async uploadImage(fileName, localFileData) {
     const response = await fetch('https://api.web3.storage/upload', {
       method: 'POST',
@@ -13,10 +23,25 @@ class Ipfs {
     const responseJson = await response.json();
 
     const cid = responseJson.cid;
+    if (!cid) {
+      return responseHelper.error({
+        internal_error_identifier: 'h_i_umd_1',
+        api_error_identifier: 'invalid_params',
+        debug_options: {}
+      });
+    }
 
-    return cid;
+    return responseHelper.successWithData({
+      imageCid: cid
+    });
   }
 
+  /**
+   * Upload metadata to ipfs using infura client
+   *
+   * @param metadataObj
+   * @returns {Promise<*>}
+   */
   async uploadMetaData(metadataObj) {
     const oThis = this;
 
@@ -27,12 +52,24 @@ class Ipfs {
     try {
       result = await client.add(JSON.stringify(metadataObj));
     } catch (err) {
-      console.log('Error while uploading NFT Metadata -----', err);
+      return responseHelper.error({
+        internal_error_identifier: 'h_i_umd_1',
+        api_error_identifier: 'invalid_params',
+        debug_options: {}
+      });
     }
 
-    return result.path;
+    return responseHelper.successWithData({
+      metadataCid: result.path
+    });
   }
 
+  /**
+   * Get Infura client.
+   *
+   * @returns {Promise<*>}
+   * @private
+   */
   async _ipfsInfuraClient() {
     const { create } = await import('ipfs-http-client');
 

@@ -112,7 +112,13 @@ class StoreNFTDataInIPFS extends ServiceBase {
     const localImageFileData = fs.readFileSync(localImageDownloadPath);
 
     console.log('--- Upload image to IPFS ---');
-    oThis.imageCid = await ipfsHelper.uploadImage(oThis.fileName, localImageFileData);
+    const uploadImageResponse = await ipfsHelper.uploadImage(oThis.fileName, localImageFileData);
+    if (uploadImageResponse.isFailure()) {
+      return Promise.reject(uploadImageResponse);
+    }
+
+    oThis.imageCid = uploadImageResponse.data.imageCid;
+
     console.log('---- Upload image to IPFS completed:', oThis.imageCid);
 
     if (!oThis.imageCid) {
@@ -171,12 +177,16 @@ class StoreNFTDataInIPFS extends ServiceBase {
           type: 'image/png'
         }
       ],
-      attributes: [],
       tags: [],
       appId: 'NFTorNot'
     };
 
-    oThis.lensMetdaDataCid = await ipfsHelper.uploadMetaData(postData);
+    const uploadMetaResponse = await ipfsHelper.uploadMetaData(postData);
+    if (uploadMetaResponse.isFailure()) {
+      return Promise.reject(uploadMetaResponse);
+    }
+
+    oThis.lensMetdaDataCid = uploadMetaResponse.data.metadataCid;
 
     if (!oThis.lensMetdaDataCid) {
       return Promise.reject(
