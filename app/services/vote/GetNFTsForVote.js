@@ -1,4 +1,4 @@
-const rootPrefix = '../..',
+const rootPrefix = '../../..',
   ServiceBase = require(rootPrefix + '/app/services/Base'),
   LensPostModel = require(rootPrefix + '/app/models/mysql/entity/LensPost'),
   UserModel = require(rootPrefix + '/app/models/mysql/entity/User'),
