@@ -118,6 +118,26 @@ class CoreConstants {
   get ENCRYPTION_KEY() {
     return process.env.NA_ENCRYPTION_KEY;
   }
+
+  get STABILITY_API_KEY() {
+    return process.env.STABILITY_KEY;
+  }
+
+  get S3_BUCKET() {
+    return process.env.S3_BUCKET;
+  }
+
+  get S3_REGION() {
+    return process.env.S3_REGION;
+  }
+
+  get S3_ACCESS_KEY_ID() {
+    return process.env.S3_ACCESS_KEY_ID;
+  }
+
+  get S3_SECRET_ACCESS_KEY() {
+    return process.env.S3_SECRET_ACCESS_KEY;
+  }
 }
 
 module.exports = new CoreConstants();

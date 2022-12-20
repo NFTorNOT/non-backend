@@ -59,7 +59,23 @@ router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next)
   };
 
   Promise.resolve(
-    routeHelper.perform(req, res, next, '/app/services/GetNFTsForVote', 'r_a_i_2', null, dataFormatterFunc)
+    routeHelper.perform(req, res, next, '/app/services/GetNFTsForVote', 'r_a_i_3', null, dataFormatterFunc)
+  );
+});
+
+/* GET image suggestions */
+router.get('/image-suggestions', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getImageSuggestions;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/GetImageSuggestions', 'r_a_i_4', null, dataFormatterFunc)
   );
 });
 

@@ -44,6 +44,7 @@ const webSignature = {
     ],
     optional: []
   },
+
   [apiNameConstants.addReactionToNFT]: {
     mandatory: [
       {
@@ -64,6 +65,7 @@ const webSignature = {
       }
     ]
   },
+
   [apiNameConstants.getNftsToVoteApiName]: {
     mandatory: [],
     optional: [
@@ -73,6 +75,22 @@ const webSignature = {
         type: 'string'
       }
     ]
+  },
+
+  [apiNameConstants.getImageSuggestions]: {
+    mandatory: [
+      {
+        parameter: 'prompt',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'art_style',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      }
+    ],
+    optional: []
   }
 };
 module.exports = webSignature;
