@@ -84,7 +84,7 @@ class Reaction extends ServiceBase {
       return Promise.reject(
         responseHelper.error({
           internal_error_identifier: 'a_s_v_r_av_1',
-          api_error_identifier: 'something_went_wrong',
+          api_error_identifier: 'already_reacted_to_post',
           debug_options: { insertData }
         })
       );
