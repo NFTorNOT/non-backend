@@ -153,16 +153,19 @@ class GetNFTsForVote extends ServiceBase {
     );
     const reactionForUserMap = voteResponse[oThis.currentUserId];
 
-    const filteredLensPostsIds = [];
+    const filteredLensPostsIds = [],
+      filteredLensPosts = {};
     for (const lensPostId of oThis.lensPostsIds) {
       if (reactionForUserMap[lensPostId]) {
         continue;
       }
 
       filteredLensPostsIds.push(lensPostId);
+      filteredLensPosts[lensPostId] = oThis.lensPosts[lensPostId];
     }
 
     oThis.lensPostsIds = filteredLensPostsIds;
+    oThis.lensPosts = filteredLensPosts;
   }
 
   /**
