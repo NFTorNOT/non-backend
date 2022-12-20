@@ -41,6 +41,7 @@ class GetNFTsForVote extends ServiceBase {
 
     oThis.paginationDatabaseId = null;
     oThis.nextPageDatabaseId = null;
+    oThis.isNextPage = false;
 
     oThis.lensPostsIds = [];
     oThis.lensPosts = {};
@@ -140,6 +141,10 @@ class GetNFTsForVote extends ServiceBase {
 
     if (!oThis.currentUserId || oThis.lensPostsIds.length == 0) {
       return;
+    }
+
+    if (oThis.lensPostsIds.length >= oThis.limit) {
+      oThis.isNextPage = true;
     }
 
     const voteResponse = await new VoteModel().fetchReactionsForUserByLensPostIds(
@@ -275,7 +280,7 @@ class GetNFTsForVote extends ServiceBase {
 
     const nextPagePayload = {};
 
-    if (oThis.lensPostsIds.length >= oThis.limit) {
+    if (oThis.isNextPage) {
       nextPagePayload[paginationConstants.paginationIdentifierKey] = {
         next_page_database_id: oThis.nextPageDatabaseId
       };
