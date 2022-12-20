@@ -81,11 +81,13 @@ class Reaction extends ServiceBase {
     try {
       await new VoteModel().insertVote(insertData);
     } catch (error) {
+      console.error('Error occured while recording reaction -- ', error);
+
       return Promise.reject(
         responseHelper.error({
           internal_error_identifier: 'a_s_v_r_av_1',
           api_error_identifier: 'already_reacted_to_post',
-          debug_options: { insertData }
+          debug_options: { insertData: insertData, error: error }
         })
       );
     }
