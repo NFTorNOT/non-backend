@@ -1,10 +1,10 @@
 const rootPrefix = '../../..';
 
 const CommonValidators = require(rootPrefix + '/lib/validators/Common'),
-  ImageModel = require(rootPrefix + '/app/models/mysql/entity/Image'),
-  LensPostModel = require(rootPrefix + '/app/models/mysql/entity/LensPost'),
+  ImageModel = require(rootPrefix + '/app/models/mysql/main/Image'),
+  LensPostModel = require(rootPrefix + '/app/models/mysql/main/LensPost'),
   ServiceBase = require(rootPrefix + '/app/services/Base'),
-  TextModel = require(rootPrefix + '/app/models/mysql/entity/Text'),
+  TextModel = require(rootPrefix + '/app/models/mysql/main/Text'),
   imageConstants = require(rootPrefix + '/lib/globalConstant/entity/image'),
   lensPostConstants = require(rootPrefix + '/lib/globalConstant/entity/lensPost'),
   responseHelper = require(rootPrefix + '/lib/formatter/response');
@@ -83,6 +83,12 @@ class SubmitToVote extends ServiceBase {
       paramErrors.push('invalid_image_description_length');
     }
 
+    const qryResponse = await new LensPostModel().fetchLensPostByLensPublicationId(oThis.lensPublicationId);
+
+    if (qryResponse) {
+      paramErrors.push('lens_publication_already_exists');
+    }
+
     if (paramErrors.length > 0) {
       return Promise.reject(
         responseHelper.paramValidationError({
@@ -91,7 +97,8 @@ class SubmitToVote extends ServiceBase {
           params_error_identifiers: paramErrors,
           debug_options: {
             title: oThis.title,
-            description: oThis.description
+            description: oThis.description,
+            lensPublicationId: oThis.lensPublicationId
           }
         })
       );
