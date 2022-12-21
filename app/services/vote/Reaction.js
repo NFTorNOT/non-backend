@@ -56,14 +56,25 @@ class Reaction extends ServiceBase {
    */
   async _validateParams() {
     const oThis = this;
+
+    const paramsError = [];
+    const fetchResponse = await new LensPostModel().fetchLensPostsByIds([oThis.lensPostId]);
+    if (CommonValidator.isVarNullOrUndefined(fetchResponse[oThis.lensPostId])) {
+      paramsError.push('invalid_lens_post_id');
+    }
+
     const allowedReactionValuesMap = voteConstants.invertedStatuses;
     if (CommonValidator.isVarNullOrUndefined(allowedReactionValuesMap[oThis.reaction])) {
+      paramsError.push('invalid_reaction_type');
+    }
+
+    if (paramsError.length > 0) {
       return Promise.reject(
         responseHelper.paramValidationError({
           internal_error_identifier: 'a_s_v_r_vp_1',
           api_error_identifier: 'invalid_api_params',
-          params_error_identifiers: ['invalid_reaction_type'],
-          debug_options: { reaction: oThis.reaction }
+          params_error_identifiers: paramsError,
+          debug_options: { reaction: oThis.reaction, lensPostId: oThis.lensPostId }
         })
       );
     }
@@ -91,7 +102,7 @@ class Reaction extends ServiceBase {
         responseHelper.error({
           internal_error_identifier: 'a_s_v_r_av_1',
           api_error_identifier: 'already_reacted_to_post',
-          debug_options: { insertData: insertData }
+          debug_options: { insertData: insertData, error }
         })
       );
     }
@@ -105,10 +116,7 @@ class Reaction extends ServiceBase {
   async _updateVoteCount() {
     const oThis = this;
     if (oThis.reaction === voteConstants.votedStatus) {
-      const lensPostId = oThis.lensPostId;
-      const fetchResponse = await new LensPostModel().fetchLensPostsByIds([lensPostId]);
-      const lensPost = fetchResponse[lensPostId];
-      await new LensPostModel().updateLensPostByLensPostId(lensPost.id, { totalVotes: lensPost.totalVotes + 1 });
+      await new LensPostModel().incrementTotalVotesForLensPostByLensPostId(oThis.lensPostId);
     }
   }
 
