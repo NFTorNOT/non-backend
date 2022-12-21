@@ -1,5 +1,6 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
+  basicHelper = require(rootPrefix + '/helpers/basic'),
   lensPostConstants = require(rootPrefix + '/lib/globalConstant/entity/lensPost'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database');
 
@@ -157,6 +158,43 @@ class LensPost extends ModelBase {
       lensPostIds: lensPostIds,
       nextPageDatabaseId: nextPageDatabaseId
     };
+  }
+
+  /**
+   * Update lens post by id.
+   *
+   * @param {number} id
+   * @param {object} updatedParams
+   * @param {number} updatedParams.themeId,
+   * @param {string} updatedParams.ownerUserId,
+   * @param {string} updatedParams.lensPublicationId,
+   * @param {string} updatedParams.title,
+   * @param {number} updatedParams.descriptionTextId,
+   * @param {number} updatedParams.imageId,
+   * @param {number} updatedParams.ipfsObjectId,
+   * @param {number} updatedParams.totalVotes,
+   * @param {string} updatedParams.status,
+   */
+  async updateLensPostByLensPostId(id, updatedParams) {
+    const oThis = this;
+    let params = {
+      theme_id: updatedParams.themeId,
+      owner_user_id: updatedParams.ownerUserId,
+      lens_publication_id: updatedParams.lensPublicationId,
+      title: updatedParams.title,
+      description_text_id: updatedParams.descriptionTextId,
+      image_id: updatedParams.imageId,
+      ipfs_object_id: updatedParams.ipfsObjectId,
+      total_votes: updatedParams.totalVotes,
+      status: lensPostConstants.invertedStatuses[updatedParams.status]
+    };
+
+    params = basicHelper.cleanObject(params);
+
+    return oThis
+      .update(params)
+      .where(['id = ?', id])
+      .fire();
   }
 
   /**

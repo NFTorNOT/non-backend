@@ -1,8 +1,10 @@
-const CommonValidator = require('../../../lib/validators/Common'),
-  ServiceBase = require('../../../app/services/Base'),
-  VoteModel = require('../../../app/models/mysql/main/Vote'),
-  responseHelper = require('../../../lib/formatter/response'),
-  voteConstants = require('../../../lib/globalConstant/entity/vote');
+const rootPrefix = '../../..';
+const CommonValidator = require(rootPrefix + '/lib/validators/Common'),
+  LensPostModel = require(rootPrefix + '/app/models/mysql/main/LensPost'),
+  ServiceBase = require(rootPrefix + '/app/services/Base'),
+  VoteModel = require(rootPrefix + '/app/models/mysql/main/Vote'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  voteConstants = require(rootPrefix + '/lib/globalConstant/entity/vote');
 
 /**
  * Class to add reaction to a post.
@@ -41,6 +43,8 @@ class Reaction extends ServiceBase {
     await oThis._validateParams();
 
     await oThis._addVote();
+
+    await oThis._updateVoteCount();
 
     return oThis._prepareResponse();
   }
@@ -87,9 +91,24 @@ class Reaction extends ServiceBase {
         responseHelper.error({
           internal_error_identifier: 'a_s_v_r_av_1',
           api_error_identifier: 'already_reacted_to_post',
-          debug_options: { insertData: insertData, error: error }
+          debug_options: { insertData: insertData }
         })
       );
+    }
+  }
+
+  /**
+   * Update the vote count of the post.
+   *
+   * @private
+   */
+  async _updateVoteCount() {
+    const oThis = this;
+    if (oThis.reaction === voteConstants.votedStatus) {
+      const lensPostId = oThis.lensPostId;
+      const fetchResponse = await new LensPostModel().fetchLensPostsByIds([lensPostId]);
+      const lensPost = fetchResponse[lensPostId];
+      await new LensPostModel().updateLensPostByLensPostId(lensPost.id, { totalVotes: lensPost.totalVotes + 1 });
     }
   }
 
