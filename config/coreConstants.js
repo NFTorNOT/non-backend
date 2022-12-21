@@ -96,6 +96,18 @@ class CoreConstants {
   get S3_SECRET_ACCESS_KEY() {
     return process.env.S3_SECRET_ACCESS_KEY;
   }
+
+  get WEB3_STORAGE_IPFS_TOKEN() {
+    return process.env.WEB3_STORAGE_IPFS_TOKEN;
+  }
+
+  get INFURA_PROJECT_ID() {
+    return process.env.INFURA_PROJECT_ID;
+  }
+
+  get INFURA_API_SECRET_KEY() {
+    return process.env.INFURA_API_SECRET_KEY;
+  }
 }
 
 module.exports = new CoreConstants();

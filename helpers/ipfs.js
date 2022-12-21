@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const rootPrefix = '..',
+  coreConstants = require(rootPrefix + '/config/coreConstants'),
   responseHelper = require(rootPrefix + '/lib/formatter/response');
 
 class Ipfs {
@@ -16,7 +17,7 @@ class Ipfs {
       method: 'POST',
       headers: {
         'X-NAME': fileName,
-        Authorization: `Bearer ${process.env.WEB3_STORAGE_IPFS_TOKEN}`
+        Authorization: `Bearer ${coreConstants.WEB3_STORAGE_IPFS_TOKEN}`
       },
       body: localFileData
     });
@@ -73,7 +74,7 @@ class Ipfs {
   async _ipfsInfuraClient() {
     const { create } = await import('ipfs-http-client');
 
-    const auth = `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_API_SECRET_KEY}`;
+    const auth = `${coreConstants.INFURA_PROJECT_ID}:${coreConstants.INFURA_API_SECRET_KEY}`;
 
     const client = await create({
       host: 'ipfs.infura.io',
