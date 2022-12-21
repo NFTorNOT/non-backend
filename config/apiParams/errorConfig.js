@@ -16,6 +16,11 @@ const webSpecificErrorConfig = {
     parameter: 'reaction',
     code: 'invalid',
     message: 'Invalid reaction type given.'
+  },
+  lens_publication_already_exists: {
+    parameter: 'lens_publication_id',
+    code: 'invalid',
+    message: 'Lens publication already exists.'
   }
 };
 
