@@ -26,7 +26,17 @@ const webResponse = {
       [entityTypeConstants.getNFTsToVoteListMeta]: responseEntityKey.meta
     }
   },
-  [apiNameConstants.addReactionToNFT]: {}
+
+  [apiNameConstants.addReactionToNFT]: {},
+
+  [apiNameConstants.getImageSuggestions]: {
+    resultType: responseEntityKey.suggestionIds,
+    resultTypeLookup: responseEntityKey.suggestions,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.suggestionIds]: responseEntityKey.suggestionIds,
+      [entityTypeConstants.suggestionsMap]: responseEntityKey.suggestions
+    }
+  }
 };
 
 module.exports = webResponse;

@@ -44,6 +44,7 @@ const webSignature = {
     ],
     optional: []
   },
+
   [apiNameConstants.addReactionToNFT]: {
     mandatory: [
       {
@@ -64,6 +65,7 @@ const webSignature = {
       }
     ]
   },
+
   [apiNameConstants.getNftsToVoteApiName]: {
     mandatory: [],
     optional: [
@@ -71,6 +73,68 @@ const webSignature = {
         parameter: paginationConstants.paginationIdentifierKey, // Pagination identifier.
         validatorMethods: [{ validateString: null }, { validatePaginationIdentifier: null }],
         type: 'string'
+      }
+    ]
+  },
+
+  [apiNameConstants.getImageSuggestions]: {
+    mandatory: [
+      {
+        parameter: 'prompt',
+
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'art_style',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      }
+    ],
+    optional: []
+  },
+  [apiNameConstants.submitToVote]: {
+    mandatory: [
+      {
+        parameter: 'theme_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
+      },
+      {
+        parameter: 'image_url',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'current_user_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number',
+        kind: 'internal'
+      },
+      {
+        parameter: 'title',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_publication_id',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'description',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_metadata_ipfs_object_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
+      },
+      {
+        parameter: 'image_ipfs_object_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
       }
     ]
   }

@@ -45,6 +45,14 @@ router.post('/reaction', sanitizer.sanitizeDynamicUrlParams, function(req, res, 
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_2', null));
 });
 
+router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  req.internalDecodedParams.apiName = apiNameConstants.submitToVote;
+  // TODO: get the userId from cookie token after auth layer is implemented.
+  req.internalDecodedParams.current_user_id = 100009;
+
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_3', null));
+});
+
 /* GET all nfts to vote. */
 router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   const apiName = apiNameConstants.getNftsToVoteApiName;
@@ -59,7 +67,23 @@ router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next)
   };
 
   Promise.resolve(
-    routeHelper.perform(req, res, next, '/app/services/vote/GetNFTsForVote', 'r_a_i_2', null, dataFormatterFunc)
+    routeHelper.perform(req, res, next, '/app/services/vote/GetNFTsForVote', 'r_a_i_4', null, dataFormatterFunc)
+  );
+});
+
+/* GET image suggestions */
+router.get('/image-suggestions', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getImageSuggestions;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/GetImageSuggestions', 'r_a_i_4', null, dataFormatterFunc)
   );
 });
 
