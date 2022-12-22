@@ -139,6 +139,32 @@ class User extends ModelBase {
   }
 
   /**
+   * Fetch active users from lens profile id and wallet address.
+   *
+   * @param {string} lensProfileId
+   * @param {string} lensProfileOwnerAddress
+   *
+   * @returns {object}
+   */
+  async fetchActiveUserByLensProfileIdAndWalletAddress(lensProfileId, lensProfileOwnerAddress) {
+    const oThis = this;
+
+    let response;
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['lens_profile_id = ?', lensProfileId])
+      .where(['lens_profile_owner_address = ?', lensProfileOwnerAddress])
+      .fire();
+
+    if (dbRows.length > 0) {
+      response = oThis._formatDbData(dbRows[0]);
+    }
+
+    return response;
+  }
+
+  /**
    * Fetch secure user by id.
    *
    * @param {number} id: user id
@@ -157,7 +183,7 @@ class User extends ModelBase {
       return {};
     }
 
-    return oThis.formatDbData(dbRows[0]);
+    return oThis._formatDbData(dbRows[0]);
   }
 
   /**

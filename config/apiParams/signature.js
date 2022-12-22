@@ -58,9 +58,9 @@ const webSignature = {
         type: 'string'
       },
       {
-        parameter: 'current_user_id',
-        validatorMethods: [{ validateInteger: null }],
-        type: 'number',
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
         kind: 'internal'
       }
     ]
@@ -106,9 +106,9 @@ const webSignature = {
         type: 'string'
       },
       {
-        parameter: 'current_user_id',
-        validatorMethods: [{ validateInteger: null }],
-        type: 'number',
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
         kind: 'internal'
       },
       {
@@ -135,6 +135,47 @@ const webSignature = {
         parameter: 'image_ipfs_object_id',
         validatorMethods: [{ validateInteger: null }],
         type: 'number'
+      }
+    ]
+  },
+  [apiNameConstants.authenticateUser]: {
+    mandatory: [
+      {
+        parameter: 'message',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'signed_message',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'wallet_address',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_profile_username',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_profile_id',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      }
+    ],
+    optional: [
+      {
+        parameter: 'lens_profile_display_name',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_profile_image_url',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
       }
     ]
   }

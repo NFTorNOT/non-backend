@@ -21,6 +21,11 @@ const webSpecificErrorConfig = {
     parameter: 'lens_publication_id',
     code: 'invalid',
     message: 'Lens publication already exists.'
+  },
+  invalid_wallet_address: {
+    parameter: 'wallet_address',
+    code: 'invalid',
+    message: 'Invalid wallet address provided.'
   }
 };
 
