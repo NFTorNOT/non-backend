@@ -44,7 +44,7 @@ class Theme extends ModelBase {
 
     const formattedData = {
       id: dbRow.id,
-      name: dbRow.name,
+      name: dbRow.name.toLowerCase(),
       status: themeConstants.statuses[dbRow.status],
       createdAt: dbRow.created_at,
       updatedAt: dbRow.updated_at
@@ -64,7 +64,7 @@ class Theme extends ModelBase {
 
     return oThis
       .insert({
-        name: params.name,
+        name: params.name.toLowerCase(),
         status: themeConstants.invertedStatuses[params.status]
       })
       .fire();
@@ -90,6 +90,30 @@ class Theme extends ModelBase {
     for (let index = 0; index < dbRows.length; index++) {
       const formatDbRow = oThis._formatDbData(dbRows[index]);
       response[formatDbRow.id] = formatDbRow;
+    }
+
+    return response;
+  }
+
+  /**
+   * Fetch active theme by theme name.
+   *
+   * @param {string} themeName
+   * @returns {object}
+   */
+  async fetchActiveThemeByThemeName(themeName) {
+    const oThis = this;
+
+    let response;
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['name = ?', themeName.toLowerCase()])
+      .where(['status = ?', themeConstants.invertedStatuses[themeConstants.activeStatus]])
+      .fire();
+
+    if (dbRows.length > 0) {
+      response = oThis._formatDbData(dbRows[0]);
     }
 
     return response;
