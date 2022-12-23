@@ -7,8 +7,6 @@ const rootPrefix = '../..',
   cookieHelper = require(rootPrefix + '/lib/cookieHelper'),
   cookieConstants = require(rootPrefix + '/lib/globalConstant/cookie'),
   FormatterComposerFactory = require(rootPrefix + '/lib/formatter/composer/Factory'),
-  FetchImageFromStabilityAIService = require(rootPrefix + '/services/FetchImageFromStabilityAI'),
-  MintNFTService = require(rootPrefix + '/services/MintNFT'),
   sanitizer = require(rootPrefix + '/helpers/sanitizer'),
   apiNameConstants = require(rootPrefix + '/lib/globalConstant/apiName'),
   routeHelper = require(rootPrefix + '/routes/helper'),
@@ -62,6 +60,8 @@ router.post('/connect', sanitizer.sanitizeDynamicUrlParams, function(req, res, n
   );
 });
 
+router.use(cookieHelper.validateUserLoginCookieIfPresent);
+
 /* GET all nfts to vote. */
 router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   const apiName = apiNameConstants.getNftsToVoteApiName;
@@ -112,55 +112,6 @@ router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req,
   req.internalDecodedParams.current_user_id = 100009;
 
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_5', null));
-});
-
-router.post('/fetch-stable-diffusion-image', async function(req, res, next) {
-  try {
-    const prompt = req.body.prompt,
-      artStyle = req.body.art_style;
-    const response = await new FetchImageFromStabilityAIService({
-      prompt: prompt,
-      artStyle: artStyle
-    }).perform();
-    let status = true;
-    if (!basicHelper.isEmptyObject(response.error)) {
-      status = false;
-    }
-
-    return res.status(200).json({ success: status, data: response });
-  } catch (err) {
-    console.error('error ---------', err);
-
-    return res.status(200).json({ success: false, err: { msg: 'something went wrong' } });
-  }
-});
-
-router.post('/mint-nft', async function(req, res, next) {
-  try {
-    const receiverAddress = req.body.receiver_address,
-      imageUrl = req.body.image_url,
-      description = req.body.description;
-
-    const response = await new MintNFTService({
-      receiverAddress: receiverAddress,
-      imageUrl: imageUrl,
-      description: description
-    }).perform();
-
-    let status = true;
-    if (response.error != null) {
-      status = false;
-    }
-
-    return res.status(200).json({ success: status, data: response });
-  } catch (error) {
-    console.error('error ---------', error);
-
-    return res.status(200).json({
-      success: false,
-      err: { msg: 'something went wrong', err_data: error }
-    });
-  }
 });
 
 module.exports = router;
