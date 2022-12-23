@@ -50,7 +50,11 @@ router.post('/connect', sanitizer.sanitizeDynamicUrlParams, function(req, res, n
       });
     }
 
-    serviceResponse.data = {};
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
   };
 
   Promise.resolve(

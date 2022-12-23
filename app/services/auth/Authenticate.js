@@ -6,6 +6,7 @@ const ServiceBase = require(rootPrefix + '/app/services/Base'),
   UserModel = require(rootPrefix + '/app/models/mysql/main/User'),
   coreConstants = require(rootPrefix + '/config/coreConstants'),
   imageConstants = require(rootPrefix + '/lib/globalConstant/entity/image'),
+  entityTypeConstants = require('../../../lib/globalConstant/entityType'),
   userConstants = require(rootPrefix + '/lib/globalConstant/entity/user'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   VerifyLensSignerAddress = require(rootPrefix + '/lib/auth/VerifyLensSignerAddress'),
@@ -42,7 +43,10 @@ class Authenticate extends ServiceBase {
     oThis.lensProfileDisplayName = params.lens_profile_display_name;
     oThis.lensProfileImageUrl = params.lens_profile_image_url;
 
-    oThis.profileImageId = null;
+    oThis.imageIds = [];
+    oThis.userIds = [];
+    oThis.images = {};
+    oThis.users = {};
     oThis.currentUser = null;
   }
 
@@ -114,6 +118,8 @@ class Authenticate extends ServiceBase {
 
     if (user) {
       oThis.currentUser = user;
+      oThis.users[user.id] = user;
+      oThis.imageIds.push(user.lensProfileImageId);
     } else {
       await oThis._createUser();
     }
@@ -149,17 +155,9 @@ class Authenticate extends ServiceBase {
       status: userConstants.activeStatus
     });
 
-    oThis.currentUser = {
-      id: qryResponse.insertId,
-      lensProfileId: oThis.lensProfileId,
-      lensProfileOwnerAddress: oThis.walletAddress,
-      lensProfileUsername: oThis.lensProfileUsername,
-      lensProfileDisplayName: oThis.lensProfileDisplayName,
-      lensProfileImageId: oThis.profileImageId,
-      cookieToken: encryptedCookieToken,
-      status: userConstants.activeStatus
-    };
-    console.log('------_createUser oThis.currentUser-------', oThis.currentUser);
+    const user = await new UserModel().fetchSecureUserById(qryResponse.insertId);
+    oThis.users[user.id] = user;
+    oThis.currentUser = user;
   }
 
   /**
@@ -175,7 +173,16 @@ class Authenticate extends ServiceBase {
       kind: imageConstants.profileImageKind
     });
 
-    oThis.profileImageId = profileImage.insertId;
+    oThis.imageIds.push(profileImage.insertId);
+  }
+
+  /**
+   * Prepare images map
+   */
+  async _fetchImages() {
+    const oThis = this;
+
+    oThis.images = await new ImageModel().fetchImagesByIds([oThis.imageIds]);
   }
 
   /**
@@ -186,26 +193,26 @@ class Authenticate extends ServiceBase {
    */
   async _prepareResponse() {
     const oThis = this;
-    console.log('------_prepareResponse -------');
     const salt = coreConstants.API_COOKIE_ENCRYPTION_SALT;
-    console.log('------_prepareResponse salt-------', salt);
     const decryptedEncryptionSalt = localCipher.decrypt(coreConstants.ENCRYPTION_KEY, salt);
-    console.log('------_prepareResponse decryptedEncryptionSalt-------', decryptedEncryptionSalt);
 
     const userLoginCookieValue = new UserModel().getCookieValue(oThis.currentUser, decryptedEncryptionSalt, {
       timestamp: Date.now() / 1000
     });
-    console.log('------_prepareResponse userLoginCookieValue-------', { userLoginCookieValue });
-    console.log('------_prepareResponse response-------', {
-      response: responseHelper.successWithData({
-        userLoginCookieValue: userLoginCookieValue,
-        userId: oThis.currentUser.id
-      })
-    });
+
+    if (oThis.imageIds.length > 0) {
+      await oThis._fetchImages();
+    }
 
     return responseHelper.successWithData({
       userLoginCookieValue: userLoginCookieValue,
-      userId: oThis.currentUser.id
+      [entityTypeConstants.currentUser]: {
+        id: oThis.currentUser.id,
+        userId: oThis.currentUser.id,
+        uts: Math.floor(Date.now() / 1000)
+      },
+      [entityTypeConstants.usersMap]: oThis.users,
+      [entityTypeConstants.imagesMap]: oThis.images
     });
   }
 }
