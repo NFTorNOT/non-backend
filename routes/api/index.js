@@ -103,7 +103,7 @@ router.post('/store-on-ipfs', sanitizer.sanitizeDynamicUrlParams, function(req, 
 router.post('/reaction', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   req.internalDecodedParams.apiName = apiNameConstants.addReactionToNFT;
 
-  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_2', null));
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_5', null));
 });
 
 router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
@@ -111,7 +111,15 @@ router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req,
   // TODO: get the userId from cookie token after auth layer is implemented.
   req.internalDecodedParams.current_user_id = 100009;
 
-  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_5', null));
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_6', null));
+});
+
+router.use(cookieHelper.parseUserLoginCookieForLogout);
+
+router.post('/logout', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  req.internalDecodedParams.apiName = apiNameConstants.logout;
+
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/auth/Logout', 'r_a_i_7', null));
 });
 
 module.exports = router;

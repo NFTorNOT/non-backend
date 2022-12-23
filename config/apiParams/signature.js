@@ -178,6 +178,11 @@ const webSignature = {
         type: 'string'
       }
     ]
+  },
+
+  [apiNameConstants.logout]: {
+    mandatory: [],
+    optional: []
   }
 };
 module.exports = webSignature;
