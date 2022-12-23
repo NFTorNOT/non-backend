@@ -107,8 +107,6 @@ router.post('/reaction', sanitizer.sanitizeDynamicUrlParams, function(req, res, 
 
 router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   req.internalDecodedParams.apiName = apiNameConstants.submitToVote;
-  // TODO: get the userId from cookie token after auth layer is implemented.
-  req.internalDecodedParams.current_user_id = 100009;
 
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_6', null));
 });

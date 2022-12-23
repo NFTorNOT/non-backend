@@ -24,7 +24,8 @@ class Reaction extends ServiceBase {
     super(params);
     const oThis = this;
 
-    oThis.currentUserId = params.current_user.id;
+    oThis.currentUser = params.current_user || {};
+    oThis.currentUserId = oThis.currentUser.id;
     oThis.reaction = params.reaction;
     oThis.lensPostId = params.lens_post_id;
   }

@@ -34,9 +34,6 @@ class GetNFTsForVote extends ServiceBase {
     oThis.currentUser = params.current_user || {};
     oThis.currentUserId = oThis.currentUser.id || null;
 
-    // TODO: get the userId from cookie token after auth layer is implemented.
-    oThis.currentUserId = 100009;
-
     oThis.paginationIdentifier = params[paginationConstants.paginationIdentifierKey] || null;
 
     oThis.paginationDatabaseId = null;

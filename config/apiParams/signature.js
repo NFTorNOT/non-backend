@@ -73,6 +73,12 @@ const webSignature = {
         parameter: paginationConstants.paginationIdentifierKey, // Pagination identifier.
         validatorMethods: [{ validateString: null }, { validatePaginationIdentifier: null }],
         type: 'string'
+      },
+      {
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
+        kind: 'internal'
       }
     ]
   },
@@ -81,7 +87,6 @@ const webSignature = {
     mandatory: [
       {
         parameter: 'prompt',
-
         validatorMethods: [{ validateNonBlankString: null }],
         type: 'string'
       },
