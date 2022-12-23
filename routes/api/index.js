@@ -2,7 +2,6 @@ const express = require('express'),
   cookieParser = require('cookie-parser');
 
 const rootPrefix = '../..',
-  basicHelper = require(rootPrefix + '/helpers/basic'),
   coreConstants = require(rootPrefix + '/config/coreConstants'),
   cookieHelper = require(rootPrefix + '/lib/cookieHelper'),
   cookieConstants = require(rootPrefix + '/lib/globalConstant/cookie'),
@@ -114,9 +113,7 @@ router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req,
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_6', null));
 });
 
-router.use(cookieHelper.parseUserLoginCookieForLogout);
-
-router.post('/logout', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+router.post('/logout', cookieHelper.parseUserLoginCookieForLogout, function(req, res, next) {
   req.internalDecodedParams.apiName = apiNameConstants.logout;
 
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/auth/Logout', 'r_a_i_7', null));
