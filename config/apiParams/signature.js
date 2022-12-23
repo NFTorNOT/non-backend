@@ -77,6 +77,25 @@ const webSignature = {
     ]
   },
 
+  [apiNameConstants.getNftsToCollect]: {
+    mandatory: [
+      // Todo : Vindeep/Dhruv uncomment this after auth flow
+      // {
+      //   parameter: 'current_user',
+      //   validatorMethods: [{ validateNonEmptyObject: null }],
+      //   type: 'object',
+      //   kind: 'internal'
+      // }
+    ],
+    optional: [
+      {
+        parameter: paginationConstants.paginationIdentifierKey, // Pagination identifier.
+        validatorMethods: [{ validateString: null }, { validatePaginationIdentifier: null }],
+        type: 'string'
+      }
+    ]
+  },
+
   [apiNameConstants.getImageSuggestions]: {
     mandatory: [
       {

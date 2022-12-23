@@ -87,6 +87,24 @@ router.get('/image-suggestions', sanitizer.sanitizeDynamicUrlParams, function(re
   );
 });
 
+/* GET all nfts to collect. */
+router.get('/collect-nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getNftsToCollect;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/collect/GetNFTsToCollect', 'r_a_i_4', null, dataFormatterFunc)
+  );
+});
+
 router.post('/fetch-stable-diffusion-image', async function(req, res, next) {
   try {
     const prompt = req.body.prompt,
