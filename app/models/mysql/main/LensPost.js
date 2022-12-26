@@ -199,6 +199,20 @@ class LensPost extends ModelBase {
   }
 
   /**
+   * Increment `total_votes` by 1 for given `id`.
+   *
+   * @param {string} id Lens post id
+   */
+  async incrementTotalVotesForLensPostByLensPostId(id) {
+    const oThis = this;
+
+    return oThis
+      .update('total_votes = total_votes + 1')
+      .where(['id = ?', id])
+      .fire();
+  }
+
+  /**
    * Fetch lens posts for given ids
    *
    * @param {array} ids: lens post ids
