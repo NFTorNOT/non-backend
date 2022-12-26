@@ -43,15 +43,23 @@ class CoreConstants {
     return process.env.NON_API_DOMAIN;
   }
 
-  get A_COOKIE_DOMAIN() {
+  get API_COOKIE_DOMAIN() {
     return process.env.NA_COOKIE_DOMAIN;
+  }
+
+  get API_COOKIE_ENCRYPTION_SALT() {
+    return process.env.API_COOKIE_ENCRYPTION_SALT;
+  }
+
+  get WEB_COOKIE_SECRET() {
+    return process.env.NA_W_COOKIE_SECRET;
   }
 
   get A_COOKIE_TOKEN_SECRET() {
     return process.env.NA_COOKIE_TOKEN_SECRET;
   }
 
-  get WEB_COOKIE_SECRET() {
+  get API_COOKIE_SECRET() {
     return process.env.NA_W_COOKIE_SECRET;
   }
 

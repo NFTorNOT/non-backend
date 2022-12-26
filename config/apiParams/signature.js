@@ -58,9 +58,9 @@ const webSignature = {
         type: 'string'
       },
       {
-        parameter: 'current_user_id',
-        validatorMethods: [{ validateInteger: null }],
-        type: 'number',
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
         kind: 'internal'
       }
     ]
@@ -73,6 +73,12 @@ const webSignature = {
         parameter: paginationConstants.paginationIdentifierKey, // Pagination identifier.
         validatorMethods: [{ validateString: null }, { validatePaginationIdentifier: null }],
         type: 'string'
+      },
+      {
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
+        kind: 'internal'
       }
     ]
   },
@@ -81,7 +87,6 @@ const webSignature = {
     mandatory: [
       {
         parameter: 'prompt',
-
         validatorMethods: [{ validateNonBlankString: null }],
         type: 'string'
       },
@@ -106,9 +111,9 @@ const webSignature = {
         type: 'string'
       },
       {
-        parameter: 'current_user_id',
-        validatorMethods: [{ validateInteger: null }],
-        type: 'number',
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
         kind: 'internal'
       },
       {
@@ -137,6 +142,52 @@ const webSignature = {
         type: 'number'
       }
     ]
+  },
+  [apiNameConstants.authenticateUser]: {
+    mandatory: [
+      {
+        parameter: 'message',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'signed_message',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'wallet_address',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_profile_username',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_profile_id',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      }
+    ],
+    optional: [
+      {
+        parameter: 'lens_profile_display_name',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
+        parameter: 'lens_profile_image_url',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      }
+    ]
+  },
+
+  [apiNameConstants.logout]: {
+    mandatory: [],
+    optional: []
   }
 };
 module.exports = webSignature;

@@ -36,6 +36,16 @@ const webResponse = {
       [entityTypeConstants.suggestionIds]: responseEntityKey.suggestionIds,
       [entityTypeConstants.suggestionsMap]: responseEntityKey.suggestions
     }
+  },
+
+  [apiNameConstants.authenticateUser]: {
+    resultType: responseEntityKey.currentUser,
+    resultTypeLookup: responseEntityKey.currentUser,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.currentUser]: responseEntityKey.currentUser,
+      [entityTypeConstants.usersMap]: responseEntityKey.users,
+      [entityTypeConstants.imagesMap]: responseEntityKey.images
+    }
   }
 };
 

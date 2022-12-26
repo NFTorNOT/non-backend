@@ -20,7 +20,7 @@ class SubmitToVote extends ServiceBase {
    * Constructor of SubmitToVote.
    *
    * @param {object} params
-   * @param {string} params.current_user_id
+   * @param {object} params.current_user
    * @param {number} params.theme_name
    * @param {string} params.image_url
    * @param {string} params.lens_publication_id
@@ -34,7 +34,8 @@ class SubmitToVote extends ServiceBase {
     super(params);
     const oThis = this;
 
-    oThis.currentUserId = params.current_user_id;
+    oThis.currentUser = params.current_user || {};
+    oThis.currentUserId = oThis.currentUser.id;
     oThis.themeName = params.theme_name;
     oThis.imageUrl = params.image_url;
     oThis.lensPublicationId = params.lens_publication_id;

@@ -31,6 +31,11 @@ const webSpecificErrorConfig = {
     parameter: 'theme_name',
     code: 'invalid',
     message: 'Invalid theme provided or the theme is not active.'
+  },
+  invalid_wallet_address: {
+    parameter: 'wallet_address',
+    code: 'invalid',
+    message: 'Invalid wallet address provided.'
   }
 };
 

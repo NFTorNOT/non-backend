@@ -1,6 +1,10 @@
 const rootPrefix = '../../../..',
   ModelBase = require(rootPrefix + '/app/models/mysql/Base'),
   databaseConstants = require(rootPrefix + '/lib/globalConstant/database'),
+  coreConstants = require(rootPrefix + '/config/coreConstants'),
+  localCipher = require(rootPrefix + '/lib/encryptors/localCipher'),
+  util = require(rootPrefix + '/lib/util'),
+  cookieConstants = require(rootPrefix + '/lib/globalConstant/cookie'),
   userConstants = require(rootPrefix + '/lib/globalConstant/entity/user');
 
 const dbName = databaseConstants.mainDbName;
@@ -64,6 +68,25 @@ class User extends ModelBase {
   }
 
   /**
+   * List of formatted column names that can be exposed by service.
+   *
+   * @returns {array}
+   */
+  safeFormattedColumnNames() {
+    return [
+      'id',
+      'lensProfileId',
+      'lensProfileUsername',
+      'lensProfileDisplayName',
+      'lensProfileOwnerAddress',
+      'lensProfileImageId',
+      'status',
+      'createdAt',
+      'updatedAt'
+    ];
+  }
+
+  /**
    * Insert into votes
    * @param {object} params
    * @param {string} params.lensProfileId,
@@ -109,10 +132,98 @@ class User extends ModelBase {
 
     for (let index = 0; index < dbRows.length; index++) {
       const formatDbRow = oThis._formatDbData(dbRows[index]);
-      response[formatDbRow.id] = formatDbRow;
+      response[formatDbRow.id] = oThis.safeFormattedData(formatDbRow);
     }
 
     return response;
+  }
+
+  /**
+   * Fetch active users from lens profile id and wallet address.
+   *
+   * @param {string} lensProfileId
+   * @param {string} lensProfileOwnerAddress
+   *
+   * @returns {object}
+   */
+  async fetchActiveUserByLensProfileIdAndWalletAddress(lensProfileId, lensProfileOwnerAddress) {
+    const oThis = this;
+
+    let response;
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['lens_profile_id = ?', lensProfileId])
+      .where(['lens_profile_owner_address = ?', lensProfileOwnerAddress])
+      .fire();
+
+    if (dbRows.length > 0) {
+      response = oThis._formatDbData(dbRows[0]);
+    }
+
+    return response;
+  }
+
+  /**
+   * Fetch secure user by id.
+   *
+   * @param {number} id: user id
+   *
+   * @returns {object}
+   */
+  async fetchSecureUserById(id) {
+    const oThis = this;
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['id = ?', id])
+      .fire();
+
+    if (dbRows.length === 0) {
+      return {};
+    }
+
+    return oThis._formatDbData(dbRows[0]);
+  }
+
+  /**
+   * Get cookie token.
+   *
+   * @param {object} userObj
+   * @param {string} decryptedEncryptionSalt
+   * @param {object} options
+   * @param {number} options.timestamp
+   *
+   * @returns {string}
+   */
+  getCookieToken(userObj, decryptedEncryptionSalt, options) {
+    const decryptedCookieToken = localCipher.decrypt(decryptedEncryptionSalt, userObj.cookieToken);
+
+    const strSecret = coreConstants.API_COOKIE_SECRET;
+
+    const stringToSign =
+      userObj.id + ':' + options.timestamp + ':' + strSecret + ':' + decryptedCookieToken.substring(0, 16);
+    const salt = userObj.id + ':' + decryptedCookieToken.slice(-16) + ':' + strSecret + ':' + options.timestamp;
+
+    return util.createSha256Digest(salt, stringToSign);
+  }
+
+  /**
+   * Get cookie value.
+   *
+   * @param {object} userObj
+   * @param {string} decryptedEncryptionSalt
+   * @param {object} options
+   * @param {number} options.timestamp
+   *
+   * @returns {string}
+   */
+  getCookieValue(userObj, decryptedEncryptionSalt, options) {
+    const oThis = this;
+
+    const cookieToken = oThis.getCookieToken(userObj, decryptedEncryptionSalt, options);
+
+    return cookieConstants.latestVersion + ':' + userObj.id + ':' + options.timestamp + ':' + cookieToken;
   }
 }
 
