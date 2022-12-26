@@ -1,10 +1,11 @@
 const rootPrefix = '../../..';
 
 const CommonValidators = require(rootPrefix + '/lib/validators/Common'),
-  ImageModel = require(rootPrefix + '/app/models/mysql/entity/Image'),
-  LensPostModel = require(rootPrefix + '/app/models/mysql/entity/LensPost'),
+  ImageModel = require(rootPrefix + '/app/models/mysql/main/Image'),
+  LensPostModel = require(rootPrefix + '/app/models/mysql/main/LensPost'),
   ServiceBase = require(rootPrefix + '/app/services/Base'),
-  TextModel = require(rootPrefix + '/app/models/mysql/entity/Text'),
+  TextModel = require(rootPrefix + '/app/models/mysql/main/Text'),
+  ThemeModel = require(rootPrefix + '/app/models/mysql/main/Theme'),
   imageConstants = require(rootPrefix + '/lib/globalConstant/entity/image'),
   lensPostConstants = require(rootPrefix + '/lib/globalConstant/entity/lensPost'),
   responseHelper = require(rootPrefix + '/lib/formatter/response');
@@ -20,7 +21,7 @@ class SubmitToVote extends ServiceBase {
    *
    * @param {object} params
    * @param {string} params.current_user_id
-   * @param {number} params.theme_id
+   * @param {number} params.theme_name
    * @param {string} params.image_url
    * @param {string} params.lens_publication_id
    * @param {number} params.title
@@ -34,7 +35,7 @@ class SubmitToVote extends ServiceBase {
     const oThis = this;
 
     oThis.currentUserId = params.current_user_id;
-    oThis.themeId = params.theme_id;
+    oThis.themeName = params.theme_name;
     oThis.imageUrl = params.image_url;
     oThis.lensPublicationId = params.lens_publication_id;
     oThis.title = params.title;
@@ -44,6 +45,8 @@ class SubmitToVote extends ServiceBase {
 
     oThis.descriptionTextId = null;
     oThis.imageId = null;
+    oThis.themeId = null;
+    oThis.paramErrors = [];
   }
 
   /**
@@ -74,28 +77,62 @@ class SubmitToVote extends ServiceBase {
   async _validateParams() {
     const oThis = this;
 
-    const paramErrors = [];
     if (!CommonValidators.validateStringLength(oThis.title, 50)) {
-      paramErrors.push('invalid_image_title_length');
+      oThis.paramErrors.push('invalid_image_title_length');
     }
 
     if (!CommonValidators.validateStringLength(oThis.description, 200)) {
-      paramErrors.push('invalid_image_description_length');
+      oThis.paramErrors.push('invalid_image_description_length');
     }
 
-    if (paramErrors.length > 0) {
+    await oThis._validateLensPublicationId();
+
+    await oThis._validateTheme();
+
+    if (oThis.paramErrors.length > 0) {
       return Promise.reject(
         responseHelper.paramValidationError({
           internal_error_identifier: 'a_s_g_stv_vp_1',
           api_error_identifier: 'invalid_api_params',
-          params_error_identifiers: paramErrors,
+          params_error_identifiers: oThis.paramErrors,
           debug_options: {
             title: oThis.title,
-            description: oThis.description
+            description: oThis.description,
+            lensPublicationId: oThis.lensPublicationId
           }
         })
       );
     }
+  }
+
+  /**
+   * Validate if lens publication id does not exits.
+   *
+   * @private
+   */
+  async _validateLensPublicationId() {
+    const oThis = this;
+    const qryResponse = await new LensPostModel().fetchLensPostByLensPublicationId(oThis.lensPublicationId);
+
+    if (qryResponse) {
+      oThis.paramErrors.push('lens_publication_already_exists');
+    }
+  }
+
+  /**
+   * Validate if valid theme provided.
+   *
+   * @private
+   */
+  async _validateTheme() {
+    const oThis = this;
+    const qryResponse = await new ThemeModel().fetchActiveThemeByThemeName(oThis.themeName);
+
+    if (CommonValidators.isVarNullOrUndefined(qryResponse)) {
+      return oThis.paramErrors.push('invalid_theme_provided');
+    }
+
+    oThis.themeId = qryResponse.id;
   }
 
   /**

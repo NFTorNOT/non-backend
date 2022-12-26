@@ -106,7 +106,7 @@ class LensPost extends ModelBase {
   async fetchLensPostByLensPublicationId(lensPublicationId) {
     const oThis = this;
 
-    let response = {};
+    let response;
 
     const dbRows = await oThis
       .select('*')
@@ -114,10 +114,10 @@ class LensPost extends ModelBase {
       .fire();
 
     if (dbRows.length > 0) {
-      response = dbRows[0];
+      response = oThis._formatDbData(dbRows[0]);
     }
 
-    return oThis._formatDbData(response);
+    return response;
   }
 
   /**

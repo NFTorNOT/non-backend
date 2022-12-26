@@ -134,9 +134,9 @@ const webSignature = {
   [apiNameConstants.submitToVote]: {
     mandatory: [
       {
-        parameter: 'theme_id',
-        validatorMethods: [{ validateInteger: null }],
-        type: 'number'
+        parameter: 'theme_name',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
       },
       {
         parameter: 'image_url',
