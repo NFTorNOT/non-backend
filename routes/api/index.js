@@ -71,6 +71,32 @@ router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next)
   );
 });
 
+/* GET hall of fame top voted nfts to collect. */
+router.get('/hall-of-flame-nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getNftsForHallOfFlame;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(
+      req,
+      res,
+      next,
+      '/app/services/collect/GetNFTsForHallOfFlame',
+      'r_a_i_4',
+      null,
+      dataFormatterFunc
+    )
+  );
+});
+
 /* GET image suggestions */
 router.get('/image-suggestions', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   const apiName = apiNameConstants.getImageSuggestions;

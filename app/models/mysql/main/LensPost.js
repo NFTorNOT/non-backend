@@ -121,7 +121,7 @@ class LensPost extends ModelBase {
   }
 
   /**
-   * Fetch all active user ids with pagination.
+   * Fetch all active lens posts with pagination.
    *
    * @param {object} params
    * @param {number} params.limit
@@ -144,6 +144,45 @@ class LensPost extends ModelBase {
 
     if (params.paginationDatabaseId) {
       queryObj.where(['id < ?', params.paginationDatabaseId]);
+    }
+
+    const dbRows = await queryObj.fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      lensPostIds.push(dbRows[index].id);
+      nextPageDatabaseId = dbRows[index].id;
+    }
+
+    return {
+      lensPostIds: lensPostIds,
+      nextPageDatabaseId: nextPageDatabaseId
+    };
+  }
+
+  /**
+   * Fetch all active lens posts with pagination.
+   *
+   * @param {object} params
+   * @param {number} params.limit
+   * @param {number} [params.paginationDatabaseId]
+   *
+   * @returns {Promise<{}>}
+   */
+  async fetchTopVotedLensPostsWithPagination(params) {
+    const oThis = this;
+
+    const lensPostIds = [];
+
+    let nextPageDatabaseId = null;
+
+    const queryObj = oThis
+      .select('id')
+      .where({ status: lensPostConstants.invertedStatuses[lensPostConstants.activeStatus] })
+      .limit(params.limit)
+      .order_by('total_votes desc');
+
+    if (params.paginationDatabaseId) {
+      queryObj.where(['id > ?', params.paginationDatabaseId]);
     }
 
     const dbRows = await queryObj.fire();

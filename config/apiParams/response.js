@@ -42,6 +42,20 @@ const webResponse = {
     }
   },
 
+  [apiNameConstants.getNftsForHallOfFlame]: {
+    resultType: responseEntityKey.lensPostsIds,
+    resultTypeLookup: responseEntityKey.lensPosts,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.lensPostsIds]: responseEntityKey.lensPostsIds,
+      [entityTypeConstants.lensPostsMap]: responseEntityKey.lensPosts,
+      [entityTypeConstants.imagesMap]: responseEntityKey.images,
+      [entityTypeConstants.textsMap]: responseEntityKey.texts,
+      [entityTypeConstants.themesMap]: responseEntityKey.themes,
+      [entityTypeConstants.usersMap]: responseEntityKey.users,
+      [entityTypeConstants.getNFTsForHallOfFlameListMeta]: responseEntityKey.meta
+    }
+  },
+
   [apiNameConstants.addReactionToNFT]: {},
 
   [apiNameConstants.getImageSuggestions]: {
