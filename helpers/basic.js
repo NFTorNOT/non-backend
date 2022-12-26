@@ -445,6 +445,23 @@ class BasicHelper {
       });
     });
   }
+
+  /**
+   * Removes keys with undefined values from an object.
+   *
+   * @param {object} object
+   * @returns {object}
+   */
+  cleanObject(object) {
+    Object.keys(object).forEach((key) => {
+      const value = object[key];
+      if (typeof value === 'undefined') {
+        delete object[key];
+      }
+    });
+
+    return object;
+  }
 }
 
 module.exports = new BasicHelper();

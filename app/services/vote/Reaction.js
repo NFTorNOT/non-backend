@@ -1,8 +1,10 @@
-const CommonValidator = require('../../../lib/validators/Common'),
-  ServiceBase = require('../../../app/services/Base'),
-  VoteModel = require('../../../app/models/mysql/main/Vote'),
-  responseHelper = require('../../../lib/formatter/response'),
-  voteConstants = require('../../../lib/globalConstant/entity/vote');
+const rootPrefix = '../../..';
+const CommonValidator = require(rootPrefix + '/lib/validators/Common'),
+  LensPostModel = require(rootPrefix + '/app/models/mysql/main/LensPost'),
+  ServiceBase = require(rootPrefix + '/app/services/Base'),
+  VoteModel = require(rootPrefix + '/app/models/mysql/main/Vote'),
+  responseHelper = require(rootPrefix + '/lib/formatter/response'),
+  voteConstants = require(rootPrefix + '/lib/globalConstant/entity/vote');
 
 /**
  * Class to add reaction to a post.
@@ -43,6 +45,8 @@ class Reaction extends ServiceBase {
 
     await oThis._addVote();
 
+    await oThis._updateVoteCount();
+
     return oThis._prepareResponse();
   }
 
@@ -53,14 +57,25 @@ class Reaction extends ServiceBase {
    */
   async _validateParams() {
     const oThis = this;
+
+    const paramsError = [];
+    const fetchResponse = await new LensPostModel().fetchLensPostsByIds([oThis.lensPostId]);
+    if (CommonValidator.isVarNullOrUndefined(fetchResponse[oThis.lensPostId])) {
+      paramsError.push('invalid_lens_post_id');
+    }
+
     const allowedReactionValuesMap = voteConstants.invertedStatuses;
     if (CommonValidator.isVarNullOrUndefined(allowedReactionValuesMap[oThis.reaction])) {
+      paramsError.push('invalid_reaction_type');
+    }
+
+    if (paramsError.length > 0) {
       return Promise.reject(
         responseHelper.paramValidationError({
           internal_error_identifier: 'a_s_v_r_vp_1',
           api_error_identifier: 'invalid_api_params',
-          params_error_identifiers: ['invalid_reaction_type'],
-          debug_options: { reaction: oThis.reaction }
+          params_error_identifiers: paramsError,
+          debug_options: { reaction: oThis.reaction, lensPostId: oThis.lensPostId }
         })
       );
     }
@@ -88,9 +103,21 @@ class Reaction extends ServiceBase {
         responseHelper.error({
           internal_error_identifier: 'a_s_v_r_av_1',
           api_error_identifier: 'already_reacted_to_post',
-          debug_options: { insertData: insertData, error: error }
+          debug_options: { insertData: insertData, error }
         })
       );
+    }
+  }
+
+  /**
+   * Update the vote count of the post.
+   *
+   * @private
+   */
+  async _updateVoteCount() {
+    const oThis = this;
+    if (oThis.reaction === voteConstants.votedStatus) {
+      await new LensPostModel().incrementTotalVotesForLensPostByLensPostId(oThis.lensPostId);
     }
   }
 
