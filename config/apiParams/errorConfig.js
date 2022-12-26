@@ -22,6 +22,11 @@ const webSpecificErrorConfig = {
     code: 'invalid',
     message: 'Lens publication already exists.'
   },
+  invalid_theme_provided: {
+    parameter: 'theme_name',
+    code: 'invalid',
+    message: 'Invalid theme provided or the theme is not active.'
+  },
   invalid_wallet_address: {
     parameter: 'wallet_address',
     code: 'invalid',
