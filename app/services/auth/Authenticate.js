@@ -119,7 +119,9 @@ class Authenticate extends ServiceBase {
     if (user) {
       oThis.currentUser = user;
       oThis.users[user.id] = user;
-      oThis.imageIds.push(user.lensProfileImageId);
+      if (user.lensProfileImageId) {
+        oThis.imageIds.push(user.lensProfileImageId);
+      }
     } else {
       await oThis._createUser();
     }
@@ -142,9 +144,9 @@ class Authenticate extends ServiceBase {
     const cookieToken = localCipher.generateRandomIv(32),
       encryptedCookieToken = localCipher.encrypt(decryptedEncryptionSalt, cookieToken);
     console.log('------_createUser cookieToken-------', cookieToken);
-    if (oThis.lensProfileImageUrl) {
-      await oThis._createImage();
-    }
+
+    await oThis._createImage();
+
     const qryResponse = await new UserModel().insertUser({
       lensProfileId: oThis.lensProfileId,
       lensProfileOwnerAddress: oThis.walletAddress,
@@ -168,6 +170,10 @@ class Authenticate extends ServiceBase {
   async _createImage() {
     const oThis = this;
 
+    if (!oThis.lensProfileImageUrl) {
+      return;
+    }
+
     const profileImage = await new ImageModel().insertImage({
       urlTemplate: oThis.lensProfileImageUrl,
       kind: imageConstants.profileImageKind
@@ -181,6 +187,10 @@ class Authenticate extends ServiceBase {
    */
   async _fetchImages() {
     const oThis = this;
+
+    if (oThis.imageIds.length == 0) {
+      return;
+    }
 
     oThis.images = await new ImageModel().fetchImagesByIds([oThis.imageIds]);
   }
