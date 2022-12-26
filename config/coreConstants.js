@@ -52,7 +52,7 @@ class CoreConstants {
   }
 
   get WEB_COOKIE_SECRET() {
-    return process.env.NA_W_COOKIE_SECRET;
+    return process.env.NA_COOKIE_SECRET;
   }
 
   get A_COOKIE_TOKEN_SECRET() {
