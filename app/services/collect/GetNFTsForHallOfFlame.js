@@ -35,9 +35,6 @@ class GetNFTsForHallOfFlame extends ServiceBase {
     oThis.currentUser = params.current_user || {};
     oThis.currentUserId = oThis.currentUser.id || null;
 
-    // TODO: get the userId from cookie token after auth layer is implemented.
-    oThis.currentUserId = 100009;
-
     oThis.paginationIdentifier = params[paginationConstants.paginationIdentifierKey] || null;
 
     oThis.paginationDatabaseId = null;
@@ -263,7 +260,6 @@ class GetNFTsForHallOfFlame extends ServiceBase {
     return responseHelper.successWithData({
       [entityTypeConstants.lensPostsIds]: oThis.lensPostsIds,
       [entityTypeConstants.lensPostsMap]: oThis.lensPosts,
-      [entityTypeConstants.currentUserLensPostRelationsMap]: oThis.currentUserLensPostRelations,
       [entityTypeConstants.imagesMap]: oThis.images,
       [entityTypeConstants.textsMap]: oThis.texts,
       [entityTypeConstants.themesMap]: oThis.themes,
