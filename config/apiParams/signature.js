@@ -188,6 +188,18 @@ const webSignature = {
   [apiNameConstants.logout]: {
     mandatory: [],
     optional: []
+  },
+
+  [apiNameConstants.getCurrentUser]: {
+    mandatory: [
+      {
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
+        kind: 'internal'
+      }
+    ],
+    optional: []
   }
 };
 module.exports = webSignature;
