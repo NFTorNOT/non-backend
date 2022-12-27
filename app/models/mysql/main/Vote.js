@@ -105,6 +105,52 @@ class Vote extends ModelBase {
 
     return response;
   }
+
+  /**
+   * Fetch reactions for user for given lens posts ids
+   *
+   * @param {object} params
+   * @param {number} params.limit
+   * @param {number} params.userId
+   * @param {number} [params.paginationDatabaseId]
+   *
+   * @returns {object}
+   */
+  async fetchVotedLensPostIdsByUserPagination(params) {
+    const oThis = this;
+
+    const userVotesByIds = {},
+      userVoteIds = [];
+
+    let nextPageDatabaseId = null;
+
+    const queryObj = await oThis
+      .select('*')
+      .where(['voter_user_id = ?', params.userId])
+      .where(['status = ?', voteConstants.invertedStatuses[voteConstants.votedStatus]])
+      .limit(params.limit)
+      .order_by('id desc');
+
+    if (params.paginationDatabaseId) {
+      queryObj.where(['id < ?', params.paginationDatabaseId]);
+    }
+
+    const dbRows = await queryObj.fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+
+      userVoteIds.push(dbRows[index].id);
+      nextPageDatabaseId = dbRows[index].id;
+      userVotesByIds[formatDbRow.id] = formatDbRow;
+    }
+
+    return {
+      userVotesByIds: userVotesByIds,
+      userVoteIds: userVoteIds,
+      nextPageDatabaseId: nextPageDatabaseId
+    };
+  }
 }
 
 module.exports = Vote;
