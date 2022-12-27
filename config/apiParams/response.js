@@ -46,6 +46,16 @@ const webResponse = {
       [entityTypeConstants.usersMap]: responseEntityKey.users,
       [entityTypeConstants.imagesMap]: responseEntityKey.images
     }
+  },
+
+  [apiNameConstants.getCurrentUser]: {
+    resultType: responseEntityKey.currentUser,
+    resultTypeLookup: responseEntityKey.currentUser,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.currentUser]: responseEntityKey.currentUser,
+      [entityTypeConstants.usersMap]: responseEntityKey.users,
+      [entityTypeConstants.imagesMap]: responseEntityKey.images
+    }
   }
 };
 
