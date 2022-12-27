@@ -79,6 +79,32 @@ router.get('/nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next)
   );
 });
 
+/* GET hall of fame top voted nfts to collect. */
+router.get('/hall-of-flame-nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getNftsForHallOfFlame;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(
+      req,
+      res,
+      next,
+      '/app/services/collect/GetNFTsForHallOfFlame',
+      'r_a_i_4',
+      null,
+      dataFormatterFunc
+    )
+  );
+});
+
 router.use(cookieHelper.validateUserLoginCookieRequired);
 
 router.get('/current-user', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
@@ -115,6 +141,24 @@ router.post('/store-on-ipfs', sanitizer.sanitizeDynamicUrlParams, function(req, 
 
   Promise.resolve(
     routeHelper.perform(req, res, next, '/app/services/StoreNFTDataInIPFS', 'r_a_i_4', null, dataFormatterFunc)
+  );
+});
+
+/* GET all nfts to collect. */
+router.get('/collect-nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getNftsToCollect;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/collect/GetNFTsToCollect', 'r_a_i_4', null, dataFormatterFunc)
   );
 });
 
