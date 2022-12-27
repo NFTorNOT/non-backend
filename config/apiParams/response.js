@@ -85,7 +85,9 @@ const webResponse = {
       [entityTypeConstants.usersMap]: responseEntityKey.users,
       [entityTypeConstants.imagesMap]: responseEntityKey.images
     }
-  }
+  },
+
+  [apiNameConstants.markCollected]: {}
 };
 
 module.exports = webResponse;

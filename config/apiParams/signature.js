@@ -63,7 +63,8 @@ const webSignature = {
         type: 'object',
         kind: 'internal'
       }
-    ]
+    ],
+    optional: []
   },
 
   [apiNameConstants.getNftsToVoteApiName]: {
@@ -176,7 +177,8 @@ const webSignature = {
         validatorMethods: [{ validateInteger: null }],
         type: 'number'
       }
-    ]
+    ],
+    optional: []
   },
   [apiNameConstants.authenticateUser]: {
     mandatory: [
@@ -232,6 +234,28 @@ const webSignature = {
         validatorMethods: [{ validateNonEmptyObject: null }],
         type: 'object',
         kind: 'internal'
+      }
+    ],
+    optional: []
+  },
+
+  [apiNameConstants.markCollected]: {
+    mandatory: [
+      {
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
+        kind: 'internal'
+      },
+      {
+        parameter: 'lens_post_id',
+        validatorMethods: [{ validateInteger: null }],
+        type: 'number'
+      },
+      {
+        parameter: 'collect_nft_transaction_hash',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
       }
     ],
     optional: []

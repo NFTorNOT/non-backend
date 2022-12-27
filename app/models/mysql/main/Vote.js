@@ -79,6 +79,26 @@ class Vote extends ModelBase {
   }
 
   /**
+   * Mark NFT collected for vote.
+   *
+   * @param {object} params
+   * @param {string} params.lensPostId
+   * @param {string} params.voterUserId
+   * @param {string} params.collectNftTransactionHash
+   */
+  async markNFTCollected(params) {
+    const oThis = this;
+
+    return oThis
+      .update({
+        collect_nft_transaction_hash: params.collectNftTransactionHash
+      })
+      .where(['lens_post_id = ? ', params.lensPostId])
+      .where(['voter_user_id = ?', params.voterUserId])
+      .fire();
+  }
+
+  /**
    * Fetch reactions for user for given lens posts ids
    *
    * @param {array} userId: userId

@@ -22,6 +22,11 @@ const webSpecificErrorConfig = {
     code: 'invalid',
     message: 'Invalid lens post id given.'
   },
+  invalid_collect_transaction_hash: {
+    parameter: 'collect_nft_transaction_hash',
+    code: 'invalid',
+    message: 'Invalid lens post collect transaction hash.'
+  },
   lens_publication_already_exists: {
     parameter: 'lens_publication_id',
     code: 'invalid',
