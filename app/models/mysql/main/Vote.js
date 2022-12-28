@@ -119,7 +119,7 @@ class Vote extends ModelBase {
     const response = {};
 
     const dbRows = await oThis
-      .select('id, lens_post_id')
+      .select('*')
       .where(['lens_post_id IN (?) ', lensPostIds])
       .where(['voter_user_id = ?', userId])
       .fire();
@@ -127,7 +127,7 @@ class Vote extends ModelBase {
     response[userId] = {};
     for (let index = 0; index < dbRows.length; index++) {
       const formatDbRow = oThis._formatDbData(dbRows[index]);
-      response[userId][formatDbRow.lensPostId] = 1;
+      response[userId][formatDbRow.lensPostId] = formatDbRow;
     }
 
     return response;
@@ -176,6 +176,39 @@ class Vote extends ModelBase {
       userVotesByIds: userVotesByIds,
       userVoteIds: userVoteIds,
       nextPageDatabaseId: nextPageDatabaseId
+    };
+  }
+
+  /**
+   * Fetch recent upvoted lens posts for user.
+   *
+   * @param {object} params
+   * @param {number} params.limit
+   * @param {number} params.userId
+   *
+   * @returns {object}
+   */
+  async fetchRecentVotedLensPostIdsForUser(params) {
+    const oThis = this;
+
+    const lensPostIds = [];
+
+    const queryObj = await oThis
+      .select('lens_post_id')
+      .where(['voter_user_id = ?', params.userId])
+      .where(['status = ?', voteConstants.invertedStatuses[voteConstants.votedStatus]])
+      .limit(params.limit)
+      .order_by('id desc');
+
+    const dbRows = await queryObj.fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      lensPostIds.push(formatDbRow.lensPostId);
+    }
+
+    return {
+      lensPostIds: lensPostIds
     };
   }
 }

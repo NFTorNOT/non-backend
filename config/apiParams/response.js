@@ -52,6 +52,7 @@ const webResponse = {
       [entityTypeConstants.textsMap]: responseEntityKey.texts,
       [entityTypeConstants.themesMap]: responseEntityKey.themes,
       [entityTypeConstants.usersMap]: responseEntityKey.users,
+      [entityTypeConstants.currentUserLensPostRelationsMap]: responseEntityKey.currentUserLensPostRelations,
       [entityTypeConstants.getNFTsForHallOfFlameListMeta]: responseEntityKey.meta
     }
   },

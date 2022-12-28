@@ -40,6 +40,8 @@ class GetNFTsForHallOfFlame extends ServiceBase {
     oThis.paginationDatabaseId = null;
     oThis.nextPageDatabaseId = null;
 
+    oThis.currentUserLensPostRelations = {};
+
     oThis.lensPostsIds = [];
     oThis.lensPosts = {};
 
@@ -70,6 +72,8 @@ class GetNFTsForHallOfFlame extends ServiceBase {
     await oThis._validateAndSanitize();
 
     await oThis._fetchLensPosts();
+
+    await oThis._fetchUserLensPostVoteDetails();
 
     await oThis._fetchRelatedEntities();
 
@@ -123,6 +127,38 @@ class GetNFTsForHallOfFlame extends ServiceBase {
     oThis.lensPostsIds = lensPostIds;
     oThis.lensPosts = lensPostsResponse;
     oThis.nextPageDatabaseId = nextPageDatabaseId;
+  }
+
+  /**
+   * Fetch user lens posts vote details
+   *
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _fetchUserLensPostVoteDetails() {
+    const oThis = this;
+
+    if (!oThis.currentUserId || oThis.lensPostsIds.length == 0) {
+      return;
+    }
+
+    const voteResponse = await new VoteModel().fetchReactionsForUserByLensPostIds(
+      oThis.currentUserId,
+      oThis.lensPostsIds
+    );
+    const reactionForUserMap = voteResponse[oThis.currentUserId];
+
+    for (const lensPostId in reactionForUserMap) {
+      const userReaction = reactionForUserMap[lensPostId];
+
+      oThis.currentUserLensPostRelations[lensPostId] = {
+        id: lensPostId,
+        hasVoted: userReaction.status == voteConstants.votedStatus ? 1 : 0,
+        hasIgnored: userReaction.status == voteConstants.ignoredStatus ? 1 : 0,
+        collectNftTransactionHash: userReaction.collectNftTransactionHash,
+        updatedAt: userReaction.updatedAt
+      };
+    }
   }
 
   /**
@@ -260,6 +296,7 @@ class GetNFTsForHallOfFlame extends ServiceBase {
     return responseHelper.successWithData({
       [entityTypeConstants.lensPostsIds]: oThis.lensPostsIds,
       [entityTypeConstants.lensPostsMap]: oThis.lensPosts,
+      [entityTypeConstants.currentUserLensPostRelationsMap]: oThis.currentUserLensPostRelations,
       [entityTypeConstants.imagesMap]: oThis.images,
       [entityTypeConstants.textsMap]: oThis.texts,
       [entityTypeConstants.themesMap]: oThis.themes,
