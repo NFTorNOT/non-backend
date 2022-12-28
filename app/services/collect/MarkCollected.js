@@ -89,21 +89,16 @@ class MarkCollected extends ServiceBase {
   async _markNFTCollected() {
     const oThis = this;
 
-    const updateData = {
+    const queryData = {
       voterUserId: oThis.currentUserId,
       lensPostId: oThis.lensPostId,
       collectNftTransactionHash: oThis.collectNftTransactionHash
     };
 
-    const updatedResponse = await new VoteModel().markNFTCollected(updateData);
+    const updatedResponse = await new VoteModel().markNFTCollected(queryData);
     if (updatedResponse.affectedRows === 0) {
-      return Promise.reject(
-        responseHelper.error({
-          internal_error_identifier: 'a_s_c_mnc_mnc_1',
-          api_error_identifier: 'reaction_does_not_exist',
-          debug_options: { updateData: updateData }
-        })
-      );
+      queryData.status = voteConstants.noReactionStatus;
+      await new VoteModel().insertVote(queryData);
     }
   }
 

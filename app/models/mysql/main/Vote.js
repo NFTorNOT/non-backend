@@ -58,6 +58,13 @@ class Vote extends ModelBase {
   }
 
   /**
+   * Name of unique key constraint for Vote model.
+   */
+  static get lensPostIdVoterUserIdUniqueKeyIndex() {
+    return 'CUK';
+  }
+
+  /**
    * Insert into votes
    * @param {object} params
    * @param {string} params.lensPostId,
