@@ -113,5 +113,10 @@
     "http_code": "200",
     "code": "BAD_REQUEST",
     "message": "Invalid auth signature, Please provide valid signature"
+  },
+  "reaction_does_not_exist": {
+    "http_code": "200",
+    "code": "BAD_REQUEST",
+    "message": "You have not upvoted this lens post."
   }
 }

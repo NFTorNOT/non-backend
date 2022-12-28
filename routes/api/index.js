@@ -122,7 +122,7 @@ router.get('/current-user', sanitizer.sanitizeDynamicUrlParams, function(req, re
   };
 
   Promise.resolve(
-    routeHelper.perform(req, res, next, '/app/services/GetCurrentUser', 'r_a_i_10', null, dataFormatterFunc)
+    routeHelper.perform(req, res, next, '/app/services/GetCurrentUser', 'r_a_i_5', null, dataFormatterFunc)
   );
 });
 
@@ -140,7 +140,7 @@ router.post('/store-on-ipfs', sanitizer.sanitizeDynamicUrlParams, function(req, 
   };
 
   Promise.resolve(
-    routeHelper.perform(req, res, next, '/app/services/StoreNFTDataInIPFS', 'r_a_i_4', null, dataFormatterFunc)
+    routeHelper.perform(req, res, next, '/app/services/StoreNFTDataInIPFS', 'r_a_i_6', null, dataFormatterFunc)
   );
 });
 
@@ -158,26 +158,32 @@ router.get('/collect-nfts', sanitizer.sanitizeDynamicUrlParams, function(req, re
   };
 
   Promise.resolve(
-    routeHelper.perform(req, res, next, '/app/services/collect/GetNFTsToCollect', 'r_a_i_4', null, dataFormatterFunc)
+    routeHelper.perform(req, res, next, '/app/services/collect/GetNFTsToCollect', 'r_a_i_7', null, dataFormatterFunc)
   );
 });
 
 router.post('/reaction', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   req.internalDecodedParams.apiName = apiNameConstants.addReactionToNFT;
 
-  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_5', null));
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/vote/Reaction', 'r_a_i_8', null));
+});
+
+router.post('/collect', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  req.internalDecodedParams.apiName = apiNameConstants.markCollected;
+
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/collect/MarkCollected', 'r_a_i_9', null));
 });
 
 router.post('/submit-to-vote', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   req.internalDecodedParams.apiName = apiNameConstants.submitToVote;
 
-  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_6', null));
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/generate/SubmitToVote', 'r_a_i_10', null));
 });
 
 router.post('/logout', cookieHelper.parseUserLoginCookieForLogout, function(req, res, next) {
   req.internalDecodedParams.apiName = apiNameConstants.logout;
 
-  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/auth/Logout', 'r_a_i_7', null));
+  Promise.resolve(routeHelper.perform(req, res, next, '/app/services/auth/Logout', 'r_a_i_11', null));
 });
 
 module.exports = router;
