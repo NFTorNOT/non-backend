@@ -64,8 +64,7 @@ class Reaction extends ServiceBase {
       paramsError.push('invalid_lens_post_id');
     }
 
-    const allowedReactionValuesMap = voteConstants.invertedStatuses;
-    if (CommonValidator.isVarNullOrUndefined(allowedReactionValuesMap[oThis.reaction])) {
+    if (oThis.reaction != voteConstants.votedStatus && oThis.reaction != voteConstants.ignoredStatus) {
       paramsError.push('invalid_reaction_type');
     }
 
@@ -94,19 +93,37 @@ class Reaction extends ServiceBase {
       status: oThis.reaction,
       voterUserId: oThis.currentUserId
     };
-    try {
-      await new VoteModel().insertVote(insertData);
-    } catch (error) {
-      console.error('Error occured while recording reaction -- ', error);
 
-      return Promise.reject(
-        responseHelper.error({
-          internal_error_identifier: 'a_s_v_r_av_1',
-          api_error_identifier: 'already_reacted_to_post',
-          debug_options: { insertData: insertData, error }
-        })
-      );
-    }
+    await new VoteModel().insertVote(insertData).catch(async function(err) {
+      if (VoteModel.isDuplicateIndexViolation(VoteModel.lensPostIdVoterUserIdUniqueKeyIndex, err)) {
+        const updatedResponse = await new VoteModel()
+          .update({
+            status: voteConstants.invertedStatuses[insertData.status]
+          })
+          .where(['lens_post_id = ? ', insertData.lensPostId])
+          .where(['voter_user_id = ?', insertData.voterUserId])
+          .where(['status = ?', voteConstants.invertedStatuses[voteConstants.noReactionStatus]])
+          .fire();
+
+        if (updatedResponse.affectedRows === 0) {
+          return Promise.reject(
+            responseHelper.error({
+              internal_error_identifier: 'a_s_v_r_av_1',
+              api_error_identifier: 'already_reacted_to_post',
+              debug_options: { insertData: insertData, error: err }
+            })
+          );
+        }
+      } else {
+        return Promise.reject(
+          responseHelper.error({
+            internal_error_identifier: 'a_s_v_r_av_2',
+            api_error_identifier: 'something_went_wrong',
+            debug_options: { insertData: insertData }
+          })
+        );
+      }
+    });
   }
 
   /**
