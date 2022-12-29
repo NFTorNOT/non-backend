@@ -118,6 +118,34 @@ class Theme extends ModelBase {
 
     return response;
   }
+
+  /**
+   * Fetch all active themes
+   *
+   * @returns {object}
+   */
+  async fetchAllActiveThemes() {
+    const oThis = this;
+
+    const themeIds = [],
+      themesMap = {};
+
+    const dbRows = await oThis
+      .select('*')
+      .where(['status = ?', themeConstants.invertedStatuses[themeConstants.activeStatus]])
+      .fire();
+
+    for (let index = 0; index < dbRows.length; index++) {
+      const formatDbRow = oThis._formatDbData(dbRows[index]);
+      themeIds.push(formatDbRow.id);
+      themesMap[formatDbRow.id] = formatDbRow;
+    }
+
+    return {
+      themeIds: themeIds,
+      themesMap: themesMap
+    };
+  }
 }
 
 module.exports = Theme;

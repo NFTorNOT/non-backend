@@ -271,6 +271,11 @@ const webSignature = {
       }
     ],
     optional: []
+  },
+
+  [apiNameConstants.getActiveThemes]: {
+    mandatory: [],
+    optional: []
   }
 };
 module.exports = webSignature;

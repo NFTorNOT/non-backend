@@ -99,7 +99,16 @@ const webResponse = {
     }
   },
 
-  [apiNameConstants.markCollected]: {}
+  [apiNameConstants.markCollected]: {},
+
+  [apiNameConstants.getActiveThemes]: {
+    resultType: responseEntityKey.activeThemeIds,
+    resultTypeLookup: responseEntityKey.themes,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.activeThemeIds]: responseEntityKey.activeThemeIds,
+      [entityTypeConstants.themesMap]: responseEntityKey.themes
+    }
+  }
 };
 
 module.exports = webResponse;

@@ -18,6 +18,22 @@ const FormatterComposer = FormatterComposerFactory.getComposer();
 // Node.js cookie parsing middleware.
 router.use(cookieParser(coreConstants.WEB_COOKIE_SECRET));
 
+/* GET active themes */
+router.get('/active-themes', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getActiveThemes;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/GetActiveThemes', 'r_a_i_13', null, dataFormatterFunc)
+  );
+});
+
 /* GET image suggestions */
 router.get('/image-suggestions', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
   const apiName = apiNameConstants.getImageSuggestions;
