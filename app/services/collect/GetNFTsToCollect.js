@@ -57,6 +57,8 @@ class GetNFTsToCollect extends ServiceBase {
     oThis.themeIds = [];
     oThis.themes = {};
 
+    oThis.activeThemeIds = [];
+
     oThis.limit = 10;
   }
 
@@ -74,6 +76,8 @@ class GetNFTsToCollect extends ServiceBase {
     await oThis._fetchVotedLensPosts();
 
     await oThis._fetchRelatedEntities();
+
+    await oThis._fetchActiveThemes();
 
     oThis._addResponseMetaData();
 
@@ -253,6 +257,24 @@ class GetNFTsToCollect extends ServiceBase {
   }
 
   /**
+   * Fetch all active themes
+   *
+   * @sets oThis.activeThemeIds, oThis.activeThemes
+   *
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _fetchActiveThemes() {
+    const oThis = this;
+
+    const themeResponse = await new ThemeModel().fetchAllActiveThemes();
+
+    oThis.activeThemeIds = themeResponse.themeIds;
+
+    Object.assign(oThis.themes, themeResponse.themesMap);
+  }
+
+  /**
    * Add next page meta data.
    *
    * @sets oThis.responseMetaData
@@ -293,6 +315,7 @@ class GetNFTsToCollect extends ServiceBase {
       [entityTypeConstants.textsMap]: oThis.texts,
       [entityTypeConstants.themesMap]: oThis.themes,
       [entityTypeConstants.usersMap]: oThis.users,
+      [entityTypeConstants.activeThemeIds]: oThis.activeThemeIds,
       meta: oThis.responseMetaData
     });
   }
