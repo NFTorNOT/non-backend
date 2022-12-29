@@ -23,6 +23,7 @@ const webResponse = {
       [entityTypeConstants.textsMap]: responseEntityKey.texts,
       [entityTypeConstants.themesMap]: responseEntityKey.themes,
       [entityTypeConstants.usersMap]: responseEntityKey.users,
+      [entityTypeConstants.activeThemeIds]: responseEntityKey.activeThemeIds,
       [entityTypeConstants.getNFTsToVoteListMeta]: responseEntityKey.meta
     }
   },
@@ -38,6 +39,7 @@ const webResponse = {
       [entityTypeConstants.themesMap]: responseEntityKey.themes,
       [entityTypeConstants.usersMap]: responseEntityKey.users,
       [entityTypeConstants.currentUserLensPostRelationsMap]: responseEntityKey.currentUserLensPostRelations,
+      [entityTypeConstants.activeThemeIds]: responseEntityKey.activeThemeIds,
       [entityTypeConstants.getNFTsToCollectListMeta]: responseEntityKey.meta
     }
   },
@@ -64,6 +66,7 @@ const webResponse = {
       [entityTypeConstants.themesMap]: responseEntityKey.themes,
       [entityTypeConstants.usersMap]: responseEntityKey.users,
       [entityTypeConstants.currentUserLensPostRelationsMap]: responseEntityKey.currentUserLensPostRelations,
+      [entityTypeConstants.activeThemeIds]: responseEntityKey.activeThemeIds,
       [entityTypeConstants.getNFTsForHallOfFlameListMeta]: responseEntityKey.meta
     }
   },
