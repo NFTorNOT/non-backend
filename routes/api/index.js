@@ -186,4 +186,22 @@ router.post('/logout', cookieHelper.parseUserLoginCookieForLogout, function(req,
   Promise.resolve(routeHelper.perform(req, res, next, '/app/services/auth/Logout', 'r_a_i_11', null));
 });
 
+/* GET all nfts to collect. */
+router.get('/recent-upvoted-nfts', sanitizer.sanitizeDynamicUrlParams, function(req, res, next) {
+  const apiName = apiNameConstants.getRecentUpvoted;
+  req.internalDecodedParams.apiName = apiName;
+
+  const dataFormatterFunc = async function(serviceResponse) {
+    const formatterParams = Object.assign({}, responseConfig[apiName], { serviceData: serviceResponse.data });
+    formatterParams.entityKindToResponseKeyMap = Object.assign({}, formatterParams.entityKindToResponseKeyMap);
+    const wrapperFormatterRsp = await new FormatterComposer(formatterParams).perform();
+
+    serviceResponse.data = wrapperFormatterRsp.data;
+  };
+
+  Promise.resolve(
+    routeHelper.perform(req, res, next, '/app/services/vote/GetRecentVoted', 'r_a_i_12', null, dataFormatterFunc)
+  );
+});
+
 module.exports = router;

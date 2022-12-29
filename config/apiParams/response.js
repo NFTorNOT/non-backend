@@ -42,6 +42,17 @@ const webResponse = {
     }
   },
 
+  [apiNameConstants.getRecentUpvoted]: {
+    resultType: responseEntityKey.lensPostsIds,
+    resultTypeLookup: responseEntityKey.lensPosts,
+    entityKindToResponseKeyMap: {
+      [entityTypeConstants.lensPostsIds]: responseEntityKey.lensPostsIds,
+      [entityTypeConstants.lensPostsMap]: responseEntityKey.lensPosts,
+      [entityTypeConstants.imagesMap]: responseEntityKey.images,
+      [entityTypeConstants.usersMap]: responseEntityKey.users
+    }
+  },
+
   [apiNameConstants.getNftsForHallOfFlame]: {
     resultType: responseEntityKey.lensPostsIds,
     resultTypeLookup: responseEntityKey.lensPosts,

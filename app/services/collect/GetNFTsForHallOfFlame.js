@@ -37,8 +37,8 @@ class GetNFTsForHallOfFlame extends ServiceBase {
 
     oThis.paginationIdentifier = params[paginationConstants.paginationIdentifierKey] || null;
 
-    oThis.paginationDatabaseId = null;
-    oThis.nextPageDatabaseId = null;
+    oThis.paginationId = null;
+    oThis.nextPaginationId = null;
 
     oThis.currentUserLensPostRelations = {};
 
@@ -92,14 +92,16 @@ class GetNFTsForHallOfFlame extends ServiceBase {
 
     if (oThis.paginationIdentifier) {
       const paginationParams = oThis._parsePaginationParams(oThis.paginationIdentifier);
-      oThis.paginationDatabaseId = Number(paginationParams.next_page_database_id);
+      oThis.paginationId = Number(paginationParams.pagination_id);
+    } else {
+      oThis.paginationId = 1;
     }
   }
 
   /**
    * Fetch voted lens posts to show.
    *
-   * @sets oThis.lensPostsIds, oThis.lensPosts, oThis.nextPageDatabaseId
+   * @sets oThis.lensPostsIds, oThis.lensPosts, oThis.nextPaginationId
    *
    * @returns {Promise<void>}
    * @private
@@ -109,10 +111,9 @@ class GetNFTsForHallOfFlame extends ServiceBase {
 
     const lensPostsPaginationIds = await new LensPostModel().fetchTopVotedLensPostsWithPagination({
         limit: oThis.limit,
-        paginationDatabaseId: oThis.paginationDatabaseId
+        page: oThis.paginationId
       }),
-      lensPostIds = lensPostsPaginationIds.lensPostIds || [],
-      nextPageDatabaseId = lensPostsPaginationIds.nextPageDatabaseId;
+      lensPostIds = lensPostsPaginationIds.lensPostIds || [];
 
     console.log('lensPostsPaginationIds ----- ', lensPostsPaginationIds);
 
@@ -126,7 +127,7 @@ class GetNFTsForHallOfFlame extends ServiceBase {
 
     oThis.lensPostsIds = lensPostIds;
     oThis.lensPosts = lensPostsResponse;
-    oThis.nextPageDatabaseId = nextPageDatabaseId;
+    oThis.nextPaginationId = oThis.paginationId + 1;
   }
 
   /**
@@ -275,7 +276,7 @@ class GetNFTsForHallOfFlame extends ServiceBase {
 
     if (oThis.lensPostsIds.length >= oThis.limit) {
       nextPagePayload[paginationConstants.paginationIdentifierKey] = {
-        next_page_database_id: oThis.nextPageDatabaseId
+        pagination_id: oThis.nextPaginationId
       };
     }
 

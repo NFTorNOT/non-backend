@@ -164,7 +164,7 @@ class LensPost extends ModelBase {
    *
    * @param {object} params
    * @param {number} params.limit
-   * @param {number} [params.paginationDatabaseId]
+   * @param {number} params.page
    *
    * @returns {Promise<{}>}
    */
@@ -173,13 +173,16 @@ class LensPost extends ModelBase {
 
     const lensPostIds = [];
 
-    let nextPageDatabaseId = null;
+    const page = params.page,
+      limit = params.limit,
+      offset = (page - 1) * limit;
 
     const queryObj = oThis
       .select('id')
       .where({ status: lensPostConstants.invertedStatuses[lensPostConstants.activeStatus] })
-      .limit(params.limit)
-      .order_by('total_votes desc');
+      .limit(limit)
+      .offset(offset)
+      .order_by('total_votes desc, id desc');
 
     if (params.paginationDatabaseId) {
       queryObj.where(['id > ?', params.paginationDatabaseId]);
@@ -189,12 +192,10 @@ class LensPost extends ModelBase {
 
     for (let index = 0; index < dbRows.length; index++) {
       lensPostIds.push(dbRows[index].id);
-      nextPageDatabaseId = dbRows[index].id;
     }
 
     return {
-      lensPostIds: lensPostIds,
-      nextPageDatabaseId: nextPageDatabaseId
+      lensPostIds: lensPostIds
     };
   }
 

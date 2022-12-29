@@ -114,7 +114,6 @@ class Authenticate extends ServiceBase {
     );
 
     console.log('------_createOrFetchCurrentUser user -------');
-    console.log(user);
 
     if (user) {
       oThis.currentUser = user;

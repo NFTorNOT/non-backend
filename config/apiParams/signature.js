@@ -259,6 +259,18 @@ const webSignature = {
       }
     ],
     optional: []
+  },
+
+  [apiNameConstants.getRecentUpvoted]: {
+    mandatory: [
+      {
+        parameter: 'current_user',
+        validatorMethods: [{ validateNonEmptyObject: null }],
+        type: 'object',
+        kind: 'internal'
+      }
+    ],
+    optional: []
   }
 };
 module.exports = webSignature;
