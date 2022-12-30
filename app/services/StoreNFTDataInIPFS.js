@@ -70,11 +70,11 @@ class StoreNFTDataInIPFS extends ServiceBase {
     const oThis = this;
 
     const paramErrors = [];
-    if (!CommonValidators.validateStringLength(oThis.title, 50)) {
+    if (!CommonValidators.validateStringLength(oThis.title, 110)) {
       paramErrors.push('invalid_image_title_length');
     }
 
-    if (!CommonValidators.validateStringLength(oThis.description, 200)) {
+    if (!CommonValidators.validateStringLength(oThis.description, 400)) {
       paramErrors.push('invalid_image_description_length');
     }
 
