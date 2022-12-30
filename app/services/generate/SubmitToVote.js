@@ -78,11 +78,11 @@ class SubmitToVote extends ServiceBase {
   async _validateParams() {
     const oThis = this;
 
-    if (!CommonValidators.validateStringLength(oThis.title, 50)) {
+    if (!CommonValidators.validateStringLength(oThis.title, 110)) {
       oThis.paramErrors.push('invalid_image_title_length');
     }
 
-    if (!CommonValidators.validateStringLength(oThis.description, 200)) {
+    if (!CommonValidators.validateStringLength(oThis.description, 400)) {
       oThis.paramErrors.push('invalid_image_description_length');
     }
 
