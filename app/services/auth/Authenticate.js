@@ -10,6 +10,7 @@ const ServiceBase = require(rootPrefix + '/app/services/Base'),
   userConstants = require(rootPrefix + '/lib/globalConstant/entity/user'),
   responseHelper = require(rootPrefix + '/lib/formatter/response'),
   VerifyLensSignerAddress = require(rootPrefix + '/lib/auth/VerifyLensSignerAddress'),
+  CommonValidators = require(rootPrefix + '/lib/validators/Common'),
   localCipher = require(rootPrefix + '/lib/encryptors/localCipher');
 
 /**
@@ -42,6 +43,8 @@ class Authenticate extends ServiceBase {
     oThis.lensProfileId = params.lens_profile_id;
     oThis.lensProfileDisplayName = params.lens_profile_display_name;
     oThis.lensProfileImageUrl = params.lens_profile_image_url;
+
+    oThis.lensProfileImageId = null;
 
     oThis.imageIds = [];
     oThis.userIds = [];
@@ -151,7 +154,7 @@ class Authenticate extends ServiceBase {
       lensProfileOwnerAddress: oThis.walletAddress,
       lensProfileUsername: oThis.lensProfileUsername,
       lensProfileDisplayName: oThis.lensProfileDisplayName,
-      lensProfileImageId: oThis.profileImageId,
+      lensProfileImageId: oThis.lensProfileImageId,
       cookieToken: encryptedCookieToken,
       status: userConstants.activeStatus
     });
@@ -169,7 +172,7 @@ class Authenticate extends ServiceBase {
   async _createImage() {
     const oThis = this;
 
-    if (!oThis.lensProfileImageUrl) {
+    if (!CommonValidators.validateNonBlankString(oThis.lensProfileImageUrl)) {
       return;
     }
 
@@ -178,7 +181,9 @@ class Authenticate extends ServiceBase {
       kind: imageConstants.profileImageKind
     });
 
-    oThis.imageIds.push(profileImage.insertId);
+    oThis.lensProfileImageId = profileImage.insertId;
+
+    oThis.imageIds.push(oThis.lensProfileImageId);
   }
 
   /**
