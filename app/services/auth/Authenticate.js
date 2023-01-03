@@ -126,9 +126,9 @@ class Authenticate extends ServiceBase {
       if (user.lensProfileImageId) {
         oThis.imageIds.push(user.lensProfileImageId);
       }
-      oThis.isFirstTimeUser = true;
     } else {
       await oThis._createUser();
+      oThis.isFirstTimeUser = true;
     }
   }
 
