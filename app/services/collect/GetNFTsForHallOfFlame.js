@@ -296,11 +296,11 @@ class GetNFTsForHallOfFlame extends ServiceBase {
 
     const nextPagePayload = {};
 
-    if (oThis.lensPostsIds.length >= oThis.limit) {
-      nextPagePayload[paginationConstants.paginationIdentifierKey] = {
-        pagination_id: oThis.nextPaginationId
-      };
-    }
+    // if (oThis.lensPostsIds.length >= oThis.limit) {
+    //   nextPagePayload[paginationConstants.paginationIdentifierKey] = {
+    //     pagination_id: oThis.nextPaginationId
+    //   };
+    // }
 
     oThis.responseMetaData = {
       [paginationConstants.nextPagePayloadKey]: nextPagePayload
