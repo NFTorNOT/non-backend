@@ -51,6 +51,8 @@ class Authenticate extends ServiceBase {
     oThis.images = {};
     oThis.users = {};
     oThis.currentUser = null;
+
+    oThis.isFirstTimeUser = false;
   }
 
   async _asyncPerform() {
@@ -124,6 +126,7 @@ class Authenticate extends ServiceBase {
       if (user.lensProfileImageId) {
         oThis.imageIds.push(user.lensProfileImageId);
       }
+      oThis.isFirstTimeUser = true;
     } else {
       await oThis._createUser();
     }
@@ -223,6 +226,7 @@ class Authenticate extends ServiceBase {
       [entityTypeConstants.currentUser]: {
         id: oThis.currentUser.id,
         userId: oThis.currentUser.id,
+        isFirstTimeUser: oThis.isFirstTimeUser,
         uts: Math.floor(Date.now() / 1000)
       },
       [entityTypeConstants.usersMap]: oThis.users,
