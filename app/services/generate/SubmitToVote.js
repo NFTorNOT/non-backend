@@ -22,6 +22,7 @@ class SubmitToVote extends ServiceBase {
    * @param {object} params
    * @param {object} params.current_user
    * @param {number} params.theme_name
+   * @param {number} params.filter
    * @param {string} params.image_url
    * @param {string} params.lens_publication_id
    * @param {number} params.title
@@ -37,6 +38,7 @@ class SubmitToVote extends ServiceBase {
     oThis.currentUser = params.current_user || {};
     oThis.currentUserId = oThis.currentUser.id;
     oThis.themeName = params.theme_name;
+    oThis.filter = params.filter;
     oThis.imageUrl = params.image_url;
     oThis.lensPublicationId = params.lens_publication_id;
     oThis.title = params.title;
@@ -179,6 +181,7 @@ class SubmitToVote extends ServiceBase {
       lensPublicationId: oThis.lensPublicationId,
       imageId: oThis.imageId,
       title: oThis.title,
+      filter: oThis.filter,
       descriptionTextId: oThis.descriptionTextId,
       ipfsObjectId: oThis.lensMetadataIpfsObjectId,
       totalVotes: 0,
