@@ -158,6 +158,11 @@ const webSignature = {
         type: 'string'
       },
       {
+        parameter: 'filter',
+        validatorMethods: [{ validateNonBlankString: null }],
+        type: 'string'
+      },
+      {
         parameter: 'lens_publication_id',
         validatorMethods: [{ validateNonBlankString: null }],
         type: 'string'

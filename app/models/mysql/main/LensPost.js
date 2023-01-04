@@ -35,6 +35,7 @@ class LensPost extends ModelBase {
    * @param {string} dbRow.owner_user_id
    * @param {string} dbRow.lens_publication_id
    * @param {string} dbRow.title
+   * @param {string} dbRow.filter
    * @param {number} dbRow.description_text_id
    * @param {number} dbRow.image_id
    * @param {number} dbRow.ipfs_object_id
@@ -55,6 +56,7 @@ class LensPost extends ModelBase {
       ownerUserId: dbRow.owner_user_id,
       lensPublicationId: dbRow.lens_publication_id,
       title: dbRow.title,
+      filter: dbRow.filter,
       descriptionTextId: dbRow.description_text_id,
       imageId: dbRow.image_id,
       ipfsObjectId: dbRow.ipfs_object_id,
@@ -74,6 +76,7 @@ class LensPost extends ModelBase {
    * @param {string} params.ownerUserId,
    * @param {string} params.lensPublicationId,
    * @param {string} params.title,
+   * @param {string} params.filter,
    * @param {number} params.descriptionTextId,
    * @param {number} params.imageId,
    * @param {number} params.ipfsObjectId,
@@ -89,6 +92,7 @@ class LensPost extends ModelBase {
         owner_user_id: params.ownerUserId,
         lens_publication_id: params.lensPublicationId,
         title: params.title,
+        filter: params.filter,
         description_text_id: params.descriptionTextId,
         image_id: params.imageId,
         ipfs_object_id: params.ipfsObjectId,
