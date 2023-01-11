@@ -53,8 +53,8 @@ autoscaling:
 
 env:
   NA_ENVIRONMENT: 'staging'
-  NA_PORT: 5000
-  NA_DEFAULT_LOG_LEVEL: 'debug';
+  NA_PORT: '5000'
+  NA_DEFAULT_LOG_LEVEL: 'debug'
   NON_API_DOMAIN: 'http://staging.nftornot.com'
   NA_COOKIE_DOMAIN: 'staging.nftornot.com'
   NA_DEVOPS_APP_NAME: 'non-api'
